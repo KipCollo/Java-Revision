@@ -1,4 +1,4 @@
-package introduction.encapsulation;
+package oop.encapsulation;
 
 public class Bank {
 

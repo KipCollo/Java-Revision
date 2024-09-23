@@ -1,4 +1,4 @@
-package introduction.inheritance;
+package oop.inheritance;
 
 public class Main {
 

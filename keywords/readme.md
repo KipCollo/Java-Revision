@@ -93,3 +93,30 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.Scanner;
 ```
+## class
+
+class keyword is used when defining a class
+
+```java
+class Book{
+
+}
+```
+ ## new
+
+new keyword is used while creating the instances of a class.
+
+```java
+class Animal
+{
+     //...
+}
+ 
+public class MainClass
+{
+    public static void main(String[] args) 
+    {
+        Animal animal = new Animal();
+    }
+}
+```

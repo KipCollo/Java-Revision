@@ -1,4 +1,4 @@
-package introduction.polymorphism;
+package oop.polymorphism;
 
 public class Main {
 

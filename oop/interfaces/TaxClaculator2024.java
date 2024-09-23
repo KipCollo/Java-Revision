@@ -1,4 +1,4 @@
-package introduction.interfaces;
+package oop.interfaces;
 public class TaxClaculator2024 implements TaxCalculator{
 
     @Override
