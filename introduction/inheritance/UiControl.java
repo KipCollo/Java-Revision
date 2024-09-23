@@ -1,4 +1,4 @@
-package Introduction.Inheritance;
+package introduction.inheritance;
 
 public class UiControl {
 

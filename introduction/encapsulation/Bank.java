@@ -1,4 +1,4 @@
-package Introduction.Encapsulation;
+package introduction.encapsulation;
 
 public class Bank {
 

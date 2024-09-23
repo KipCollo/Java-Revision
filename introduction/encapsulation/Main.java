@@ -1,4 +1,4 @@
-package Introduction.Encapsulation;
+package introduction.encapsulation;
 
 public class Main {
 
@@ -7,6 +7,7 @@ public class Main {
 
         bank.deposit(20);
         bank.withdaw(55);
+        
         System.out.println(bank.getBalance());
     }
 }

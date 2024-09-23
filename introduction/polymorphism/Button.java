@@ -1,4 +1,4 @@
-package Introduction.polymorphism;
+package introduction.polymorphism;
 
 public class Button extends UiControl{
 

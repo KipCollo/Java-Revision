@@ -1,4 +1,4 @@
-package Introduction.polymorphism;
+package introduction.polymorphism;
 
 public class CheckBox extends UiControl{
 
