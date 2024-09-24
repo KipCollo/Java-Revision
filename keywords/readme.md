@@ -120,3 +120,39 @@ public class MainClass
     }
 }
 ```
+## this
+
+this keyword is used to access other members of the same class.
+
+
+```java
+class AnyClass
+{
+    int i;
+  
+    AnyClass()
+    {
+        System.out.println("First Constructor");
+    }
+  
+    AnyClass(int j)
+    {
+        this();    //calling statement to First Constructor
+        System.out.println("Second Constructor");
+    }
+  
+    void methodOne(int i)
+    {
+        this.i=i;
+        System.out.println("From method one");
+    }
+  
+    void methodTwo()
+    {
+        System.out.println(this.i);  //Accessing same class field
+        this.methodOne();      //Accessing same class method
+    }
+}
+```
+
+

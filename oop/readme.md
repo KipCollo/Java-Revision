@@ -1,3 +1,7 @@
+# oop
+
+Object-Oriented Programming is a methodology or paradigm to design a program using classes and objects. It simplifies the software development and maintenance. Main Concepts - Inheritance, Polymorphism, Abstraction, Encapsulation.
+
 ## Definitions, Tips & Rules related to Java OOPS
 - OOP concepts include:
     1. Classes
@@ -8,6 +12,7 @@
     6. Polymorphism
     7. Acces modifiers
     8. Interface
+    
 ### Class & Constructor
 - A class in Java can contain: fields, methods, constructors, blocks, nested class and interface.
 - Object is an instance of a class.
