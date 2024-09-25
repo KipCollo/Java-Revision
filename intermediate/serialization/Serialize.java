@@ -1,4 +1,4 @@
-package Intermediate.serialization;
+package intermediate.serialization;
 
 import java.io.*; 
 

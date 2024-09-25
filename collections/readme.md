@@ -4,7 +4,7 @@ The java.util package contains all the classes and interfaces for Collection fra
 
 **Map :**
 An object that maps keys to values. A map is not ordered and cannot contain duplicate keys (but can contain duplicate values). Each key can map to at most one value.
-    
+
 **Collection :**
 A collection represents a group of objects, known as its elements. The JDK provides implementations of more specific subinterfaces like Set and List.
 
@@ -118,8 +118,6 @@ A set is not ordered and cannot contain duplicates. Any given object either is o
 </tbody></table>
 
 ## Collections Framework Implementation Classes Summary :
-
-![collectionjava](https://user-images.githubusercontent.com/2780145/34075655-a59a8a1c-e2f2-11e7-94d7-a49c03df0fa8.png)
 
 ## Comparable vs Comparator Interfaces :
 

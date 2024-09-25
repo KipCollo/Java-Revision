@@ -1,4 +1,4 @@
-package introduction.serialization;
+package intermediate.serialization;
 
 public class Student {
 
