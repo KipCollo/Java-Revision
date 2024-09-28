@@ -48,6 +48,21 @@ interface MyInterface
     void myMethod();
 }
 ```
+## transient
+
+transient keyword is used in serialization. A variable which is declared as transient will not be eligible for serialization.
+
+
+```java
+class MyClass implements Serializable
+{
+    int a;
+        
+    transient String s;   //This will not be serialized
+        
+    double d;
+}
+```
 
 ## extends
 
@@ -155,4 +170,98 @@ class AnyClass
 }
 ```
 
+## abstract
 
+abstract keyword is used to implement the abstraction in java. A method which doesn’t have method definition must be declared as abstract and the class containing it must be declared as abstract. You can’t instantiate abstract classes. Abstract methods must be implemented in the sub classes. You can’t use abstract keyword with variables and constructors.
+
+```java
+abstract class AbstractClass
+{
+    abstract void abstractMethod();
+}
+```
+
+## break
+
+The break keyword is used to stop the execution of a loop(for, while, switch-case) based on some condition.
+
+```java
+for (int i = 0; i < 100; i++)
+{
+    System.out.println(i);
+             
+    if(i == 50) break;
+}
+```
+
+## switch        case
+
+Both switch and case keywords are used in the switch-case statement.
+
+
+```java
+Scanner sc = new Scanner(System.in);
+
+System.out.println("Enter Day :");
+
+int day = sc.nextInt();
+
+switch (day) 
+{
+    case 1:
+        System.out.println("SUNDAY");
+        break;
+
+    case 2:
+        System.out.println("MONDAY");
+        break;
+
+    //...
+
+    case 7:
+        System.out.println("SATURDAY");
+        break;
+
+    default:
+        System.out.println("Invalid");
+        break;
+}
+```
+
+
+## default
+
+default keyword is used to define the default methods in an interface (From Java 8). default keyword is also used in the switch-case statements.
+
+
+```java
+interface MyInterface 
+{
+    public default void myDefaultMethod() 
+    {
+        System.out.println("Default Method");
+    }
+}
+```
+
+# if          else
+
+if and else keywords are used in if-else block.
+
+
+```java
+Scanner sc = new Scanner(System.in);
+         
+System.out.println("Enter a string :");
+         
+String input = sc.next();
+         
+if(input.equalsIgnoreCase("JAVA"))
+{
+    System.out.println("It's JAVA");
+}
+else
+{
+    System.out.println("It's not JAVA");
+}
+```

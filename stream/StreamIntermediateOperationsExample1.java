@@ -36,9 +36,8 @@ public static void main(String[] args) {
 
 
 
-// Output
+// Output:
 
-// Intermediate Results:
 // STRUCTURE
 // STREAM
 // STATE

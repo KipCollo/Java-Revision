@@ -14,6 +14,8 @@ There are two types of Operations in Streams:
 1. Intermediate Operations -Are operations in which multiple methods are chained in a row.
 2. Terminate Operations
 
+## Intermediate
+
 ### There are a few Intermediate Operations mentioned below:
 1. map()
 
@@ -67,10 +69,10 @@ Stream<T> peek(Consumer<? super T> action)
 The program prints the intermediate results stored in the intermediateResults set. Finally, it prints the result list, which contains the fully processed strings after all stream operations.
 
 This example showcases how Java Streams can be used to process and manipulate collections of data in a functional and declarative manner, applying transformations and filters in a sequence of operations.
-Terminal Operations
+
+## Terminal Operations
 
 Terminal Operations are the type of Operations that return the result. These Operations are not processed further just return a final result value.
-Important Terminal Operations
 
 ### There are a few Terminal Operations mentioned below:
 1. collect()
@@ -78,59 +80,58 @@ Important Terminal Operations
 The collect method is used to return the result of the intermediate operations performed on the stream.
 
 Syntax:
-
+```JAva
 <R, A> R collect(Collector<? super T, A, R> collector)
-
+```
 2. forEach()
 
 The forEach method is used to iterate through every element of the stream.
 
 Syntax:
-
+```Java
 void forEach(Consumer<? super T> action)
-
+```
 3. reduce()
 
 Syntax:
 
 The reduce method is used to reduce the elements of a stream to a single value. The reduce method takes a BinaryOperator as a parameter.
-
+```Java
 T reduce(T identity, BinaryOperator<T> accumulator)
 Optional<T> reduce(BinaryOperator<T> accumulator)
-
+```
 4. count()
 Returns the count of elements in the stream.
 
 Syntax:
-
+```Java
 long count()
-
+```
 5. findFirst()
 
 Returns the first element of the stream, if present.
 
 Syntax:
-
+```Java
 Optional<T> findFirst()
-
+```
 6. allMatch()
 Checks if all elements of the stream match a given predicate.
 
 Syntax:
-
+```Java
 boolean allMatch(Predicate<? super T> predicate)
-
+```
 7. anyMatch()
 
 Checks if any element of the stream matches a given predicate.
 
 Syntax:
-
+```Java
 boolean anyMatch(Predicate<? super T> predicate)
+```
 
-Here ans variable is assigned 0 as the initial value and i is added to it.
-
-    Note: Intermediate Operations are running based on the concept of Lazy Evaluation, which ensures that every method returns a fixed value(Terminal operation) before moving to the next method.
+Note: Intermediate Operations are running based on the concept of Lazy Evaluation, which ensures that every method returns a fixed value(Terminal operation) before moving to the next method.
 
 
 ## Difference between Stream.of() and Arrays.stream() method in Java
