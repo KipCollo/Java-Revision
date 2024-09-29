@@ -20,6 +20,10 @@ public class Array1 {
 	arr[3] = 40;
 	arr[4] = 50;
 		
+	// accessing element at a position
+
+	System.out.println(arr[1]);
+	
 	// accessing the elements of the specified array
 	for (int i = 0; i < arr.length; i++)
 		System.out.println("index " + i + 
