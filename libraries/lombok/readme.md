@@ -4,7 +4,7 @@ Project Lombok is a java library that automatically plugs into your editor and b
 
 ## Introduction
 
-"Boilerplate" is a term used to describe code that is repeated in many parts of an application with little alteration. One of the most frequently voiced criticisms of the Java language is the volume of this type of code that is found in most projects. This problem is frequently a result of design decisions in various libraries, but it's exacerbated by limitations in the language itself. Project Lombok aims to reduce the prevalence of some of the worst offenders by replacing them with a simple set of annotations.
+"Boilerplate" is a term used to describe code that is repeated in many parts of an application with little alteration. One of the most frequently voiced criticisms of the Java language is the volume of this type of code that is found in most projects. This problem is frequently a result of design decisions in various libraries, but it's exacerbated by limitations in the language itself. Lombok aims to reduce the prevalence of some of the worst offenders by replacing them with a simple set of annotations.
 
 While it is not uncommon for annotations to be used to indicate usage, to implement bindings, or even to generate code used by frameworks, they are generally not used for the generation of code that is directly utilized by the application. This is partly because doing so would require that the annotations be eagerly processed at development time. Project Lombok does just that. By integrating into the IDE, Project Lombok is able to inject code that is immediately available to the developer. For example, simply adding the @Data annotation to a data class, as below, results in a number of new methods in the IDE:
 Data Annotation

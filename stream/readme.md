@@ -1,6 +1,7 @@
 # Stream
 
-Stream API is used to process collections of objects. A stream in Java is a sequence of objects that supports various methods that can be pipelined to produce the desired result. 
+Stream API is used to process collections of objects. A stream in Java is a sequence of objects that supports various methods that can be pipelined to produce the desired result.Stream is an interface, containing stream() method.Stream method returns an object of type stream.Any operation can be performed inside stream method.Any changes done inside stream can be reflected on actal list.Once we work with stream we can't reuse.
+
 
 Use of Stream in Java:
 - Stream API is a way to express and process collections of objects.
