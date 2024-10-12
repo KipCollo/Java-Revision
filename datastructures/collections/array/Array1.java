@@ -1,4 +1,4 @@
-package introduction.arrays;
+package datastructures.collections.array;
 
 import java.util.Arrays;
 
@@ -9,9 +9,8 @@ public class Array1 {
 	// declares an Array of integers.
 	int[] arr;
 		
-	// allocating memory for 5 integers.
+	// allocating memory for 5 integers.(Instatiate)
 	arr = new int[5];
-	String[] cars= {"Volvo", "Mercedes"};
 		
 	// initialize the elements of the array
 	arr[0] = 10;
@@ -34,7 +33,13 @@ public class Array1 {
     for (int element: arr)
         System.out.println(element);
 
+	String[] cars= {"Volvo", "Mercedes"};
+
 	// Accessing arrays using Array class
 	System.out.println(Arrays.toString(cars));
+
+	
     }
+
+	
 }
