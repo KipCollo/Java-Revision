@@ -77,3 +77,42 @@ Dependencies in Gradle are grouped by configurations.
 
  ### Viewing Project Dependencies
 You can view your dependency tree in the terminal using the ./gradlew :app:dependencies command
+
+```build.gradle
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '3.3.4'
+  id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.kipcollo'
+version = '0.0.1-SNAPSHOT'
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
+
+configurations {
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+  useJUnitPlatform()
+}
+```

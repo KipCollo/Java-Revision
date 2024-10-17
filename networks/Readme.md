@@ -1,14 +1,18 @@
- Networking
+# Networking
 
 Java Networking is a concept of connecting two or more computing devices together so that we can share resources.
 
 When computing devices such as laptops, desktops, servers, smartphones, and tablets and an eternally-expanding arrangement of IoT gadgets such as cameras, door locks, doorbells, refrigerators, audio/visual systems, thermostats, and various sensors are sharing information and data with each other is known as networking.
+
+With networks, a single program can regain information stored in millions of computers positioned anywhere in the world. Java Networking is a notion of combining two or more computing devices together to share resources.
 
 Java Socket Programming provides facility to share data between different computing devices.
 
 **Advantage of Java Networking :**
 -	sharing resources
 -	centralized software management
+
+All the Java program communications over the network are done at the application layer. The java.net package of the J2SE APIs comprises various classes and interfaces that execute the low-level communication features, enabling the user to formulate programs that focus on resolving the problem.
 
 **The java.net Package Supports 2 Protocols:**
 - **TCP:** Transmission Control Protocol provides reliable communication between the sender and receiver. TCP is used along with the Internet Protocol referred as TCP/IP.
@@ -39,8 +43,6 @@ Some of the widely used java networking terminologies are as follows:
 
 **7. Connection-less protocol**
 - In connection-less protocol, acknowledgement is not sent by the receiver. So, it is not reliable but fast. The example of connection-less protocol is UDP.
-    
-    
     
     
 ## Java Networking Classes
@@ -115,9 +117,6 @@ The java.net package includes various interfaces also that provide an easy-to-us
  
 **6. ProtocolFamily**
 - This interface represents a family of communication protocols. The ProtocolFamily interface contains a method known as name(), which returns the name of the protocol family.
-
-
-
 
 
 ## Java Socket Programming
@@ -244,3 +243,15 @@ while (!str.equals("stop")) {
 dout.close();
 s.close();
 ```
+
+### URL Class
+
+The URL class in Java is the entry point to any available sources on the internet. A Class URL describes a Uniform Resource Locator, which is a signal to a “resource” on the World Wide Web. A source can denote a simple file or directory, or it can indicate a more difficult object, such as a query to a database or a search engine. URL is a string of text that recognizes all the sources on the Internet, showing us the address of the source, how to interact with it, and recover something from it.
+
+#### Components of a URL
+
+A URL can have many forms. The most general however follows a three-components system-  
+ > Protocol – The protocol in a URL defines how information is transported among the host and a client (or web browser).
+ > Hostname – The hostname is the name of the device on which the resource exists.
+ > File Name – The filename is the pathname to the file on the device.
+ > Port Number – The port number is used to identify different applications uniquely. It is typically optional.

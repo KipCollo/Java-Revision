@@ -18,7 +18,7 @@ The java.sql package contains API for the following:
     - Savepoint -- provides savepoints in a transaction 
 
 3. Retrieving and updating the results of a query
-        ResultSet interface 
+    - ResultSet interface 
     
 4. Standard mappings for SQL types to classes and interfaces in the Java programming language
     - Array interface -- mapping for SQL ARRAY
