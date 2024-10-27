@@ -1,0 +1,44 @@
+Spring Data JDBC, part of the larger Spring Data family, makes it easy to implement JDBC based repositories. This module deals with enhanced support for JDBC based data access layers. It makes it easier to build Spring powered applications that use data access technologies.
+
+Spring Data JDBC and R2DBC
+
+Spring Data JDBC and R2DBC provide repository support for the Java Database Connectivity (JDBC) respective Reactive Relational Database Connectivity (R2DBC) APIs. It eases development of applications with a consistent programming model that need to access SQL data sources.
+
+
+
+Spring Data JDBC aims to be much simpler conceptually, by embracing the following design decisions:
+
+    If you load an entity, SQL statements get run. Once this is done, you have a completely loaded entity. No lazy loading or caching is done.
+
+    If you save an entity, it gets saved. If you do not, it does not. There is no dirty tracking and no session.
+
+    There is a simple model of how to map entities to tables. It probably only works for rather simple cases. If you do not like that, you should code your own strategy. Spring Data JDBC offers only very limited support for customizing the strategy with annotations.
+
+
+
+In terms of databases, Spring Data JDBC requires a dialect to abstract common SQL functionality over vendor-specific flavours. Spring Data JDBC includes direct support for the following databases:
+
+    DB2
+
+    H2
+
+    HSQLDB
+
+    MariaDB
+
+    Microsoft SQL Server
+
+    MySQL
+
+    Oracle
+
+    Postgres
+
+Logging
+
+Spring Data JDBC does little to no logging on its own. Instead, the mechanics of JdbcTemplate to issue SQL statements provide logging. Thus, if you want to inspect what SQL statements are run, activate logging for Spring’s NamedParameterJdbcTemplate or MyBatis.
+
+You may also want to set the logging level to DEBUG to see some additional information. To do so, edit the application.properties file to have the following content:
+
+logging.level.org.springframework.jdbc=DEBUG
+

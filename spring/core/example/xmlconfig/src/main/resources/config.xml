@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+     <bean id="blackink" class="com.kipcollo.beans.BlackInk">
+     </bean>
+
+        <bean id="bmw" class="com.kipcollo.beans.Cars">
+     </bean>
+
+        <bean id="fountainpen" class="com.kipcollo.beans.FountainPen">
+        <constructor-arg ref="blackink"/>
+        </bean>
+
+        <bean id="writer" class="com.kipcollo.beans.Writer">
+        <constructor-arg ref="fountainpen"/>
+       </bean>
+</beans>
