@@ -21,13 +21,15 @@ Rod Johnson developed Spring due to J2EE drawbacks.It was originally called inte
 4. POJO development: Doesn't need extending or implementing any spring f/w classes.
 5. Loosely coupled
 
-## Dependency Injection and Inversion of Control
+Spring can be used to develop:
+1. Standalone apps
+2. Web applications
+3. Distributed Apps
+4. Reactive Programming
+5. Batch Apps
+6. Security
 
-Java applications — a loose term that runs the gamut from constrained applets to n-tier server-side enterprise applications — typically consist of objects that collaborate to form the application proper. Thus the objects in an application have dependencies on each other.
-
-Although the Java platform provides a wealth of application development functionality, it lacks the means to organize the basic building blocks into a coherent whole, leaving that task to architects and developers. True, you can use design patterns such as Factory, Abstract Factory, Builder, Decorator, and Service Locator to compose the various classes and object instances that make up an application. However, these patterns are simply that: best practices given a name, with a description of what the pattern does, where to apply it, the problems it addresses, and so forth. Patterns are formalized best practices that you must implement yourself in your application.
-
-The Spring Framework Inversion of Control (IoC) component addresses this concern by providing a formalized means of composing disparate components into a fully working application ready for use. The Spring Framework codifies formalized design patterns as first-class objects that you can integrate into your own application(s). Numerous organizations and institutions use the Spring Framework in this manner to engineer robust, maintainable applications.
+To develop diff types of apps, Spring teams introduced many modules is spring framework.
 
 ## Modules
 
@@ -42,6 +44,15 @@ Spring Framework Runtime:
 6. Messaging
 7. Core Container: Beans,Core,Context,SpEL
 8. Test
+
+
+## Dependency Injection and Inversion of Control
+
+Java applications — a loose term that runs the gamut from constrained applets to n-tier server-side enterprise applications — typically consist of objects that collaborate to form the application proper. Thus the objects in an application have dependencies on each other.
+
+Although the Java platform provides a wealth of application development functionality, it lacks the means to organize the basic building blocks into a coherent whole, leaving that task to architects and developers. True, you can use design patterns such as Factory, Abstract Factory, Builder, Decorator, and Service Locator to compose the various classes and object instances that make up an application. However, these patterns are simply that: best practices given a name, with a description of what the pattern does, where to apply it, the problems it addresses, and so forth. Patterns are formalized best practices that you must implement yourself in your application.
+
+The Spring Framework Inversion of Control (IoC) component addresses this concern by providing a formalized means of composing disparate components into a fully working application ready for use. The Spring Framework codifies formalized design patterns as first-class objects that you can integrate into your own application(s). Numerous organizations and institutions use the Spring Framework in this manner to engineer robust, maintainable applications.
 
 ## Dependency Management and Naming Conventions
 

@@ -1,7 +1,6 @@
 package com.kipcollo.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +17,8 @@ public class AppConfig {
     Environment environment;
 
     @Bean
-    // @Value(${name})
     public Prop prop() {
-        return new Prop(environment.getProperty("name"));
+        return new Prop(environment.getProperty("name"),environment.getProperty("Password"));
     }
 
     @Bean

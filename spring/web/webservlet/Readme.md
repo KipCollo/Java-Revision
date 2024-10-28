@@ -48,7 +48,15 @@ Takes care common processing logic that should be applied to all request coming 
 
 The DispatcherServlet, as any Servlet, needs to be declared and mapped according to the Servlet specification by using Java configuration or in web.xml. In turn, the DispatcherServlet uses Spring configuration to discover the delegate components it needs for request mapping, view resolution, exception handling, and more.
 
+Creating a spring container.
+```java
+
+ ApplicationContext context= new XMLWebApplicationContext();
+```
+* In Spring container there is:controllers,viewressolver,handler mapping.
+
 The following example of the Java configuration registers and initializes the DispatcherServlet, which is auto-detected by the Servlet container
+
 ```java
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
@@ -98,6 +106,7 @@ The following example of web.xml configuration registers and initializes the Dis
 
 </web-app>
 ```
+The DispatcherServlet looks for Servlet-name in the xml file
 
 Spring Boot follows a different initialization sequence. Rather than hooking into the lifecycle of the Servlet container, Spring Boot uses Spring configuration to bootstrap itself and the embedded Servlet container. Filter and Servlet declarations are detected in Spring configuration and registered with the Servlet container.
 
@@ -105,9 +114,38 @@ Spring Boot follows a different initialization sequence. Rather than hooking int
 
 Helps in identifying the controller to be used for a request.Based on URI,Handler Mapping will return controller name then DispatcherServlet will execute the controller.
 
+```xml
+<beans>
+   <bean id="home" class="HomeController"/>
+   <bean id="" class="..."/>
+<beans>
+
 3. Controller
 
 Responsible for processing logics to handle the request.Always gives logical name as response to DispatcherServlet.The DispatcherServlet will send logical name to ViewResolver
+
+```java
+public interface Controller{
+
+	ModelandView handleRequest(HandleServletRequest req,HandleServletResponse res)
+}
+```
+
+```java
+
+public class HomeController implements Controller{
+
+	@Override
+	ModelandView handleRequest(HandleServletRequest req,HandleServletResponse res){
+		ModelandView mav= new ModelandView();
+		mav.setViewName("/home")
+
+		return mav;
+	}
+
+
+}
+```
 
 4. ViewResolver
 
