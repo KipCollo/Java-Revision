@@ -12,11 +12,23 @@ public class Prop {
     @Value("${password}")
     String password;
 
-    public Prop(String name,String password){
+    public void setName(String name) {
         this.name=name;
-        this.password=password;
-
-        System.out.println(name + password);
     }
+
+    public void setPassword(String password) {
+        this.password=password;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Prop{");
+        sb.append("name=").append(name);
+        sb.append(", password=").append(password);
+        sb.append('}');
+        return sb.toString();
+    }
+
 
 }

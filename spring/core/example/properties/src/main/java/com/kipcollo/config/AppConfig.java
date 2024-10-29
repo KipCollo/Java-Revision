@@ -18,7 +18,10 @@ public class AppConfig {
 
     @Bean
     public Prop prop() {
-        return new Prop(environment.getProperty("name"),environment.getProperty("Password"));
+        Prop prop =new Prop();
+        prop.setName(environment.getProperty("name"));
+        prop.setPassword(environment.getProperty("password"));
+        return prop;
     }
 
     @Bean

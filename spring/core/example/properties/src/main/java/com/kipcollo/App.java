@@ -14,7 +14,7 @@ public class App
      
         System.out.println( "Hello World!" );
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        Prop prop =(Prop)context.getBean(Prop.class);
+        Prop prop =(Prop) context.getBean(Prop.class);
         System.out.println(prop);
     }
 }
