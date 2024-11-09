@@ -33,22 +33,25 @@ public class Config{
 In spring boot apps, you'll write minimal configurations.Others are taken care off by Spring Boot autoconfigurations with help of @SpringBootApplication.
 
 using Spring Boot we can develop apps using configurations:
+
 1. standalone-
       ApplicationContext context = new AnnotationconfigApplicationContext(JavaConfig);
 2. Web apps-
     new AnnotationconfigServletWebServerApplicationContext()
-3. Reactivee apps- 
+3. Reactivee apps-
     new AnnotationconfigReactiveWebServerApplicationContext()
 
 * When SpringApplication.run is executed:
+
 1. SpringApplication constructor will identify which container is required.The **deduceFromClassPath()** method will check in classpath,based on classes found in classpath then corresponding spring container is created.
 2. An empty environment object will be created.
 3. Detected configs of our apps will be loaded into environment object.(application.properties or application.yaml)
 4. Prints the boot banner
 5. Identifies WebApplicationtype:
-  - If spring mvc jars is found on path,then WebapplicationType=WEB and creates AnnotationConfigServletWebServerApplicationContext
-  - If spring webflux jars is found on path,then WebapplicationType=Reactive and creates AnnotationConfigReactiveWebServerApplicationContext
-  - If none of above is found; then Webapplicationtype=NONE,then it creates AnnotationApplicationContext.
+
+* If spring mvc jars is found on path,then WebapplicationType=WEB and creates AnnotationConfigServletWebServerApplicationContext
+* If spring webflux jars is found on path,then WebapplicationType=Reactive and creates AnnotationConfigReactiveWebServerApplicationContext
+* If none of above is found; then Webapplicationtype=NONE,then it creates AnnotationApplicationContext.
 
 6. Instantiates spring factories and registers IoC container
 7. Execute ApplicationContextInializer(will detect all autoconfiguration)

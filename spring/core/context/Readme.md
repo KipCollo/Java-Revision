@@ -53,6 +53,7 @@ It includes:
 7. @Primary- Indicates that a bean should be given preference when multiple candidates are qualified to autowire a single-valued dependency.
 8. @Scope - When used as a type-level annotation in conjunction with @Component, @Scope indicates the name of a scope to use for instances of the annotated type.
 9. @PropertySource - Annotation providing a convenient and declarative mechanism for adding a PropertySource to Spring's Environment.Used to load properties file.
+10. @Profile -Indicates that a component is eligible for registration when one or more specified profiles are active.
 
 AdviceMode
 Enumeration used to determine whether JDK proxy-based or AspectJ weaving-based advice should be applied.
@@ -144,8 +145,6 @@ LoadTimeWeavingConfigurer
 Interface to be implemented by @Configuration classes annotated with @EnableLoadTimeWeaving that wish to customize the LoadTimeWeaver instance to be used.
 MBeanExportConfiguration
 @Configuration class that registers a AnnotationMBeanExporter bean.
-Profile
-Indicates that a component is eligible for registration when one or more specified profiles are active.
 PropertySources
 Container annotation that aggregates several PropertySource annotations.
 ResourceElementResolver
@@ -162,3 +161,16 @@ ScopeMetadataResolver
 Strategy interface for resolving the scope of bean definitions.
 TypeFilterUtils
 Collection of utilities for working with @ComponentScan type filters.
+
+
+* @Lazy can be annotated with class level or method level.
+1. @Component,@Configuration - Class level. 
+2. @Bean- Method level
+
+Default scope of bean is singleton,Generally they are pre-initialised to discover errors in configuration.To initialize bean lazilly, we use @Lazy annotation in java config or lazy-init attribute in XML config app.If we want early initialisation,we use @Lazy(value="false")
+
+Lazy initialisation could be;
+1. Bean will not be initialized until reference/called by another bean
+2. Explicitly called from ApplicationContext
+
+* @Lazy can also be used with @Autowire(introduced in Spring  3.0)

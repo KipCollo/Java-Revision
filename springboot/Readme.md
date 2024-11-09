@@ -7,6 +7,7 @@ Boot applications need very little Spring configuration.
 Spring boot came to make Spring dev easier:
 
 To make Spring web app:
+
 1. Create a maven project
 2. Add dependencies to pom.xml(spring core,MVC,jackson,validator)
 3. Configure required beans in configuration using xml or java-config(DispatcherServlet,Viewresolver,Controller)
@@ -15,6 +16,7 @@ To make Spring web app:
 6. configure annotations e,g(@requestBody)
 
 Spring Drawbacks:
+
 * Step 1-4 is boilerplate code(i.e common code for all project)
 * Dependency management was too hard 
 * Manual configurations(complex,time consuming)
@@ -41,19 +43,18 @@ security, metrics, health checks, and externalized configuration).
   1. Traditional: Develop------>Deploy----------->External Tomcat server(Configuration(server.xml,catalina.properties))
   2. Modern: Develop------>Deploy-----------Tomcat server within App(embedded server(source code + server config)): Used mostly in cloud
 
-
-
 * Dependency Management:
 Spring-boot introduced 2 types of dependencies:
+
 1. spring-boot-starter-parent- For supporting open-source third party libraries.ie.(Jackson,validator,RedisCache,MongoDB..etc,spring core,spring mvc)
 Spring boot parent pom is used to declare and configure spring f/w and their 3rd party related version info.
 
 It provides info for all libraries.
 
-2. spring-boot-starter-xxxx(Where xxxx can be web,jdbc,security,data..)
-i.e Spring web requires (spring core,MVc,web MVC,jdbv,jackson).The spring-boot-starter-web combines all the modules and their dependencies.
+2. spring-boot-starter-xxxx(Where xxxx can be web,jdbc,security,data..)i.e Spring web requires (spring core,MVc,web MVC,jdbv,jackson).The spring-boot-starter-web combines all the modules and their dependencies.
 
 * Spring Version:
+
 1. Spring Boot 1.x--------->(Spring core,spring mvc,spring JDBC: 3.x)
                   ---------->jackson-1.x,validator-2.x,hibernate-3.x
 2. Spring boot 2.3.5--------->spring core,spring-mvcjdbc: 4.x
@@ -64,9 +65,11 @@ i.e Spring web requires (spring core,MVc,web MVC,jdbv,jackson).The spring-boot-s
 ## Creating Spring Boot application
 
 There are 3 ways:
+
 1. Manually - using IDEs(Eclipse,STS,IntelliJ):
-  - Create maven project
-  - Add spring boot parent and required dependencies to pom.xml
+
+  * Create maven project
+  * Add spring boot parent and required dependencies to pom.xml
 
  ```xml
   <parent>
@@ -81,7 +84,8 @@ There are 3 ways:
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
  ```
-  - Write Spring boot entry class manually
+
+  * Write Spring boot entry class manually
 
  ```java
 
@@ -94,5 +98,6 @@ There are 3 ways:
    }
   }
   ```
+
 2. Using start.spring.io: No need to write manual code.
 3. Using spring starter project using IDEs.

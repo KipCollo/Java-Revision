@@ -6,29 +6,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class Prop {
  
-    @Value("${name}")
+    @Value("{name}")
     String name;
 
-    @Value("${password}")
+    @Value("{password}")
     String password;
 
-    public void setName(String name) {
-        this.name=name;
+
+    public String getName(String name) {
+        return this.name;
     }
 
-    public void setPassword(String password) {
-        this.password=password;
+    public String getPassword(String password) {
+        return this.password;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Prop{");
-        sb.append("name=").append(name);
-        sb.append(", password=").append(password);
+        sb.append("name=").append(this.name);
+        sb.append(", password=").append(this.password);
         sb.append('}');
         return sb.toString();
     }
-
 
 }

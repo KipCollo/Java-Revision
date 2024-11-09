@@ -1,13 +1,10 @@
-## WebSockets
-
-This part of the reference documentation covers support for Servlet stack, WebSocket messaging that includes raw WebSocket interactions, WebSocket emulation through SockJS, and publish-subscribe messaging through STOMP as a sub-protocol over WebSocket.
-
-## Introduction to WebSocket
+# WebSockets
 
 The WebSocket protocol, RFC 6455, provides a standardized way to establish a full-duplex, two-way communication channel between client and server over a single TCP connection. It is a different TCP protocol from HTTP but is designed to work over HTTP, using ports 80 and 443 and allowing re-use of existing firewall rules.
 
-A WebSocket interaction begins with an HTTP request that uses the HTTP Upgrade header to upgrade or, in this case, to switch to the WebSocket protocol. The following example shows such an interaction:
+1. A WebSocket interaction begins with an HTTP request that uses the HTTP Upgrade header to upgrade or, in this case, to switch to the WebSocket protocol. The following example shows such an interaction:
 
+```
 GET /spring-websocket-portfolio/portfolio HTTP/1.1
 Host: localhost:8080
 Upgrade: websocket 
@@ -17,20 +14,23 @@ Sec-WebSocket-Protocol: v10.stomp, v11.stomp
 Sec-WebSocket-Version: 13
 Origin: http://localhost:8080
 
- 	The Upgrade header.
-	Using the Upgrade connection.
+  The Upgrade header.
+ Using the Upgrade connection.
+```
 
 Instead of the usual 200 status code, a server with WebSocket support returns output similar to the following:
 
+```
 HTTP/1.1 101 Switching Protocols 
 Upgrade: websocket
 Connection: Upgrade
 Sec-WebSocket-Accept: 1qVdfYHU9hPOl4JYYNXF623Gzn0=
 Sec-WebSocket-Protocol: v10.stomp
 
-	Protocol switch
+ Protocol switch
+```
 
-After a successful handshake, the TCP socket underlying the HTTP upgrade request remains open for both the client and the server to continue to send and receive messages.
+2. After a successful handshake, the TCP socket underlying the HTTP upgrade request remains open for both the client and the server to continue to send and receive messages.
 
 Note that, if a WebSocket server is running behind a web server (e.g. nginx), you likely need to configure it to pass WebSocket upgrade requests on to the WebSocket server. Likewise, if the application runs in a cloud environment, check the instructions of the cloud provider related to WebSocket support.
 
@@ -46,7 +46,7 @@ WebSocket is also a low-level transport protocol, which, unlike HTTP, does not p
 
 WebSocket clients and servers can negotiate the use of a higher-level, messaging protocol (for example, STOMP), through the Sec-WebSocket-Protocol header on the HTTP handshake request. In the absence of that, they need to come up with their own conventions.
 
-## When to Use WebSockets
+### When to Use WebSockets
 
 WebSockets can make a web page be dynamic and interactive. However, in many cases, a combination of AJAX and HTTP streaming or long polling can provide a simple and effective solution.
 
@@ -58,15 +58,12 @@ Keep in mind also that over the Internet, restrictive proxies that are outside o
 
 ## WebSocket API
 
-See equivalent in the Reactive stack
-
 The Spring Framework provides a WebSocket API that you can use to write client- and server-side applications that handle WebSocket messages.
 
 ### WebSocketHandler
 
-See equivalent in the Reactive stack
-
 Creating a WebSocket server is as simple as implementing WebSocketHandler or, more likely, extending either TextWebSocketHandler or BinaryWebSocketHandler. The following example uses TextWebSocketHandler:
+
 ```java
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
@@ -74,20 +71,106 @@ import org.springframework.web.socket.TextMessage;
 
 public class MyHandler extends TextWebSocketHandler {
 
-	@Override
-	public void handleTextMessage(WebSocketSession session, TextMessage message) {
-		// ...
-	}
+ @Override
+ public void handleTextMessage(WebSocketSession session, TextMessage message) {
+  // ...
+ }
 
 }
 
 ```
 
+There is dedicated WebSocket Java configuration and XML namespace support for mapping the preceding WebSocket handler to a specific URL, as the following example shows:
+```java
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
+
+ @Override
+ public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+  registry.addHandler(myHandler(), "/myHandler");
+ }
+
+ @Bean
+ public WebSocketHandler myHandler() {
+  return new MyHandler();
+ }
+
+}
+```
+
+The following example shows the XML configuration equivalent of the preceding example:
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:websocket="http://www.springframework.org/schema/websocket"
+ xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  https://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/websocket
+  https://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+ <websocket:handlers>
+  <websocket:mapping path="/myHandler" handler="myHandler"/>
+ </websocket:handlers>
+
+ <bean id="myHandler" class="org.springframework.samples.MyHandler"/>
+
+</beans>
+```
+
+The preceding example is for use in Spring MVC applications and should be included in the configuration of a DispatcherServlet. However, Spring’s WebSocket support does not depend on Spring MVC. It is relatively simple to integrate a WebSocketHandler into other HTTP-serving environments with the help of WebSocketHttpRequestHandler.
+
+When using the WebSocketHandler API directly vs indirectly, e.g. through the STOMP messaging, the application must synchronize the sending of messages since the underlying standard WebSocket session (JSR-356) does not allow concurrent sending. One option is to wrap the WebSocketSession with ConcurrentWebSocketSessionDecorator.
+
+WebSocket Handshake
+
+See equivalent in the Reactive stack
+
+The easiest way to customize the initial HTTP WebSocket handshake request is through a HandshakeInterceptor, which exposes methods for “before” and “after” the handshake. You can use such an interceptor to preclude the handshake or to make any attributes available to the WebSocketSession. The following example uses a built-in interceptor to pass HTTP session attributes to the WebSocket session:
+
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
+
+ @Override
+ public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+  registry.addHandler(new MyHandler(), "/myHandler")
+   .addInterceptors(new HttpSessionHandshakeInterceptor());
+ }
+
+}
+
+The following example shows the XML configuration equivalent of the preceding example:
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:websocket="http://www.springframework.org/schema/websocket"
+ xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  https://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/websocket
+  https://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+ <websocket:handlers>
+  <websocket:mapping path="/myHandler" handler="myHandler"/>
+  <websocket:handshake-interceptors>
+   <bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>
+  </websocket:handshake-interceptors>
+ </websocket:handlers>
+
+ <bean id="myHandler" class="org.springframework.samples.MyHandler"/>
+
+</beans>
+
 ## STOMP
 
 The WebSocket protocol defines two types of messages (text and binary), but their content is undefined. The protocol defines a mechanism for client and server to negotiate a sub-protocol (that is, a higher-level messaging protocol) to use on top of WebSocket to define what kind of messages each can send, what the format is, the content of each message, and so on. The use of a sub-protocol is optional but, either way, the client and the server need to agree on some protocol that defines message content.
-
-
 
 STOMP (Simple Text Oriented Messaging Protocol) was originally created for scripting languages (such as Ruby, Python, and Perl) to connect to enterprise message brokers. It is designed to address a minimal subset of commonly used messaging patterns. STOMP can be used over any reliable two-way streaming network protocol, such as TCP and WebSocket. Although STOMP is a text-oriented protocol, message payloads can be either text or binary.
 
@@ -151,3 +234,119 @@ Using STOMP as a sub-protocol lets the Spring Framework and Spring Security prov
 
     You can use Spring Security to secure messages based on STOMP destinations and message types.
 
+## Annotations
+
+1. @EnableWebSocketMessageBroker - This annotation enables WebSocket message handling, backed by a message broker.Typically placed on a configuration class.
+
+```java
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    // Configuration methods
+}
+```
+
+2. @MessageMapping - Maps a WebSocket message to a specific method in a controller. Similar to @RequestMapping for HTTP requests.Used On methods within a controller class that handles incoming messages.
+
+```java
+@MessageMapping("/send")
+@SendTo("/topic/messages")
+public String sendMessage(String message) {
+    return message;
+}
+```
+
+3. @SendTo - Specifies the destination to which the return value from a @MessageMapping method should be sent. This is where the response will be broadcasted.Used in conjunction with @MessageMapping.
+
+```java
+    @SendTo("/topic/messages")
+    public String sendMessage(String message) {
+        return message;
+    }
+```
+
+4. @SubscribeMapping - Used to handle subscription requests from clients. It allows you to process logic when a client subscribes to a particular destination.On methods within a controller that handle subscription messages.
+
+```java
+    @SubscribeMapping("/user/queue/reply")
+    public String handleSubscription() {
+        return "Welcome!";
+    }
+```
+
+5. @MessageExceptionHandler
+
+    Usage: Handles exceptions that occur during message handling. You can define a method that will respond to specific exceptions.
+
+    Where to Use: On methods within a controller to catch and handle exceptions.
+
+```java
+    @MessageExceptionHandler
+    public String handleException(Throwable exception) {
+        return "Error: " + exception.getMessage();
+    }
+```
+
+6. @SendToUser - Used to send a message back to a specific user. This is typically used in conjunction with user sessions.Used Within a message-handling method.
+
+```java
+@MessageMapping("/private")
+@SendToUser("/queue/reply")
+public String sendPrivateMessage(String message) {
+    return message;
+}
+```
+
+### WebSocketMessageBrokerConfigurer
+
+WebSocketMessageBrokerConfigurer is an interface provided by Spring that allows you to configure WebSocket messaging. By implementing this interface, you can customize various aspects of the WebSocket message broker, including the message broker configuration, endpoint registration, and STOMP protocol settings
+
+Here are the main methods you typically override when implementing WebSocketMessageBrokerConfigurer:
+
+1. configureMessageBroker(MessageBrokerRegistry config) -Configures the message broker used for routing messages. You can specify options such as enabling a simple in-memory broker, setting prefixes for destinations, and enabling a full-featured message broker like RabbitMQ.
+
+```java
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic", "/queue"); // Configure simple broker
+        config.setApplicationDestinationPrefixes("/app"); // Prefix for client messages
+    }
+```
+
+2. registerStompEndpoints(StompEndpointRegistry registry)
+
+    PurpRegisters STOMP endpoints that clients can connect to. You can also configure SockJS fallback options here.
+    Example:
+
+```java
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS(); // Endpoint with SockJS fallback
+    }
+```
+
+3. configureClientInboundChannel(ChannelRegistration registration)
+
+    Purpose: Customize the inbound channel for messages sent by clients. You can add interceptors here to handle or modify messages.
+    Example:
+
+```java
+@Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new MyChannelInterceptor()); // Custom interceptor
+    }
+```
+
+4. configureClientOutboundChannel(ChannelRegistration registration)
+
+    Purpose: Customize the outbound channel for messages sent to clients. Similar to the inbound channel configuration.
+    Example:
+
+```java
+
+@Override
+public void configureClientOutboundChannel(ChannelRegistration registration) {
+    registration.interceptors(new MyOutboundChannelInterceptor()); // Custom interceptor
+}
+```

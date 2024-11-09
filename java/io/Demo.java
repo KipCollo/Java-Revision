@@ -1,6 +1,7 @@
 package io;
 
-import java.io.*;;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Demo {
 

@@ -8,24 +8,27 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-@PropertySource("classpath:app.properties")
+
 @Configuration
-@ComponentScan("com.kipcollo")
+@PropertySource("classpath:properties/application.properties")
+@ComponentScan("com.kipcollo.*")
 public class AppConfig {
 
     @Autowired
     Environment environment;
 
-    @Bean
-    public Prop prop() {
-        Prop prop =new Prop();
-        prop.setName(environment.getProperty("name"));
-        prop.setPassword(environment.getProperty("password"));
-        return prop;
-    }
+    // @Bean
+    // public Prop prop() {
+    //     Prop prop =new Prop();
+    //     environment.getClass().getName();
+    //     prop.getName(environment.getProperty("name"));
+    //     prop.getPassword(environment.getProperty("password"));
+    //     return prop;
+    // }
 
     @Bean
-    public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+    @Autowired
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
     

@@ -340,13 +340,20 @@ String password = p.getProperty("password");
 ```
 
 * Instead of writing the Java code you can use **@PropertySource Annotation**. Used to load properties file.
+When it is executed environment container is created.
 
 
 ```java
 PropertySource(classpath:{filename path})
 ```
 
-- Reading value from properties file.
+```xml
+<bean class="org.springframework.beans.factory.config.PropertyPlaceHolderConfigurer">
+ <property name="locations" value="classpath:app.properties"/>
+<bean/>
+```
+
+- Reading/Getting value from properties file.
 
 1. Using Environment Class Object - provided by spring.
 
@@ -372,12 +379,65 @@ public class Config{
 
 ```
 
-2. Using @Value annotation
+2. Using @Value annotation - Used
 
 ```java
 
 @Value("${name}")
+private String name;
 ```
 
 - PropertySourcesPlaceholderConfigurer will recognize the @Value annotation.
 - You can set deafult values in @Value(${propertyKey:value})
+
+```java 
+@Configuration
+@PropertySource(classpath:"app.yaml")
+
+@Bean
+Environment env
+
+@Bean
+public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+    return new PropertySourcesPlaceholderConfigurer();
+}
+```
+
+## Loading Properties file based on ENVIRONMENT/profiles
+
+Environment could be:
+1. Test
+2. Development
+3. Production
+
+* Without spring:
+Configure profile name(dev,test,prod) in server configuration.
+i.e 
+catalina.properties
+ environment=dev
+
+During startup, all value wil be set to JVM
+  System.setProperty("env");
+
+* With Spring:
+@Profile- used to get env value from jvm which was set during app startup.can be used in class,method level.
+
+For standalone apps,set env using the options
+1. System.setProperty("environment","dev")
+2. spring.profiles.active=dev
+
+For web apps:
+1. Tomcat: catalina.properties-->env=dev
+2. Jboss: server.xml----->env=dev
+
+If we use docker,set env inside Dockerfile.
+
+Whenever we set env values,during app startup it will be set in jvm.
+
+### Getting env values from JVM
+
+1. Using System.getProperty("env")
+   String env = System.getProperty("env")
+
+2. Using profiles annotation,it internally uses System.getProperty()
+
