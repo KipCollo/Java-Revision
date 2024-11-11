@@ -13,9 +13,9 @@ To implement this interface, you can write a generic servlet that extends javax.
 
 This interface defines methods to initialize a servlet, to service requests, and to remove a servlet from the server. These are known as life-cycle methods and are called in the following sequence:
 
-    The servlet is constructed, then initialized with the init method.
-    Any calls from clients to the service method are handled.
-    The servlet is taken out of service, then destroyed with the destroy method, then garbage collected and finalized. 
+1. The servlet is constructed, then initialized with the init method.
+2. Any calls from clients to the service method are handled.
+3. The servlet is taken out of service, then destroyed with the destroy method, then garbage collected and finalized.
 
 A servlet is a java class that xtends HttpServlet class and runs on server within a servlet container.
 
@@ -29,31 +29,88 @@ public class StudentServleet extends HttpServlet{
 
 In a typical Jakarta Servlet based web application, the class must extend jakarta.servlet.http.HttpServlet and override one of the doXxx methods where Xxx represents the HTTP method of interest.
 
-## Loading Servlets, Context Listeners, and Filters
+## Creating a servlet
 
-Servlets, Context Listeners, and Filters are loaded and destroyed in the following
-order:
-Order of loading:
+Use the @WebServlet annotation to define a servlet component in a web application. This annotation is specified on a class and contains metadata about the servlet being declared. The annotated servlet must specify at least one URL pattern. This is done by using the urlPatterns or value attribute on the annotation. All other attributes are optional, with default settings. Use the value attribute when the only attribute on the annotation is the URL pattern; otherwise, use the urlPatterns attribute when other attributes are also used.
 
-1. Context Listeners
-2. Filters
-3. Servlets
-Order of destruction:
+Classes annotated with @WebServlet must extend the jakarta.servlet.http.HttpServlet class.
 
-1. Servlets
-2. Filters
-3. Context Listeners
+```java
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 
-Servlets and filters are loaded in the same order they are defined in the web.xml file
-and unloaded in reverse order. Context listeners are loaded in the following order:
+@WebServlet("/")
+public class ExampleServlet extends HttpServlet {
+    ...
+}
+```
 
-1. All context listeners in the web.xml file in the order as specified in the file
-2. Packaged JAR files containing tag library descriptors
-3. Tag library descriptors in the WEB-INF directory
+The web container initializes a servlet after loading and instantiating the servlet class and before delivering requests from clients. To customize this process to allow the servlet to read persistent configuration data, initialize resources, and perform any other one-time activities, you can either override the init method of the Servlet interface or specify the initParams attribute of the @WebServlet annotation. The initParams attribute contains a @WebInitParam annotation. If it cannot complete its initialization process, a servlet throws an UnavailableException.
 
-### HttpServlet
+## Creating Service Method
 
-Provides an abstract class to be subclassed to create an HTTP servlet suitable for a Web site. A subclass of HttpServlet must override at least one method, usually one of these:
+The service provided by a servlet is implemented in the service method of a GenericServlet, in the doMethod methods (where Method can take the value Get, Delete, Options, Post, Put, or Trace) of an HttpServlet object, or in any other protocol-specific methods defined by a class that implements the Servlet interface. The term service method is used for any method in a servlet class that provides a service to a client.
+
+The general pattern for a service method is to extract information from the request, access external resources, and then populate the response, based on that information. For HTTP servlets, the correct procedure for populating the response is to do the following:
+
+1. Retrieve an output stream from the response.
+2. Fill in the response headers.
+3. Write any body content to the output stream.
+
+Response headers must always be set before the response has been committed. The web container will ignore any attempt to set or add headers after the response has been committed.
+Getting Information from Requests
+
+A request contains data passed between a client and the servlet. All requests implement the ServletRequest interface. This interface defines methods for accessing the following information:
+
+    Parameters, which are typically used to convey information between clients and servlets
+
+    Object-valued attributes, which are typically used to pass information between the web container and a servlet or between collaborating servlets
+
+    Information about the protocol used to communicate the request and about the client and server involved in the request
+
+    Information relevant to localization
+
+You can also retrieve an input stream from the request and manually parse the data. To read character data, use the BufferedReader object returned by the request’s getReader method. To read binary data, use the ServletInputStream returned by getInputStream.
+
+HTTP servlets are passed an HTTP request object, HttpServletRequest, which contains the request URL, HTTP headers, query string, and so on. An HTTP request URL contains the following parts:
+
+http://[host]:[port][request-path]?[query-string]
+
+The request path is further composed of the following elements:
+
+    Context path: A concatenation of a forward slash (/) with the context root of the servlet’s web application.
+
+    Servlet path: The path section that corresponds to the component alias that activated this request. This path starts with a forward slash (/).
+
+    Path info: The part of the request path that is not part of the context path or the servlet path.
+
+You can use the getContextPath, getServletPath, and getPathInfo methods of the HttpServletRequest interface to access this information. Except for URL encoding differences between the request URI and the path parts, the request URI is always comprised of the context path plus the servlet path plus the path info.
+
+Query strings are composed of a set of parameters and values. Individual parameters are retrieved from a request by using the getParameter method. There are two ways to generate query strings.
+
+    A query string can explicitly appear in a web page.
+
+    A query string is appended to a URL when a form with a GET HTTP method is submitted.
+
+Constructing Responses
+
+A response contains data passed between a server and the client. All responses implement the ServletResponse interface. This interface defines methods that allow you to
+
+    Retrieve an output stream to use to send data to the client. To send character data, use the PrintWriter returned by the response’s getWriter method. To send binary data in a Multipurpose Internet Mail Extensions (MIME) body response, use the ServletOutputStream returned by getOutputStream. To mix binary and text data, as in a multipart response, use a ServletOutputStream and manage the character sections manually.
+
+    Indicate the content type (for example, text/html) being returned by the response with the setContentType(String) method. This method must be called before the response is committed. A registry of content type names is kept by the Internet Assigned Numbers Authority (IANA) at http://www.iana.org/assignments/media-types/.
+
+    Indicate whether to buffer output with the setBufferSize(int) method. By default, any content written to the output stream is immediately sent to the client. Buffering allows content to be written before anything is sent back to the client, thus providing the servlet with more time to set appropriate status codes and headers or forward to another web resource. The method must be called before any content is written or before the response is committed.
+
+    Set localization information, such as locale and character encoding. See Chapter 17, Internationalizing and Localizing Web Applications for details.
+
+HTTP response objects, javax.servlet.http.HttpServletResponse, have fields representing HTTP headers, such as the following:
+
+    Status codes, which are used to indicate the reason a request is not satisfied or that a request has been redirected.
+
+    Cookies, which are used to store application-specific information at the client. Sometimes, cookies are used to maintain an identifier for tracking a user’s session (see Session Tracking).
+
+* HttpServlet -Provides an abstract class to be subclassed to create an HTTP servlet suitable for a Web site. A subclass of HttpServlet must override at least one method, usually one of these:
 
  1. doGet, if the servlet supports HTTP GET requests
  2. doPost, for HTTP POST requests
@@ -76,127 +133,107 @@ public class StudentServleet extends HttpServlet{
 }
 ```
 
-### Standalone Servlet Containers
+## Configuring Servlets
 
-A standalone servlet container is a server that includes built-in support for servlets. Such a container has the advantage that everything works right out of the box. One disadvantage, however, is that you have to wait for a new release of the web server to get the latest servlet support. Another disadvantage is that server vendors generally support only the vendor-provided JVM. Web servers that provide standalone support include those in the following list.
+* XML based -You define servlets as a part of a Web application in several entries in the J2EE standard Web Application deployment descriptor, web.xml. The web.xml file is located in the WEB-INF directory of your Web application.
 
-1. Apache's Tomcat Server, the official reference implementation for how a servlet container should support servlets. Written entirely in Java, and freely available under an open source license. All the source code is available and anyone can help with its development. This server can operate standalone or as an add-on providing Apache or other servers with servlet support. It can even be used as an embedded container. Along with Tomcat, Apache develops the standard implementation of the javax.servlet and javax.servlet.http package
-2. iPlanet (Netscape) Web Server Enterprise Edition (Version 4.0 and later), perhaps the most popular web server to provide
-built-in servlet support. Some benchmarks show this server to have the fastest servlet implementation. Beware that, while
-Versions 3.51 and 3.6 of this server had built-in servlet support, those servers supported only the early Servlet API 1.0 and
-suffered from a number of bugs so significant the servlet support was practically unusable. To use servlets with Netscape 3.x
-servers, use an add-on servlet container.
-3. Zeus Web Server, a web server some consider the fastest available. Its feature list is quite long and includes servlet support.
-4. Caucho's Resin, an open source container that prides itself on performance. It can run in standalone mode or as an add-on to
-many servers
-5. Gefion Software's LiteWebServer, a small (just over 100K) servlet container intended for uses, such as bundling with demos, where small size matters.
-6. World Wide Web Consortium's Jigsaw Server, open source and written entirely in Java
-7. Sun's Java Web Server, the server that started it all. This server was the first server to implement servlets and acted as the
-effective reference implementation for Servlet API 2.0. It's written entirely in Java (except for two native code libraries that
-enhance its functionality but are not needed). Sun has discontinued development on the server, concentrating now on
-iPlanet/Netscape products as part of the Sun-Netscape Alliance.
+1. The first entry, under the root servlet element in web.xml, defines a name for the servlet and specifies the compiled class that executes the servlet. (Or, instead of specifying a servlet class, you can specify a JSP.) The servlet element also contains definitions for initialization attributes and security roles for the servlet.
+2. The second entry in web.xml, under the servlet-mapping element, defines the URL pattern that calls this servlet.
 
-Application servers are a growing area of development. An application server offers server-side support for developing enterprise-
-based applications. Most Java-based application support servlets and the rest of the Java 2, Enterprise Edition, (J2EE)
-specification. These servers include:
+```xml
+<servlet>
+  <servlet-name>name</servlet-name>
+  <servlet-class>com.kipcollo.ExampleServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>name</servlet-name>
+  <url-pattern>/home</url-pattern>
+</servlet-mapping>
+```
 
-1. BEA System's WebLogic Application Server, one of the first and most famous Java-based application servers.
-2. Orion Application Server, a high-end but relatively low-priced server, written entirely in Java.
-3. Enhydra Application Server, an open source server from Lutris.
-4. Oracle's Application Server, a server designed for integration with an Oracle database.
-5. Silverstream Application Server, a fully compliant J2EE server that also started with a servlet focus.
-6. Allaire's JRun Server (formerly from Live Software), a simple servlet container that grew to an advanced container providing
-many J2EE technologies including EJB, JTA, and JMS.
+* Annotation based configurations-Servlet Annotations are introduced in Servlet API 2.5 (JEE 5.0, JSE 5.0). These annotations are used to avoid writing the web.xml file.
+@WebServlet annotation is used to declare a Servlet. This annotation is processed by the container at deployment time and the corresponding servlet made available at the specified URL patterns.
 
-### Add-on Servlet Containers
+```java
+@WebServlet
+public class Servlet extends Httpservlet{
+    .....
+}
+```
 
-An add-on servlet container functions as a plug-in to an existing server—it adds servlet support to a server that was not originally designed with servlets in mind or to a server with a poor or outdated servlet implementation. Add-on servlet containers have been written for many servers including Apache, iPlanet's FastTrack Server and Enterprise Server, Microsoft's Internet Information Server and Personal Web Server, O'Reilly's WebSite, Lotus Domino's Go Webserver, StarNine's WebSTAR, and Apple's
-AppleShare IP. Add-on servlet containers include the following:
+## Annotation Types
 
-1. New Atlanta's ServletExec, a plug-in designed to support servlets on all the popular web servers on all the popular operating
-systems. Includes a free debugger.
-2. The Java-Apache project's JServ module, a freely available open source servlet container that adds servlet support to the
-extremely popular Apache server. Development has completed on JServ, and the Tomcat Server (acting as a plug-in) is the replacement for JServ.
-3. Apache's Tomcat Server, as discussed previously, Tomcat may be plugged into other servers including Apache,
-iPlanet/Netscape, and IIS.
+1. HandlesTypes -This annotation is used to declare the class types that a ServletContainerInitializer can handle.
+2. HttpConstraint -This annotation is used within the ServletSecurity annotation to represent the security constraints to be applied to all HTTP protocol methods for which a corresponding HttpMethodConstraint element does NOT occur within the ServletSecurity annotation.
+3. HttpMethodConstraint -This annotation is used within the ServletSecurity annotation to represent security constraints on specific HTTP protocol messages.
+4. MultipartConfig -Annotation that may be specified on a Servlet class, indicating that instances of the Servlet expect requests that conform to the multipart/form-data MIME type.
+5. ServletSecurity -This annotation is used on a Servlet implementation class to specify security constraints to be enforced by a Servlet container on HTTP protocol messages.
+6. WebFilter -Annotation used to declare a servlet filter.
+7. WebInitParam -This annotation is used on a Servlet or Filter implementation class to specify an initialization parameter.
+8. WebListener -This annotation is used to declare a WebListener.
+9. @WebServlet -Annotation used to declare a servlet.
 
-### Embeddable Servlet Containers
+## Request Object
 
-An embeddable container is generally a lightweight servlet deployment platform that can be embedded in another application. That application becomes the true server. Embeddable servlet containers include the following:
+* ServletRequest- Defines an object to provide client request information to a servlet. The servlet container creates a ServletRequest object and passes it as an argument to the servlet's service method.A ServletRequest object provides data including parameter name and values, attributes, and an input stream. Interfaces that extend ServletRequest can provide additional protocol-specific data (for example, HTTP data is provided by HttpServletRequest.)
 
-1. Apache's Tomcat Server, while generally used standalone or as an add-on, this server also can be embedded into another application when necessary. Because this server is open source, development on most other embeddable containers has stopped.
-2. Anders Kristensen's Nexus Web Server, a freely available servlet runner that implements most of the Servlet API and can be easily embedded in Java applications.
+1. String getParameter(String name) -Returns the value of a request parameter as a String, or null if the parameter does not exist.
+2. void setAttribute(String name, Object o)- Stores an attribute in this request
+3. Object getAttribute(String name)- Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
 
-## HTTP Basics
+* HttpServletRequest-Extends the ServletRequest interface to provide request information for HTTP servlets.The servlet container creates an HttpServletRequest object and passes it as an argument to the servlet's service methods (doGet, doPost, etc)
 
-Requests, Responses, and Headers
-HTTP is a simple, stateless protocol. A client, such as a web browser, makes a request, the web server responds, and the
-transaction is done. When the client sends a request, the first thing it specifies is an HTTP command, called a method, that tells the
-server the type of action it wants performed. This first line of the request also specifies the address of a document (a URL) and the
-version of the HTTP protocol it is using. For example:
-GET /intro.html HTTP/1.0
-This request uses the GET method to ask for the document named intro.html, using HTTP Version 1.0. After sending the request,
-the client can send optional header information to tell the server extra information about the request, such as what software the client
-is running and what content types it understands. This information doesn't directly pertain to what was requested, but it could be
-used by the server in generating its response. Here are some sample request headers:
-User-Agent: Mozilla/4.0 (compatible; MSIE 4.0; Windows 95)
-Accept: image/gif, image/jpeg, text/*, */*
-The User-Agent header provides information about the client software, while the Accept header specifies the media (MIME)
-types that the client prefers to accept. (We'll talk more about request headers in the context of servlets in Chapter 4.) After the
-headers, the client sends a blank line, to indicate the end of the header section. The client can also send additional data, if
-appropriate for the method being used, as it is with the POST method that we'll discuss shortly. If the request doesn't send any
-data, it ends with an empty line.
-After the client sends the request, the server processes it and sends a response. The first line of the response is a status line specifing
-the version of the HTTP protocol the server is using, a status code, and a description of the status code. For example:
-HTTP/1.0 200 OK
-This status line includes a status code of 200, which indicates that the request was successful, hence the description OK. Another
-common status code is 404, with the description Not Found—as you can guess, this means that the requested document was not
-found. Chapter 5 discusses common status codes and how you can use them in servlets, while Appendix D, provides a complete
-list of HTTP status codes.
-After the status line, the server sends response headers that tell the client things like what software the server is running and the
-content type of the server's response. For example:
-Date: Saturday, 23-May-00 03:25:12 GMT
-Server: Tomcat Web Server/3.2
-MIME-version: 1.0
-Content-type: text/html
-Content-length: 1029
-Last-modified: Thursday, 7-May-00 12:15:35 GMT
-The Server header provides information about the server software, while the Content-type header specifies the MIME type of
-the data included with the response. (We'll also talk more about response headers in Chapter 5.) The server sends a blank line after
-the headers, to conclude the header section.
-If the request was successful, the requested data is then sent as part of the response. Otherwise, the response may contain human-This document is created with trial version of CHM2PDF Pilot 2.15.72.
-readable data that explains why the server couldn't fulfill the request.
-2.1.2 GET and POST
-When a client connects to a server and makes an HTTP request, the request can be of several different types, called methods. The
-most frequently used methods are GET and POST. Put simply, the GET method is designed for getting information (a document, a
-chart, or the results from a database query), while the POST method is designed for posting information (a credit card number,
-some new chart data, or information that is to be stored in a database). To use a bulletin board analogy, GET is for reading and
-POST is for tacking up new material. GET is the method used when you type a URL directly into your browser or click on a
-hyperlink; either GET or POST can be used when submitting an HTML form.
-The GET method, although it's designed for reading information, can include as part of the request some of its own information that
-better describes what to get—such as an x, y scale for a dynamically created chart. This information is passed as a sequence of
-characters appended to the request URL in what's called a query string . Placing the extra information in the URL in this way
-allows the page to be bookmarked or emailed like any other. Because GET requests theoretically shouldn't need to send large
-amounts of information, some servers limit the length of URLs and query strings to about 240 characters.
-The POST method uses a different technique to send information to the server because in some cases it may need to send
-megabytes of information. A POST request passes all its data, of unlimited length, directly over the socket connection as part of its
-HTTP request body. The exchange is invisible to the client. The URL doesn't change at all. Consequently, POST requests cannot
-be bookmarked or emailed or, in some cases, even reloaded. That's by design—information sent to the server, such as your credit
-card number, should be sent only once. POST also provides a bit of extra security when sending sensitive information because the
-server's access log that records all URL accesses won't record the submitted POST data.
-In practice, the use of GET and POST has strayed from the original intent. It's common for long parameterized requests for
-information to use POST instead of GET to work around problems with overly long URLs. It's also common for simple forms that
-upload information to use GET because, well—why not, it works! Generally, this isn't much of a problem. Just remember that GET
-requests, because they can be bookmarked so easily, should not be allowed to cause a change on the server for which the client
-could be held responsible. In other words, GET requests should not be used to place an order, update a database, or take an
-explicit client action in any way.
-2.1.3 Other Methods
-In addition to GET and POST, there are several other lesser-used HTTP methods. There's the HEAD method, which is sent by a
-client when it wants to see only the headers of the response, to determine the document's size, modification time, or general
-availability. There's also PUT, to place documents directly on the server, and DELETE, to do just the opposite. These last two
-aren't widely supported due to complicated policy issues. The TRACE method is used as a debugging aid—it returns to the client
-the exact contents of its request. Finally, the OPTIONS method can be used to ask the server which methods it supports or what
-options are available for a particular resource on the server.
+1. Cookie[] getCookies()- Returns an array containing all of the Cookie objects the client sent with this request.
+2. HttpSession getSession()-Returns the current session associated with this request, or if the request does not have a session, creates one.
+3. HttpSession getSession(boolean create)-Returns the current HttpSession associated with this request or, if there is no current session and create is true, returns a new session.
+
+## Response Onjects
+
+* ServletResponse-Defines an object to assist a servlet in sending a response to the client. The servlet container creates a ServletResponse object and passes it as an argument to the servlet's service method.
+
+1. PrintWriter getWriter()-Returns a PrintWriter object that can send character text to the client
+2. void setContentType(String type)-Sets the content type of the response being sent to the client, if the response has not been committed yet.
+
+* HttpServletResponse-Extends the ServletResponse interface to provide HTTP-specific functionality in sending a response. For example, it has methods to access HTTP headers and cookies.The servlet container creates an HttpServletResponse object and passes it as an argument to the servlet's service methods (doGet, doPost, etc)
+
+1. void addCookie(Cookie cookie)-Adds the specified cookie to the response.
+2. int getStatus()-Gets the current status code of this response.
+3. void sendRedirect(String location)- Sends a temporary redirect response to the client using the specified redirect location URL and clears the buffer.
+
+### Forwading and Redirecting Requests
+
+* Forwading Request and Response-
+* Redirect Response-To redirect response you use redirect method of response object.Typically used when you transfer control to URL outside your application.
+
+```java
+//How to forward the request to an HTML page
+String url = "/display_email_entry.html";
+RequestDispatcher dispatcher =getServletContext().getRequestDispatcher(url);
+dispatcher.forward(request, response);
+
+//How to forward the request to a JSP
+String url = "/display_email_entry.jsp";
+RequestDispatcher dispatcher =getServletContext().getRequestDispatcher(url);
+dispatcher.forward(request, response);
+
+// How to forward the request to a servlet
+String url = "/cart/displayInvoice";
+RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(url);
+dispatcher.forward(request, response);
+```
+
+```java
+// How to redirect a response relative to the current directory
+response.sendRedirect("join_email_list.html");
+
+// How to redirect a response relative to the servlet engine
+response.sendRedirect("/musicStore/email/join_email_list.jsp");
+
+// How to redirect a response to a different web server
+response.sendRedirect("http://www.murach.com/email/");
+```
+
+### sessions and cookies
 
 ## The Servlet API
 
@@ -266,3 +303,24 @@ The HttpServletResponse represents the servlet's response. A servlet can use thi
 can be of any content type, though the type should be specified as part of the response. A servlet can also use this object to set
 HTTP response headers.
 
+## Loading Servlets, Context Listeners, and Filters
+
+Servlets, Context Listeners, and Filters are loaded and destroyed in the following
+order:
+Order of loading:
+
+1. Context Listeners
+2. Filters
+3. Servlets
+Order of destruction:
+
+1. Servlets
+2. Filters
+3. Context Listeners
+
+Servlets and filters are loaded in the same order they are defined in the web.xml file
+and unloaded in reverse order. Context listeners are loaded in the following order:
+
+1. All context listeners in the web.xml file in the order as specified in the file
+2. Packaged JAR files containing tag library descriptors
+3. Tag library descriptors in the WEB-INF directory

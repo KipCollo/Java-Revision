@@ -16,7 +16,7 @@ J2EE: Servlet,JSP,RMI,EJB
 
 ## Java EE APIs
 
-### Enterprise JavaBeans Technology
+* Enterprise JavaBeans Technology
 
 An Enterprise JavaBeans (EJB) component, or enterprise bean, is a body of code that has fields and methods to implement modules of business logic. You can think of an enterprise bean as a building block that can be used alone or with other enterprise beans to execute business logic on the Java EE server.
 
@@ -59,10 +59,10 @@ All this functionality is available using standard Java APIs and XML-based confi
 
 In the Java EE 8 platform, new features of JavaServer Faces technology include the following:
 
-- Direct support for WebSockets via the new <f:websocket> tag
-- Class-level bean validation via the new <f:validateWholeBean> tag
-- A CDI-compatible @ManagedProperty annotation
-- Enhanced component search expression framework
+* Direct support for WebSockets via the new <f:websocket> tag
+* Class-level bean validation via the new <f:validateWholeBean> tag
+* A CDI-compatible @ManagedProperty annotation
+* Enhanced component search expression framework
 
 The Java EE 8 platform requires JavaServer Faces 2.3 and Expression Language 3.0.
 
