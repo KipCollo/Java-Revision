@@ -14,8 +14,10 @@ Arrays are used to store multiple values in a single variable, instead of declar
 1. One Dimensional: An array with a bunch of values having been declared with single index.i.e a[i]->i btwn 0 and N.
 2. Multi Dimensional- Two dimensional, Three dimensional..N dimensional: 2D array with bunch of values declared with double index.i.e a[i(Row)][j(Column)]->i and j btwn 0 and N.
 
-## Creating Array.
+## Creating Array
+
 We can:
+
 - Declare: Create reference to Array.
 - Instantiate: Creates an array
 - Initialization: Assigns value to cells in array.
@@ -23,11 +25,11 @@ We can:
 ### Declaring(O(1))
 
 Syntax:
-```
+
 dataType arrayName[];
-```
 
 To declare an array, define the variable type with square brackets:
+
 ```Java
 String[] cars;
 ```
@@ -36,9 +38,8 @@ String[] cars;
 
 In Java array is an object, **arrayName** is a reference variable.To store data we must initiate the array object.
 
-```
 arrayName = new datatype[intExp];
-```
+
 The **intExp** rep number of components in array.
 
 ```Java
@@ -46,9 +47,9 @@ cars = new String[10];
 ```
 
 You can combine the statement:
-```
+
 dataType[] arrayName = new datatype[intExp];
-```
+
 ```Java
 String[] cars = new String[10];
 ```
@@ -73,15 +74,17 @@ String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};//(O(1))
 ```
 
 - To create an array of integers, you could write:
+
 ```java
 int[] myNum = {10, 20, 30, 40};
 ```
+
 ## Accessing Array Components
 
 The general format to access an array is:
-```
+
 arrayName[indexExp]
-```
+
 
 ```Java
 myNum[1];
