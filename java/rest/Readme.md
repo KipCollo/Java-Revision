@@ -217,7 +217,7 @@ HTTP Response- Status Line{Status code-1XX and Message OK},Headers,Body(Content 
 
 In GET,data is in URI while in POST data is in the body.
 
-## Steps to develop REST api at Provider end
+## Steps to develop REST api at Provider endPoint
 
 1. Create maven web project
 2. add jaxrs vendor dependency in pom.xml

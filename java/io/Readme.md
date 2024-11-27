@@ -1,6 +1,5 @@
 # java.io
 
-
 Java IO is an API that comes with Java which is targeted at reading and writing data(input & output).The java.io package contains all classes required for input and output operations.Most app need to process some input and produce some output based on that input.e.g read data from a file or over network.
 
 Provides for system input and output through data streams, serialization and the file system. Unless otherwise noted, passing a null argument to a constructor or method in any class or interface in this package will cause a NullPointerException to be thrown. 
@@ -32,7 +31,7 @@ Java uses byte streams to perform input and output of 8-bit bytes.All input byte
 >ObjectInputStream
 >PipedinputStream
 >SequenceInputStream
->StringBufferinputStream 
+>StringBufferinputStream
 
 ### Java OutputStream class
 
@@ -61,7 +60,6 @@ The close() method should be called to release resources used by this stream, ei
 3. FileOutputStream(File file, boolean append) - Creates a file output stream to write to the file represented by the specified File object.
 4. FileOutputStream(String name) - Creates a file output stream to write to the file with the specified name.
 5. FileOutputStream(String name, boolean append) - Creates a file output stream to write to the file with the specified name.
-
 
 ##### Methods
 
