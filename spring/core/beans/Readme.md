@@ -14,7 +14,9 @@ class Pojo{
     }
 }
 ```
-SOLID Principle
+
+SOLID Principle:
+
 - SRP - Single Responsibilty Principle- "Every class should have one responsibility"
 
 2. Java Beans(EJB)
@@ -202,6 +204,3 @@ public class DemoApplication {
 
 }
 ```
-
-
-

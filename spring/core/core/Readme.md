@@ -3,6 +3,7 @@
 Provides the fundamental parts of the framework, including IoC and Dependency Injection features.It is base for all other modules.It is used to manage object dependencies.In dev with multiple classes,if we want to communicate one object to other we use interface.Using this module spring will create required objects and supply to app.
 
 To implement spring core,use the steps:
+
 - configurations
 - Dependency injector
 - getting beans
@@ -127,11 +128,11 @@ ApplicationContext context = new AnnotationConfigApplicationContext("JavaCponfig
 ```
 
 
-```
+```java
 BeanFactory factory = new XmlBeanFactory(new ClassPathresource("config.xml"));
 ```
 
-```xml
+```java
 ClassPathResource res = new ClassPathResource("beans.xml");
 XmlBeanFactory factory = new XmlBeanFactory(res);
 ```

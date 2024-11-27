@@ -1,6 +1,6 @@
 # Spring Security
 
-Spring Security provides comprehensive security services for J2EE-based enterprise software applications. 
+Spring Security provides comprehensive security services for J2EE-based enterprise software applications.
 
 security features of J2EE's Servlet Specification or EJB Specification lack the depth required for typical
 enterprise application scenarios. Whilst mentioning these standards, it's important to recognise that they
@@ -12,8 +12,7 @@ Two main areas that Spring Security targets. “Authentication” is
 the process of establishing a principal is who they claim to be (a “principal” generally means a user,
 device or some other system which can perform an action in your application). “Authorization” refers
 to the process of deciding whether a principal is allowed to perform an action within your application.
-To arrive at the point where an authorization decision is needed, the identity of the principal has already
-been established by the authentication process
+To arrive at the point where an authorization decision is needed, the identity of the principal has already been established by the authentication process
 
 Spring Security
 3.0.8.RELEASE 2
@@ -72,7 +71,8 @@ Spring Security
 • Direct Web Request (DWR) *
 • Grails *
 • Tapestry *
-• JTrac *
+• J (all these classes are up to date
+because we haven't changed anything since we compiled last).Trac *
 • Jasypt *
 • Roller *
 • Elastic Path *
