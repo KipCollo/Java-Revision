@@ -1,6 +1,18 @@
 # Spring cloud
 
-Spring Cloud provides tools for developers to quickly build some of the common patterns in distributed systems (e.g. configuration management, service discovery, circuit breakers, intelligent routing, micro-proxy, control bus). Coordination of distributed systems leads to boiler plate patterns, and using Spring Cloud developers can quickly stand up services and applications that implement those patterns
+Spring Cloud provides tools for developers to quickly build some of the common patterns in distributed systems (e.g. configuration management, service discovery, circuit breakers, intelligent routing, micro-proxy, control bus). Coordination of distributed systems leads to boiler plate patterns, and using Spring Cloud developers can quickly stand up services and applications that implement those patterns.
+
+## Features
+
+1. Distributed/versioned con�guration
+2. Service registration and discovery
+3. Routing
+4. Service-to-service calls
+5. Load balancing
+6. Circuit Breakers
+7. Distributed messaging
+8. Short lived microservices (tasks)
+9. Consumer-driven and producer-driven contract testing
 
 ## Spring cloud and Microservice
 
@@ -31,6 +43,7 @@ Every micro-service should have its database and have backward compatibilty(i.e 
 
 * Netflix: It has adopted microservice architecture and implemented several tools that helps integrate,manage and deploy microservice.
  It includes:
+
     1. Eureka Server - service discovery
     2. Feign Client -Declarative client api for inter-service communication
     3. Hystrix-circuit breaker for resilience
@@ -38,6 +51,7 @@ Every micro-service should have its database and have backward compatibilty(i.e 
     5. Zuul -api gateway
 
 * Apache: It includes:
+
     1. consul
     2. zookeeper
     3. zipkin
@@ -56,6 +70,8 @@ Later, Spring framework slowly started developing their own third-party tools ra
 
  Spring Boot is used to develop microservices and uses features like auto-configuration,embedded servers while spring cloud is used to integrate tools like cloud config server,eureka server,..etc.
 
+ It is recommended that you use release train BOM spring-cloud-dependencies This is a BOM-only version and it just contains dependency management and no plugin declarations or direct references to Spring or Spring Boot. You can Spring Boot parent POM, or use the BOM from Spring Boot( spring-boot-dependencies ) to manage Spring Boot versions.
+
  You can't put more than one parent tag in pom.xml
 
  ```xml
@@ -70,6 +86,25 @@ Later, Spring framework slowly started developing their own third-party tools ra
    </dependency>
   </dependencies>
  </dependencyManagement>
+```
+
+```groovy
+plugins {
+id 'java'
+id 'org.springframework.boot' version '3.3.0'
+id 'io.spring.dependency-management' version '1.1.4'
+}
+repositories {
+mavenCentral()
+}
+ext {
+set('springCloudVersion', "2023.0.2")
+}
+dependencyManagement {
+imports {
+mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+}
+}
 ```
 
 * Spring cloud is supported with spring boot.
