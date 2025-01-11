@@ -1,6 +1,6 @@
-## Java Persistence API vs. Jakarta Persistence Layer
+# Java Persistence API vs. Jakarta Persistence Layer
 
-Java Persistence API (JPA) and Jakarta Persistence Layer (JPL) are both popular frameworks for managing relational data in Java applications. While JPA has been around for a longer time, JPL was introduced as part of the Jakarta EE specifications after Java EE was transferred to the Eclipse Foundation. 
+Java Persistence API (JPA) and Jakarta Persistence Layer (JPL) are both popular frameworks for managing relational data in Java applications. While JPA has been around for a longer time, JPL was introduced as part of the Jakarta EE specifications after Java EE was transferred to the Eclipse Foundation.
 
 ## Java Persistence API (JPA)
 
@@ -14,33 +14,21 @@ Both Java Persistence API (JPA) and Jakarta Persistence Layer (JPL) provide robu
 
 Jakarta Persistence is the API for the management for persistence and object/relational mapping.
 
-## Annotation Types 
-Access 	
-Used to specify an access type to be applied to an entity class, mapped superclass, or embeddable class, or to a specific attribute of such a class.
-AssociationOverride 	
-Used to override a mapping for an entity relationship.
-AssociationOverrides 	
-Used to override mappings of multiple relationship properties or fields.
-AttributeOverride 	
-Used to override the mapping of a Basic (whether explicit or default) property or field or Id property or field.
-AttributeOverrides 	
-Used to override mappings of multiple properties or fields.
-Basic 	
-The simplest type of mapping to a database column.
-Cacheable 	
-Specifies whether an entity should be cached if caching is enabled when the value of the persistence.xml caching element is ENABLE_SELECTIVE or DISABLE_SELECTIVE.
-CollectionTable 	
-Specifies the table that is used for the mapping of collections of basic or embeddable types.
-Column 	
-Specifies the mapped column for a persistent property or field.
-ColumnResult 	
-Used in conjunction with the SqlResultSetMapping annotation or ConstructorResult annotation to map a column of the SELECT list of a SQL query.
-ConstructorResult 	
-Used in conjunction with the SqlResultSetMapping annotation to map the SELECT clause of a SQL query to a constructor.
-Convert 	
-Specifies the conversion of a Basic field or property.
-Converter 	
-Specifies that the annotated class is a converter and defines its scope.
+## Annotation Types
+
+1. @Access:- Used to specify an access type to be applied to an entity class, mapped superclass, or embeddable class, or to a specific attribute of such a class.
+2. @AssociationOverride:- Used to override a mapping for an entity relationship.
+3. @AssociationOverrides:- Used to override mappings of multiple relationship properties or fields.
+4. @AttributeOverride:- Used to override the mapping of a Basic (whether explicit or default) property or field or Id property or field.
+5. @AttributeOverrides:- Used to override mappings of multiple properties or fields.
+6. @Basic:- The simplest type of mapping to a database column.
+7. @Cacheable:- Specifies whether an entity should be cached if caching is enabled when the value of the persistence.xml caching element is ENABLE_SELECTIVE or DISABLE_SELECTIVE.
+8. @CollectionTable:- Specifies the table that is used for the mapping of collections of basic or embeddable types.
+9. @Column:- Specifies the mapped column for a persistent property or field.
+10. @ColumnResult;- Used in conjunction with the SqlResultSetMapping annotation or ConstructorResult annotation to map a column of the SELECT list of a SQL query.
+11. @ConstructorResult:- Used in conjunction with the SqlResultSetMapping annotation to map the SELECT clause of a SQL query to a constructor.
+12. @Convert:- Specifies the conversion of a Basic field or property.
+13. @Converter:- Specifies that the annotated class is a converter and defines its scope.
 Converts 	
 Used to group Convert annotations.
 DiscriminatorColumn 	
@@ -55,10 +43,8 @@ Embedded
 Specifies a persistent field or property of an entity whose value is an instance of an embeddable class.
 EmbeddedId 	
 Applied to a persistent field or property of an entity class or mapped superclass to denote a composite primary key that is an embeddable class.
-Entity 	
-Specifies that the class is an entity.
-EntityListeners 	
-Specifies the callback listener classes to be used for an entity or mapped superclass.
+@Entity:- Specifies that the class is an entity.
+@EntityListeners:- Specifies the callback listener classes to be used for an entity or mapped superclass.
 EntityResult 	
 Used in conjunction with the SqlResultSetMapping annotation to map the SELECT clause of a SQL query to an entity result.
 Enumerated 	
@@ -71,28 +57,17 @@ FieldResult
 Used in conjunction with the EntityResult annotation to map columns specified in the SELECT list of a SQL query to the properties or fields of an entity class.
 ForeignKey 	
 Used to specify the handling of foreign key constraints when schema generation is in effect.
-GeneratedValue 	
-Provides for the specification of generation strategies for the values of primary keys.
-Id 	
-Specifies the primary key of an entity.
-IdClass 	
-Specifies a composite primary key class that is mapped to multiple fields or properties of the entity.
-Index 	
-Used in schema generation to specify creation of an index.
-Inheritance 	
-Specifies the inheritance strategy to be used for an entity class hierarchy.
-JoinColumn 	
-Specifies a column for joining an entity association or element collection.
-JoinColumns 	
-Specifies the mapping for composite foreign keys.
-JoinTable 	
-Specifies the mapping of associations.
-Lob 	
-Specifies that a persistent property or field should be persisted as a large object to a database-supported large object type.
-ManyToMany 	
-Specifies a many-valued association with many-to-many multiplicity.
-ManyToOne 	
-Specifies a single-valued association to another entity class that has many-to-one multiplicity.
+@GeneratedValue:- Provides for the specification of generation strategies for the values of primary keys.
+@Id:- Specifies the primary key of an entity.
+@IdClass:- Specifies a composite primary key class that is mapped to multiple fields or properties of the entity.
+@Index:- Used in schema generation to specify creation of an index.
+@Inheritance:- Specifies the inheritance strategy to be used for an entity class hierarchy.
+@JoinColumn:- Specifies a column for joining an entity association or element collection.
+@JoinColumns:- Specifies the mapping for composite foreign keys.
+@JoinTable:- Specifies the mapping of associations.
+@Lob :- Specifies that a persistent property or field should be persisted as a large object to a database-supported large object type.
+@ManyToMany:- Specifies a many-valued association with many-to-many multiplicity.
+@ManyToOne:- Specifies a single-valued association to another entity class that has many-to-one multiplicity.
 MapKey 	
 Specifies the map key for associations of type java.util.Map when the map key is itself the primary key or a persistent field or property of the entity that is the value of the map.
 MapKeyClass 	
@@ -131,14 +106,10 @@ NamedStoredProcedureQuery
 Specifies and names a stored procedure, its parameters, and its result type.
 NamedSubgraph 	
 A NamedSubgraph is a member element of a NamedEntityGraph.
-OneToMany 	
-Specifies a many-valued association with one-to-many multiplicity.
-OneToOne 	
-Specifies a single-valued association to another entity that has one-to-one multiplicity.
-OrderBy 	
-Specifies the ordering of the elements of a collection valued association or element collection at the point when the association or collection is retrieved.
-OrderColumn 	
-Specifies a column that is used to maintain the persistent order of a list.
+@OneToMany:- Specifies a many-valued association with one-to-many multiplicity.
+@OneToOne:- Specifies a single-valued association to another entity that has one-to-one multiplicity.
+@OrderBy:- Specifies the ordering of the elements of a collection valued association or element collection at the point when the association or collection is retrieved.
+@OrderColumn:- Specifies a column that is used to maintain the persistent order of a list.
 PersistenceContext 	
 Expresses a dependency on a container-managed EntityManager and its associated persistence context.
 PersistenceContexts 	
@@ -183,8 +154,7 @@ SqlResultSetMappings
 Is used to define one or more SqlResultSetMapping annotations.
 StoredProcedureParameter 	
 Specifies a parameter of a named stored procedure query.
-Table 	
-Specifies the primary table for the annotated entity.
+@Table:- Specifies the primary table for the annotated entity.
 TableGenerator 	
 Defines a primary key generator that may be referenced by name when a generator element is specified for the GeneratedValue annotation.
 TableGenerators 	

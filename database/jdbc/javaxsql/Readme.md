@@ -87,4 +87,4 @@ The RowSet interface works with various other classes and interfaces behind the 
             Write the new values to the data source if there is no conflict
             Close the connection 
 
-The RowSet interface may be implemented in any number of ways, and anyone may write an implementation. Developers are encouraged to use their imaginations in coming up with new ways to use rowsets. 
+The RowSet interface may be implemented in any number of ways, and anyone may write an implementation. Developers are encouraged to use their imaginations in coming up with new ways to use rowsets.

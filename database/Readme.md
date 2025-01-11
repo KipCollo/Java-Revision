@@ -6,7 +6,7 @@ Is Oracle's supported distribution of the open source Apache Derby database. Its
 
 ## Java Data Objects (JDO)
 
-Is a standard interface-based Java model abstraction of persistence. Application programmers can use JDO technology to directly store Java domain model instances into the persistent store (database). Benefits include ease of programming, application portability, database independence, high performance, and optional integration with Enterprise JavaBeans (EJB). 
+Is a standard interface-based Java model abstraction of persistence. Application programmers can use JDO technology to directly store Java domain model instances into the persistent store (database). Benefits include ease of programming, application portability, database independence, high performance, and optional integration with Enterprise JavaBeans (EJB).
 
 ## The Java Database Connectivity (JDBC)
 

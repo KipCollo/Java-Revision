@@ -43,119 +43,115 @@ Value types are further classified into three sub-categories:
 
 Entities, by nature of their unique identifier, exist independently of other objects whereas values do not. Entities are domain model classes which correlate to rows in a database table, using a unique identifier. Because of the requirement for a unique identifier, entities exist independently and define their own lifecycle. The Contact class itself would be an example of an entity.
 
-3.2.7. Byte
+Byte:- By default, Hibernate maps values of Byte / byte to the TINYINT JDBC type.
 
-By default, Hibernate maps values of Byte / byte to the TINYINT JDBC type.
-Example 17. Mapping Byte
-
+```java
 // these will both be mapped using TINYINT
 Byte wrapper;
 byte primitive;
+```
 
 See Byte array for mapping arrays of bytes.
-3.2.8. Short
 
-By default, Hibernate maps values of Short / short to the SMALLINT JDBC type.
-Example 18. Mapping Short
+Short:- By default, Hibernate maps values of Short / short to the SMALLINT JDBC type.
 
+```java
 // these will both be mapped using SMALLINT
 Short wrapper;
 short primitive;
+```
 
-3.2.9. Integer
+Integer:- By default, Hibernate maps values of Integer / int to the INTEGER JDBC type.
 
-By default, Hibernate maps values of Integer / int to the INTEGER JDBC type.
-Example 19. Mapping Integer
-
+```java
 // these will both be mapped using INTEGER
 Integer wrapper;
 int primitive;
+```
 
-3.2.10. Long
+Long:- By default, Hibernate maps values of Long / long to the BIGINT JDBC type.
 
-By default, Hibernate maps values of Long / long to the BIGINT JDBC type.
-Example 20. Mapping Long
-
+```java
 // these will both be mapped using BIGINT
 Long wrapper;
 long primitive;
+```
 
-3.2.11. BigInteger
+BigInteger:- By default, Hibernate maps values of BigInteger to the NUMERIC JDBC type.
 
-By default, Hibernate maps values of BigInteger to the NUMERIC JDBC type.
-Example 21. Mapping BigInteger
-
+```java
 // will be mapped using NUMERIC
 BigInteger wrapper;
+```
 
-3.2.12. Double
+Double:- By default, Hibernate maps values of Double to the DOUBLE, FLOAT, REAL or NUMERIC JDBC type depending on the capabilities of the database
 
-By default, Hibernate maps values of Double to the DOUBLE, FLOAT, REAL or NUMERIC JDBC type depending on the capabilities of the database
-Example 22. Mapping Double
-
+```java
 // these will be mapped using DOUBLE, FLOAT, REAL or NUMERIC
 // depending on the capabilities of the database
 Double wrapper;
 double primitive;
+```
 
 A specific type can be influenced using any of the JDBC type influencers covered in JdbcType section.
 
 If @JdbcTypeCode is used, the Dialect is still consulted to make sure the database supports the requested type. If not, an appropriate type is selected
-3.2.13. Float
 
-By default, Hibernate maps values of Float to the FLOAT, REAL or NUMERIC JDBC type depending on the capabilities of the database.
-Example 23. Mapping Float
+Float:- By default, Hibernate maps values of Float to the FLOAT, REAL or NUMERIC JDBC type depending on the capabilities of the database.
 
+```java
 // these will be mapped using FLOAT, REAL or NUMERIC
 // depending on the capabilities of the database
 Float wrapper;
 float primitive;
+```
 
 A specific type can be influenced using any of the JDBC type influencers covered in Mapping basic values section.
 
 If @JdbcTypeCode is used, the Dialect is still consulted to make sure the database supports the requested type. If not, an appropriate type is selected
-3.2.14. BigDecimal
+BigDecimal:- By default, Hibernate maps values of BigDecimal to the NUMERIC JDBC type.
 
-By default, Hibernate maps values of BigDecimal to the NUMERIC JDBC type.
-Example 24. Mapping BigDecimal
-
+```java
 // will be mapped using NUMERIC
 BigDecimal wrapper;
+```
 
-3.2.15. Character
+Character:- By default, Hibernate maps Character to the CHAR JDBC type.
 
-By default, Hibernate maps Character to the CHAR JDBC type.
-Example 25. Mapping Character
-
+```java
 // these will be mapped using CHAR
 Character wrapper;
 char primitive;
+```
 
-3.2.16. String
+String:- By default, Hibernate maps String to the VARCHAR JDBC type.
 
-By default, Hibernate maps String to the VARCHAR JDBC type.
-Example 26. Mapping String
-
+```java
 // will be mapped using VARCHAR
 String string;
 
 // will be mapped using CLOB
 @Lob
 String clobString;
+```
 
 Optionally, you may specify the maximum length of the string using @Column(length=…​), or using the @Size annotation from Hibernate Validator. For very large strings, you can use one of the constant values defined by the class org.hibernate.Length, for example:
 
+```java
 @Column(length=Length.LONG)
 private String text;
+```
 
 Alternatively, you may explicitly specify the JDBC type LONGVARCHAR, which is treated as a VARCHAR mapping with default length=Length.LONG when no length is explicitly specified:
 
+```java
 @JdbcTypeCode(Types.LONGVARCHAR)
 private String text;
+```
 
 If you use Hibernate for schema generation, Hibernate will generate DDL with a column type that is large enough to accommodate the maximum length you’ve specified.
 
-Embeddable objects
+## Embeddable objects
 
 An embeddable object is a Java class whose state maps to multiple columns of a table, but which doesn’t have its own persistent identity. That is, it’s a class with mapped attributes, but no @Id attribute.
 
@@ -163,6 +159,7 @@ An embeddable object can only be made persistent by assigning it to the attribut
 
 An embeddable class must be annotated @Embeddable instead of @Entity.
 
+```java
 @Embeddable
 class Name {
 
@@ -184,6 +181,7 @@ class Name {
 
     ...
 }
+```
 
 An embeddable class must satisfy the same requirements that entity classes satisfy, with the exception that an embeddable class has no @Id attribute. In particular, it must have a constructor with no parameters.
 
@@ -196,6 +194,7 @@ In this case, the requirement for a constructor with no parameters is relaxed.
 
 We may now use our Name class (or record) as the type of an entity attribute:
 
+```java
 @Entity
 class Author {
     @Id @GeneratedValue
@@ -205,6 +204,7 @@ class Author {
 
     ...
 }
+```
 
 Embeddable types can be nested. That is, an @Embeddable class may have an attribute whose type is itself a different @Embeddable class.
 
@@ -300,13 +300,13 @@ Each entity class has a default access type, either:
 
 Hibernate automatically determines the access type from the location of attribute-level annotations. Concretely:
 
-- if a field is annotated @Id, field access is used, or
-- if a getter method is annotated @Id, property access is used.
+* if a field is annotated @Id, field access is used, or
+* if a getter method is annotated @Id, property access is used.
 
 Mapping annotations should be placed consistently:
 
-- if @Id annotates a field, the other mapping annotations should also be applied to fields, or,
-- if @Id annotates a getter, the other mapping annotations should be applied to getters.
+* if @Id annotates a field, the other mapping annotations should also be applied to fields, or,
+* if @Id annotates a getter, the other mapping annotations should be applied to getters.
 
 An entity class like Book, which does not extend any other entity class, is called a root entity. Every root entity must declare an identifier attribute.
 
@@ -374,8 +374,8 @@ class Book {
 An identifier attribute must be annotated @Id or @EmbeddedId.
 Identifier values may be:
 
-- assigned by the application, that is, by your Java code, or
-- generated and assigned by Hibernate.
+* assigned by the application, that is, by your Java code, or
+* generated and assigned by Hibernate.
 
 ### Generated identifiers
 
@@ -391,11 +391,11 @@ System-generated identifiers, or surrogate keys make it easier to evolve or refa
 
 JPA defines the following strategies for generating ids, which are enumerated by GenerationType:
 
-- GenerationType.UUID - UUID or String - A Java UUID
-- GenerationType.IDENTITY - Long or Integer - An identity or autoincrement column
-- GenerationType.SEQUENCE - Long or Integer - A database sequence
-- GenerationType.TABLE - Long or Integer - A database table
-- GenerationType.AUTO - Long or Integer - Selects SEQUENCE, TABLE, or UUID based on the identifier type and capabilities of the database
+* GenerationType.UUID - UUID or String - A Java UUID
+* GenerationType.IDENTITY - Long or Integer - An identity or autoincrement column
+* GenerationType.SEQUENCE - Long or Integer - A database sequence
+* GenerationType.TABLE - Long or Integer - A database table
+* GenerationType.AUTO - Long or Integer - Selects SEQUENCE, TABLE, or UUID based on the identifier type and capabilities of the database
 
 For example, this UUID is generated in Java code:
 
@@ -451,8 +451,8 @@ Of particular interest are natural keys which comprise more than one database co
 
 If your database uses composite keys, you’ll need more than one identifier attribute. There are two ways to map composite keys in JPA:
 
-- using an @IdClass, or
-- using an @EmbeddedId.
+* using an @IdClass, or
+* using an @EmbeddedId.
 
 Perhaps the most immediately-natural way to represent this in an entity class is with multiple fields annotated @Id, for example:
 
@@ -504,16 +504,16 @@ Status status;
 
 In Hibernate 6, an enum annotated @Enumerated(STRING) is mapped to:
 
-- a VARCHAR column type with a CHECK constraint on most databases, or
-- an ENUM column type on MySQL.
+* a VARCHAR column type with a CHECK constraint on most databases, or
+* an ENUM column type on MySQL.
 
 ## Associations
 
 An association is a relationship between entities. We usually classify associations based on their multiplicity. If E and F are both entity classes, then:
 
-- a one-to-one association relates at most one unique instance E with at most one unique instance of F,
-- a many-to-one association relates zero or more instances of E with a unique instance of F, and
-- a many-to-many association relates zero or more instances of E with zero or more instance of F.
+* a one-to-one association relates at most one unique instance E with at most one unique instance of F,
+* a many-to-one association relates zero or more instances of E with a unique instance of F, and
+* a many-to-many association relates zero or more instances of E with zero or more instance of F.
 
 An association between entity classes may be either:
 
@@ -521,13 +521,12 @@ An association between entity classes may be either:
 2. bidirectional, and navigable in either direction.
 
 There are three annotations for mapping associations: @ManyToOne, @OneToMany, and @ManyToMany. They share some common annotation members:
-Table 15. Association-defining annotation members Member  Interpretation  Default value
 
-- cascade - Persistence operations which should cascade to the associated entity; a list of CascadeTypes - {}
-- fetch - Whether the association is eagerly fetched or may be proxied -LAZY for @OneToMany and @ManyToMany, EAGER for @ManyToOne 💀💀💀
-- targetEntity - The associated entity class - Determined from the attribute type declaration
-- optional - For a @ManyToOne or @OneToOne association, whether the association can be null - true
-- mappedBy - For a bidirectional association, an attribute of the associated entity which maps the association - By default, the association is assumed unidirectional
+* cascade - Persistence operations which should cascade to the associated entity; a list of CascadeTypes - {}
+* fetch - Whether the association is eagerly fetched or may be proxied -LAZY for @OneToMany and @ManyToMany, EAGER for @ManyToOne.
+* targetEntity - The associated entity class - Determined from the attribute type declaration
+* optional - For a @ManyToOne or @OneToOne association, whether the association can be null - true
+* mappedBy - For a bidirectional association, an attribute of the associated entity which maps the association - By default, the association is assumed unidirectional
 
 ### Many-to-one
 
@@ -626,7 +625,7 @@ class Author {
 
 Notice that, compared with the previous mapping:
 
-- the @Id attribute is no longer a @GeneratedValue and, instead, the author association is annotated @MapsId.
+* the @Id attribute is no longer a @GeneratedValue and, instead, the author association is annotated @MapsId.
 
 This lets Hibernate know that the association to Person is the source of primary key values for Author.
 
@@ -697,21 +696,21 @@ class Book { ... }
 
 The @Table annotation can do more than just specify a name:
 
-- name - The name of the mapped table
-- schema 💀- The schema to which the table belongs
-- catalog 💀 - The catalog to which the table belongs
-- uniqueConstraints - One or more @UniqueConstraint annotations declaring multi-column unique constraints
-- indexes - One or more @Index annotations each declaring an index
+* name - The name of the mapped table
+* schema 💀- The schema to which the table belongs
+* catalog 💀 - The catalog to which the table belongs
+* uniqueConstraints - One or more @UniqueConstraint annotations declaring multi-column unique constraints
+* indexes - One or more @Index annotations each declaring an index
 
 The @SecondaryTable annotation is even more interesting:
 
-- name - The name of the mapped table
-- schema 💀 - The schema to which the table belongs
-- catalog 💀 - The catalog to which the table belongs
-- uniqueConstraints - One or more @UniqueConstraint annotations declaring multi-column unique constraints
-- indexes - One or more @Index annotations each declaring an index
-- pkJoinColumns - One or more @PrimaryKeyJoinColumn annotations, specifying primary key column mappings
-- foreignKey - An @ForeignKey annotation specifying the name of the FOREIGN KEY constraint on the @PrimaryKeyJoinColumns
+* name - The name of the mapped table
+* schema 💀 - The schema to which the table belongs
+* catalog 💀 - The catalog to which the table belongs
+* uniqueConstraints - One or more @UniqueConstraint annotations declaring multi-column unique constraints
+* indexes - One or more @Index annotations each declaring an index
+* pkJoinColumns - One or more @PrimaryKeyJoinColumn annotations, specifying primary key column mappings
+* foreignKey - An @ForeignKey annotation specifying the name of the FOREIGN KEY constraint on the @PrimaryKeyJoinColumns
 
 ### Mapping associations to tables
 
