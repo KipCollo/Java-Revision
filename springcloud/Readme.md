@@ -108,3 +108,28 @@ mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersi
 ```
 
 * Spring cloud is supported with spring boot.
+
+## Spring Boot Microservices Design Patterns
+
+* API Gateway pattern: API Gateway simplifies client's interaction with system by providing a single endpoint for various services.Spring Boot seamlessly intergrates with Spring Cloud Gateway,making it easy to implement the pattern
+* Circuit Breaker Pattern: It prevents a network or service failure from cascading to other services.If a service fais to respond,the circuit breaker trips and the call is redirected or fails gracefully.Used with Spring Boot bcoz:
+  1. Resilience4j Integration: Spring boot's comatibility with Resilience4j provides robust circuit breaker functionality ensuring system reslience.
+  2. Better System Stability: It enhances system stablity and prevents failures from affecting other areas
+* Service Registry and Discovery Pattern: This pattern allows services to find and communicate with each other without hard-coding hostnames and ports.Used with spring Boot coz:
+    1. Eureka Integration: Spring Boot works well with Eureka Server for service registration and discovery,facilitating dynamic service scaling and load balancing.
+    2. Dynamic Service Discovery: It supports dynamic discovery of service instances,which is vital for elastic scaling and fault tolerance.
+* The Config Server Pattern: It is a centralized configuration server where all microservices can fetch their configurations.
+* Event-Driven Architecture(EDA) Pattern: The pattern involves producing and consuming events synchronously,facilitating decoupled microservices.Used with Spring Boot coz:
+    1. Asynchronous Communication: Enables loosely coupled microservices to interact through asynchronous messaging
+    2. Integration with Messaging Systems: Spring Boot provides excellent suport for integrating with messaging systems e.g Kafka & RabbitMQ
+* Saga Pattern: A Saga is a sequence of local transactions where each transaction updates data within a single service.If one transaction fails,saga ensures that overall business transaction is rolled back through compensatory transactions.It can be implemented using event-driven communication where each service listens for events from other services to execute local transactions.
+* Command Query Responsibility Segragation(CQRS): It is a design pattern that separates read(query) and write(command) operations into different models.This can involve using distinct methods,objects, or even separate databases for handling data retrieval and data modification operations.Used with Spring Boot bcoz:
+    1. Performance Optimization: By separating reads and writes,CQRS allows independent scaling and optimization of each operation,enhancing performance.
+    2. Simplified Complex Models: It simplifies design in complex systems by separating the update logic from the query logic,leading to clearer and more maintainable code.
+    3. Spring Ecosystem Integration: Spring Boot,with tools like Spring Data, supports CQRS by enabling different handling for read and write operations,which can be integrated with event-driven systems  commonly used in microservice.
+* BulkHead Pattern; Is a design pattern inspired by partition of ships into watertight compartments(bulkheads).In software,it nvloves partitioning an application into isolated cmpartments to prevent failures in one part from cscading to others.Each "bulkhead
+or compartment is independent,ensuring that issues in one area don't impact entire application.Used with Spring Boot bcoz:
+    1. Improved Resilience: By isolating different parts of application(like services,data sources or even code within a service),the BulkHead pattern helps contain failures,ensuring that a problem in one area doesn't bring down entire system.
+    2. Resource Allocation: It allows for fine-grained control over resources such as threads and memory
+    3. Concurrency and Load Management: In micoservices environment, bulkheads can be used to manage the load on diff services or components.If one service is heavily loaded,it won't impact performance of others.
+    4. Integration with sring Framework: Spring Boot's integration with frameworks like Hystrix and Resilience4j supports the BulkHead pattern.These frameworks provide tools implementing bulkheads in the form of thread pools or semaphores,which can be configured to isolate parts of an application.
