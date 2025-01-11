@@ -106,7 +106,7 @@ Now the `Captain` can use the `FishingBoat` to escape the pirates.
 
 The program outputs:
 
-```
+```bash
 10:25:08.074 [main] INFO com.iluwatar.adapter.FishingBoat -- The fishing boat is sailing
 ```
 
@@ -148,3 +148,70 @@ On the other hand, an object adapter allows a single Adapter to work with multip
 * [Head First Design Patterns: Building Extensible and Maintainable Object-Oriented Software](https://amzn.to/49NGldq)
 * [J2EE Design Patterns](https://amzn.to/4dpzgmx)
 * [Refactoring to Patterns](https://amzn.to/3VOO4F5)
+
+```java
+public interface IMultiRestoApp{
+    void displayMenus(XmlData xmlData);
+    void displayRecommendations(XmlData xmlData);
+}
+```
+
+```java
+public class MultiRestoApp implements IMultiRestoApp{
+    public void displayMenus(XmlData xmlData){
+        //Display menu using XML Data
+    }
+
+    public void displayRecommendations(XmlData xmlData){
+        //Display Recommendations using XML Data
+    }
+}
+```
+
+```java
+public class FancyUIService{
+    public void displayMenus(XmlData xmlData){
+        //Make use of JsonData to fetch menus
+    }
+
+    public void displayRecommendations(XmlData xmlData){
+        //Make use of JsonData to load recommendations
+    }
+}
+```
+
+```java
+public class FancyUIServiceAdapter implements IMultiRestoApp{
+    private final FancyUIService fancyUIService;
+
+    public FancyUIServiceAdapter(){
+        fancyUIService = new FancyUIService();
+    }
+
+    public void displayMenus(XmlData xmlData){
+       JsonData jsonData =convertXmlToJson(xmlData);
+       fancyUIService.displayMenus(jsonData);
+    }
+
+    public void displayRecommendations(XmlData xmlData){
+        JsonData jsonData =convertXmlToJson(xmlData);
+       fancyUIService.displayRecommendations(jsonData);
+    }
+
+    private JsonDAta convertXmlToJson(){
+        //convert XmlData to JsonData and return it
+    }
+}
+```
+
+```java
+public static void main(){
+    //Older UI
+    IMultiRestoApp multiRestoApp = new MultiRestoApp();
+    multiRestoApp.displayMenus(new XmlData());
+
+    //New UI
+    FancyUIServiceAdapter adapter = new FancyUIServiceAdapter();
+    adapter.isplayMenus(new XmlData());
+}
+```

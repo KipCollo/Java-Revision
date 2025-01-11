@@ -14,7 +14,6 @@ public class Bank {
             System.out.println("Insufficient funds");
             
         } 
-
         return this.balance-=amount;
         
     }

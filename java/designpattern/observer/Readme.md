@@ -135,7 +135,7 @@ Here's the full example in action.
 
 Program output:
 
-```
+```bash
 21:28:08.310 [main] INFO com.iluwatar.observer.Weather -- The weather changed to rainy.
 21:28:08.312 [main] INFO com.iluwatar.observer.Orcs -- The orcs are facing Rainy weather now
 21:28:08.312 [main] INFO com.iluwatar.observer.Hobbits -- The hobbits are facing Rainy weather now

@@ -149,7 +149,8 @@ public static void main(String[] args) {
 
 Program output:
 
-```
+```bash
+
 14:09:15.878 [main] INFO com.iluwatar.memento.App -- sun age: 10000000 years mass: 500000 tons
 14:09:15.880 [main] INFO com.iluwatar.memento.App -- red giant age: 20000000 years mass: 4000000 tons
 14:09:15.880 [main] INFO com.iluwatar.memento.App -- white dwarf age: 40000000 years mass: 32000000 tons

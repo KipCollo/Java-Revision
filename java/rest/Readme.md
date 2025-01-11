@@ -4,12 +4,9 @@
 
 An object in one JVM trying to access with another object in another JVM is called **Java Distribute Technologies**.
 
-```
 OBJ 1(JVM3)---------(N/W)-----------------------------> OBJ 2(JVM2)
   |
   |--------------------(N/W)--------> OBJ3(JVM1)
-
-```
 
 Ther are many Java Distributed Tech:
 
@@ -25,11 +22,9 @@ Java Distributed Technologies--------->java clients only can access
 
 >To overcome the limitation, WEBSERVICES was introduced.
 
-```
         |------Java request object-------xml----------xml-----------java object request---------|
 consumer                                                                                          provider
         |------Java response object------xml-----------xml---------java object response---------|
-```
 
 1. For every request--consumer end req object is converted to xml,provider end converts from xml to Java object
 2. For every response--consumer end response object is converted to xml,consumer end converts from xml to Java object

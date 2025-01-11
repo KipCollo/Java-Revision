@@ -29,7 +29,7 @@ A set is not ordered and cannot contain duplicates. Any given object either is o
 
 ![collection-hierarchy](https://user-images.githubusercontent.com/2780145/34073817-62945de4-e2c8-11e7-820b-84f9dad32af3.png)
 
-## Methods of Collection Interface :
+## Methods of Collection Interface:
 
 <table class="alt">
 <tbody><tr><th>No.</th><th>Method</th><th>Description</th></tr>
@@ -139,3 +139,16 @@ All legacy classes were re-engineered to support generic in JDK5.
 Legacy = heritage of old java version.
 
 Legacy classes and interfaces - Enumeration, Vector, Stack, Dictionary, HashTable, Properties...
+
+The collections framework consists of:
+
+Collection interfaces - The primary means by which collections are manipulated.
+Collection - A group of objects. No assumptions are made about the order of the collection (if any) or whether it can contain
+duplicate elements.
+Set - The familiar set abstraction. No duplicate elements permitted. May or may not be ordered. Extends the Collection
+interface.
+List - Ordered collection, also known as a sequence. Duplicates are generally permitted. Allows positional access. Extends the
+Collection interface.
+Queue - A collection designed for holding elements before processing. Besides basic Collection operations, queues provide
+additional insertion, extraction, and inspection operations.
+Deque - A double ended queue, supporting element insertion and removal at both ends. Extends the Queue interface.

@@ -186,7 +186,7 @@ public static void main(String[] args) {
 
 Here's the console output.
 
-```
+```bash
 The knight receives an enchanted sword.
 The sword is wielded.
 The item spreads bloodlust.

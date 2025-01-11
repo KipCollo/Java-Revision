@@ -4,6 +4,7 @@
 2. Refernce - for storing complex objects
 
 ## Primitive Types
+
 - byte(1 Byte)
 - short(2 Bytes)
 - int(4 Bytes)

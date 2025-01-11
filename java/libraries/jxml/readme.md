@@ -4,7 +4,7 @@ Java Architecture for XML Binding (JAXB) is an XML parsing library, that provide
 
 Supports all W3C XML schema features:
 
- - Reduced number of generated schema-derived classes
- - Smaller run time libraries
- - Validation capabilities
-  - Supports Java to XML with a dedicated package to control the binding
+- Reduced number of generated schema-derived classes
+- Smaller run time libraries
+- Validation capabilities
+- Supports Java to XML with a dedicated package to control the binding

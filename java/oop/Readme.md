@@ -1,5 +1,9 @@
 # oop
 
+OOPs stands for Object-Oriented Programming system. It is a programming paradigm in which software design involves around data, or objects, rather than functions and logic. In OOPs, objects are data fields that have unique attributes and properties.
+
+OOPs focuses on the objects that developers want to manipulate rather than the logic required to manipulate them. That's why large, complex and actively updated or maintained program is well suited for OOPs paradigm of programming.
+
 Object-Oriented Programming is a methodology or paradigm to design a program using classes and objects. It simplifies the software development and maintenance. Main Concepts - Inheritance, Polymorphism, Abstraction, Encapsulation.
 
 ## Definitions, Tips & Rules related to Java OOPS
@@ -13,6 +17,7 @@ Object-Oriented Programming is a methodology or paradigm to design a program usi
     6. Polymorphism
     7. Acces modifiers
     8. Interface
+    9. Getters and Setters
 
 ## Stack and Heap
 
@@ -166,19 +171,6 @@ Stack is used for storing primitive types (numbers, boolean and character) and v
 - *The standard of defining package is domain.company.package. eg - com.oracle.database*
 - *There can be only one public class in a java source file and it must be saved by the public class name.*
 
-### Access Modifiers
-
-- *There are two types of modifiers in java: access modifiers and non-access modifiers.*
-- *There are 4 types of java access modifiers: private, default, protected & public.*
-- *There are many non-access modifiers such as static, abstract, synchronized, native, volatile, transient etc.*
-- *The private access modifier is accessible only within class.*
-- *If you make any class constructor private, you cannot create the instance of that class from outside the class.*
-- *If we don't use any modifier, it is treated as default. Default modifier is accessible only within package.*
-- *A Class cannot be private or protected except nested class.*
-- *The protected access modifier is accessible within package and outside the package but through inheritance only.*
-- *The public access modifier is accessible everywhere. It has the widest scope among all other modifiers.*
-- *If you are overriding any method, overridden method (i.e. declared in subclass) must not be more restrictive.*
-
 ### Encapsulation
 
 - *Encapsulation is a process of wrapping code and data together into a single unit.*
@@ -193,3 +185,32 @@ Stack is used for storing primitive types (numbers, boolean and character) and v
 - *Autoboxing and unboxing feature converts primitive into object and object into primitive automatically.*
 - *There is only call by value in java, not call by reference.*
 - *A method in java that calls itself is called recursive method.*
+
+Object-Oriented Programming
+•1. What are the Object Oriented Features supported by Java?
+•2. What are the different access specifiers used in Java?
+•3. What is the difference between composition and inheritance?
+•4. What is the purpose of an abstract class?
+•5. What are the differences between constructor and method of a class in Java?
+•6. What is the diamond problem in Java and how is it solved?
+•7. What is the difference between local and instance variables in Java?
+•8. What is a Marker interface in Java?
+
+## Difference btwn OOP and SOP
+
+1. It stands for Object-Oriented Programming.It stands for Structural Programming.
+2. It is based on objects.It is based on functions.
+3. It follows Bottom-up programming approach.It follows Top-down programming approach.
+4. It is based on real world.It is based on unreal world.
+5. It provides data hiding so it is very secure .It doesn't provide data hiding so it is less secure.
+6. It provides reusability feature.It doesn't provide reusability feature.
+7. Eg. C++, Java, python etc.Eg. C, Pascal, Basic etc.
+
+## Programming Paradigm
+
+1. Procedural
+2. Functional
+3. Object-Oriented
+4. Event-driven
+5. Logic
+6. Aspect-Oriented

@@ -135,7 +135,7 @@ public static void main(String[] args) {
 
 The program output:
 
-```
+```bash
 11:06:01.721 [main] INFO com.iluwatar.templatemethod.StealingMethod -- The target has been chosen as old goblin woman.
 11:06:01.723 [main] INFO com.iluwatar.templatemethod.HitAndRunMethod -- Approach the old goblin woman from behind.
 11:06:01.723 [main] INFO com.iluwatar.templatemethod.HitAndRunMethod -- Grab the handbag and run away fast!

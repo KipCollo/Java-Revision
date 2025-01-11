@@ -10,6 +10,7 @@ public class Main {
         //demo.name();
         demo.gender();
         demo.sum(1, 9);
+        Demo.demo();//static method
         
     }
 } 

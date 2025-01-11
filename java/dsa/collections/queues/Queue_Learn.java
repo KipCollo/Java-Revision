@@ -6,12 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/*
- * A queue is an ordered list of objects which are processed in a first-in, first-out (FIFO) 
- * manner, i.e. elements are inserted at the tail or rear-end of the queue whereas 
- * removal of elements occur at the head or front-end of the queue.
- */
-
 public class Queue_Learn {
 
 	public static void main(String[] args) {

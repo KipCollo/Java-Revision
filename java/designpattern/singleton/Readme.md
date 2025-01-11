@@ -56,7 +56,7 @@ Then in order to use:
 
 The console output
 
-```
+```bash
 enumIvoryTower1=com.iluwatar.singleton.EnumIvoryTower@1221555852
 enumIvoryTower2=com.iluwatar.singleton.EnumIvoryTower@1221555852
 ```

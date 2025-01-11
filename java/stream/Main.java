@@ -8,6 +8,7 @@ public static void main(String[] args) {
 
     int[] numbers = {1,2,3,4,5};// arrays doesn't have a stream instead Arrays from java.util is used.
      Arrays.stream(numbers)
+             .limit(3)
             .forEach(n->System.out.println(n));//Takes a consumer i.e doen't have return type.
 
 

@@ -1,10 +1,9 @@
 package oop.classes;
-
-class OuterDemo {
+public class Demo {
 
     // properties - fields
-    int number;
-    int num2;
+    private int number;
+    private int num2;
     
 
     // methods - behavior
@@ -12,25 +11,15 @@ class OuterDemo {
         return number + num2;
     }
 
-    public OuterDemo(int number){ // constructor
+    public Demo(int number){ // constructor
         setNumber(number);
     }
 
     public void setNumber(int number){
-        this.number = number;
+        this.number = number;// this is a reference to current object
     }
-
-}
-
-
-class Demo {
-
-    public static void main(String[] args) {
-      
-        OuterDemo demo = new OuterDemo(2);
-        System.out.println(demo.calculater(1,3));
+    public int getNumber(){
+        return number;
     }
-
-   
 
 }

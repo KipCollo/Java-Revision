@@ -10,6 +10,7 @@ In an abstract class, we can have both abstract methods as well as normal or con
 - Interface only shows the design and it does not provide any implementation.
 - To provide an implementation of methods, you need to create a class and instantiate it also.
 e.g,
+
 ```Java
  interface A
  {
@@ -20,10 +21,12 @@ e.g,
 ## implements keyword:-
 
 To implement an interface, we use the keyword **implements**.
+
 - If you use the implements keyword with class, then it is compulsory to give an implementation of all the methods that are defined in an interface.
 - If you do not give an implementation of all methods then it will make your class an abstract class by default.
 - So, to make a concrete class, you have to give the implementation of all methods present in an interface.
 e.g., 
+
 ```Java
  class B implements A
  {
@@ -35,6 +38,7 @@ e.g.,
 ```
 
 ## Variables in an interface:-
+
 - We can call the methods of an interface by creating an object of the class that implements an interface.
 - We can also declare variables in an interface.
 - All the variables in an interface are final and static by default.

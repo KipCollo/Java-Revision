@@ -123,13 +123,13 @@ You can rethrow and exception by throwing same exception in catch block.
 <tr><td>2)</td><td>Final is a keyword.</td><td>Finally is a block.</td><td>Finalize is a method.</td></tr>
 </tbody></table>
 
-## Exception Handling with Method Overriding :
+## Exception Handling with Method Overriding
 
 - If the superclass method does not declare an exception, subclass overridden method cannot declare the checked exception but it can declare unchecked exception.
 
 - If the superclass method declares an exception, subclass overridden method can declare same, subclass exception or no exception but cannot declare parent exception.
 
-## Java Custom Exception :
+## Java Custom Exception
 
 If you are creating your own Exception that is known as custom exception or user-defined exception. Java custom exceptions are used to customize the exception according to user need.
 
