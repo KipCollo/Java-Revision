@@ -10,11 +10,9 @@ i.e
 
 Spring MVC will help remove boilerplate code with help of FrontController(DispatcherServlet).It separates business logic from presentation logics.Its one of Gang of Four design Pattern.It includes 3 design patterns: trategy,Observer and Composite.
 
-* Standalone apps
-Creating a container for standalone application:
+* Standalone apps:- Creating a container for standalone application:
 
 ```java
-
 ApplicationContext context= new ClassPathXmlApplicationContext();
 ```
 

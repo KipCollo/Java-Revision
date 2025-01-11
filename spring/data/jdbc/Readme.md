@@ -31,3 +31,24 @@ You may also want to set the logging level to DEBUG to see some additional infor
 ```java
 logging.level.org.springframework.jdbc=DEBUG
 ```
+
+## Database Connection
+
+```java
+spring.datasource.url=jdbc:{database-provider}://{hostname}:{port}/database-name
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=//org.postgresql.Driver, com.mysql.cj.jdbc.Driver, com.mysql.jdbc.Driver
+
+//postgres
+spring.datasource.url=jdbc:postgresql:localhost:5432/database-name
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+//mysql
+spring.datasource.url=jdbc:mysql:localhost:3306/database-name?createDatabaseIfNotExist=true//mysql can create database automatically if it doesn't exist
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name= com.mysql.cj.jdbc.Driver
+```

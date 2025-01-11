@@ -10,6 +10,7 @@ Spring MVC helps in removal of boilerplate code with help of FrontController(Dis
 
 Spring MVC is one of Gang of Four design pattern and internally uses 3 design patterns(Strategy,Observer & Composite patterns)
 
+```java
                  1                           2
   CLIENT-------------->DispatcherServlet----------------->HandlerMapping
  |                        |   |   |          3
@@ -17,6 +18,7 @@ Spring MVC is one of Gang of Four design pattern and internally uses 3 design pa
  |                        |   |              4
  |   Http Response        |   |------------><--------------ViewRessolver
   -------<-------------VIEW
+```
 
 ## MVC Architecture
 
@@ -176,7 +178,7 @@ The following example shows the web.xml equivalent:
 
 </web-app>
 ```
- 
+
 If an application context hierarchy is not required, applications may configure a “root” context only and leave the contextConfigLocation Servlet parameter empty.
 
 ## Special Bean Types

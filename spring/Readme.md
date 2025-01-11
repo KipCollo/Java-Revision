@@ -7,6 +7,7 @@ Spring is designed to be non-intrusive, meaning that your domain logic code gene
 Spring enables you to build applications from "plain old Java objects" (POJOs) and to apply enterprise services non-invasively to POJOs. This capability applies to the Java SE programming model and to full and partial Java EE.It makes J2EE app development easier.
 
 * Drawbacks of J2EE
+
 1. Tightly coupled - Applications should extend Servlet,EJB
 2. HeavyWeight - app startup takes more extra processing
 3. Boilerplate code - Common code is repeated in multiple places todo some activities
@@ -15,6 +16,7 @@ Spring enables you to build applications from "plain old Java objects" (POJOs) a
 Rod Johnson developed Spring due to J2EE drawbacks.It was originally called interace21.
 
 * Advantages of spring
+
 1. Makes app dev easier.
 2. Light weight
 3. Modularity
@@ -22,6 +24,7 @@ Rod Johnson developed Spring due to J2EE drawbacks.It was originally called inte
 5. Loosely coupled
 
 Spring can be used to develop:
+
 1. Standalone apps
 2. Web applications
 3. Distributed Apps
@@ -36,6 +39,7 @@ To develop diff types of apps, Spring teams introduced many modules is spring fr
 The Spring Framework consists of features organized into about 20 modules. These modules are grouped into Core Container, Data Access/Integration, Web, AOP (Aspect Oriented Programming), Instrumentation, and Test.
 
 Spring Framework Runtime:
+
 1. Data access/Intergration: JDBC, ORM, OXM, JMS, Transactions
 2. Web: Websocket,Servlet,Web,Portlet
 3. AOP
@@ -44,7 +48,6 @@ Spring Framework Runtime:
 6. Messaging
 7. Core Container: Beans,Core,Context,SpEL
 8. Test
-
 
 ## Dependency Injection and Inversion of Control
 

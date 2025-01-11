@@ -81,6 +81,7 @@ public class MyHandler extends TextWebSocketHandler {
 ```
 
 There is dedicated WebSocket Java configuration and XML namespace support for mapping the preceding WebSocket handler to a specific URL, as the following example shows:
+
 ```java
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;

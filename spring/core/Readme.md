@@ -2,9 +2,7 @@
 
 Core support package for annotations, meta-annotations, and merged annotations with attribute overrides.Found in package **org.springframework.core.annotation**.
 
-It includes:
-
-Core Container
+It includes the Core Container.
 
 The Core Container consists of the Core, Beans, Context, and Expression Language modules.
 
@@ -14,7 +12,5 @@ The Context module builds on the solid base provided by the Core and Beans modul
 
 The Expression Language module provides a powerful expression language for querying and manipulating an object graph at runtime. It is an extension of the unified expression language (unified EL) as specified in the JSP 2.1 specification. The language supports setting and getting property values, property assignment, method invocation, accessing the context of arrays, collections and indexers, logical and arithmetic operators, named variables, and retrieval of objects by name from Spring’s IoC container. It also supports list projection and selection as well as common list aggregations.
 
-Order
 @Order defines the sort order for an annotated component.
-AliasFor
 @AliasFor is an annotation that is used to declare aliases for annotation attributes.

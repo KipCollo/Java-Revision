@@ -11,6 +11,7 @@ To implement spring core,use the steps:
 ## Configurations
 
 In Spring, configurations are used to define beans and their dependencies. This can be done using XML configuration files, Java-based configuration, or annotations. The most common approach is using Java-based configuration with @Configuration and @Bean annotations.It does not create objects instead it just provides instruction of:
+
 * Objects to be created
 * How to be created
 * What dependencies to inject
