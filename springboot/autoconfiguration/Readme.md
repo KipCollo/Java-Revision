@@ -48,11 +48,9 @@ using Spring Boot we can develop apps using configurations:
 3. Detected configs of our apps will be loaded into environment object.(application.properties or application.yaml)
 4. Prints the boot banner
 5. Identifies WebApplicationtype:
-
-* If spring mvc jars is found on path,then WebapplicationType=WEB and creates AnnotationConfigServletWebServerApplicationContext
-* If spring webflux jars is found on path,then WebapplicationType=Reactive and creates AnnotationConfigReactiveWebServerApplicationContext
-* If none of above is found; then Webapplicationtype=NONE,then it creates AnnotationApplicationContext.
-
+   1. If spring mvc jars is found on path,then WebapplicationType=WEB and creates AnnotationConfigServletWebServerApplicationContext
+   2. If spring webflux jars is found on path,then WebapplicationType=Reactive and creates AnnotationConfigReactiveWebServerApplicationContext
+   3. If none of above is found; then Webapplicationtype=NONE,then it creates AnnotationApplicationContext. 
 6. Instantiates spring factories and registers IoC container
 7. Execute ApplicationContextInializer(will detect all autoconfiguration)
 8. Then it executes prepareContext
