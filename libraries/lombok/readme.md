@@ -21,6 +21,7 @@ Lombok Installer
 
 The jar file will still need to be included in the classpath of any projects that will use Project Lombok annotations. Maven users can include Lombok as a dependency by adding this to the project pom.xml file:
 
+```xml
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -34,42 +35,148 @@ The jar file will still need to be included in the classpath of any projects tha
             <url>http://projectlombok.org/mavenrepo</url>
         </repository>
     </repositories>
+```
 
 ## Lombok Annotations
-There are a number of annotations in Project Lombok to allow for more fine grained control over the structure and behavior of a class.
-### @Getter and @Setter
 
-The @Getter and @Setter annotations generate a getter and setter for a field, respectively.
+There are a number of annotations in Project Lombok to allow for more fine grained control over the structure and behavior of a class.
+
+- @Getter and @Setter:- The @Getter and @Setter annotations generate a getter and setter for a field, respectively.
 The getters generated correctly follow convention for boolean properties, resulting in an isFoo getter method name instead of getFoo for any boolean field foo. It should be noted that if the class to which the annotated field belongs contains a method of the same name as the getter or setter to be generated, regardless of parameter or return types, no corresponding method will be generated.
+
 Both the @Getter and @Setter annotations take an optional parameter to specify the access level for the generated method.
 
-Lombok annotated code:
 ```java
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+public class GetterSetterExample {
+/**
+* Age of the person. Water is wet.
+*
+* @param age New value for this person's age. Sky is blue.
+* @return The current value of this person's age. Circles are round.
+*/
 @Getter 
-@Setter private boolean employed = true;
-@Setter(AccessLevel.PROTECTED) private String name;
-``` 
+@Setter 
+private int age = 10;
+/**
+* Name of the person.
+* -- SETTER --
+* Changes the name of this person.
+*
+* @param name The new value.
+*/
+@Setter(AccessLevel.PROTECTED) 
+private String name;
 
-Equivalent Java source code:
-```java
-    private boolean employed = true;
-    private String name;
-     
-    public boolean isEmployed() {
-        return employed;
-    }
-     
-    public void setEmployed(final boolean employed) {
-        this.employed = employed;
-    }
-     
-    protected void setName(final String name) {
-        this.name = name;
-    }
+@Override public String toString() {
+return String.format("%s (age: %d)", name, age);
+}
+}
 ```
-### @NonNull
 
-The @NonNull annotation is used to indicate the need for a fast-fail null check on the corresponding member. When placed on a field for which Lombok is generating a setter method, a null check will be generated that will result in a NullPointerException, should a null value be provided.
+```java
+public class GetterSetterExample {
+/**
+* Age of the person. Water is wet.
+*/
+private int age = 10;
+/**
+* Name of the person.
+*/
+private String name;
+@Override public String toString() {
+    return String.format("%s (age: %d)", name, age);
+}
+/**
+* Age of the person. Water is wet.
+*
+* @return The current value of this person's age. Circles are round.
+*/
+public int getAge() {
+    return age;
+}
+/**
+* Age of the person. Water is wet.
+*
+* @param age New value for this person's age. Sky is blue.
+*/
+public void setAge(int age) {
+    this.age = age;
+}
+/**
+* Changes the name of this person.
+*
+* @param name The new value.
+*/
+protected void setName(String name) {
+    this.name = name;
+}
+}
+```
+
+- @NoArgsConstructor, @RequiredArgsConstructor,@AllArgsConstructor:-
+
+@NoArgsConstructor will generate a constructor with no parameters. If this is not possible (because of final fields), a compiler error will result instead, unless @NoArgsConstructor(force = true) is used, then all final fields are initialized with 0 / false / null . For �fields with constraints, such as @NonNull fields, no check is
+generated,so be aware that these constraints will generally not be ful�lled until those �elds are properly initialized later. Certain java constructs, such as hibernate and the Service Provider Interface require a no-args constructor. This annotation is useful primarily in combination with either @Data or one of the other
+constructor generating annotations.
+
+@RequiredArgsConstructor generates a constructor with 1 parameter for each �eld that requires special handling. All non-initialized final �elds get a parameter, as well as any �elds that are marked as @NonNull that aren't initialized where they are declared. For those �elds marked with @NonNull , an explicit null check is also generated. The constructor will throw a NullPointerException if any of the parameters intended for the �elds marked with @NonNull contain null . The order of the parameters match the order in which the �elds appear in your class.
+
+@AllArgsConstructor generates a constructor with 1 parameter for each �eld in your class. Fields marked with @NonNull result in null checks on those parameters.
+
+Each of these annotations allows an alternate form, where the generated constructor is always private, and an additional static factory method that wraps around the private constructor is generated. This mode is enabled by supplying the staticName value for the annotation, like so:
+@RequiredArgsConstructor(staticName="of") . Such a static factory method will infer generics, unlike a normal constructor. This means your API users get write MapEntry.of("foo", 5) instead of the much longer new MapEntry<String, Integer>("foo", 5) .
+
+```java
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+@RequiredArgsConstructor(staticName = "of")
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class ConstructorExample<T> {
+    private int x, y;
+    @NonNull private T description;
+
+    @NoArgsConstructor
+    public static class NoArgsExample {
+        @NonNull private String field;
+}
+}
+```
+
+```java
+public class ConstructorExample<T> {
+    private int x, y;
+    @NonNull private T description;
+
+    private ConstructorExample(T description) {
+        if (description == null) throw new NullPointerException("description")
+        this.description = description;
+    }
+
+    public static <T> ConstructorExample<T> of(T description) {
+        return new ConstructorExample<T>(description);
+    }
+    @java.beans.ConstructorProperties({"x", "y", "description"})
+    protected ConstructorExample(int x, int y, T description) {
+        if (description == null) throw new NullPointerException("description")
+        this.x = x;
+        this.y = y;
+        this.description = description;
+    }
+
+public static class NoArgsExample {
+    @NonNull private String field;
+    public NoArgsExample() {
+    }
+    }
+}
+```
+
+- @NonNull:- The @NonNull annotation is used to indicate the need for a fast-fail null check on the corresponding member. When placed on a field for which Lombok is generating a setter method, a null check will be generated that will result in a NullPointerException, should a null value be provided.
 
 Additionally, if Lombok is generating a constructor for the owning class, then the field will be added to the constructor signature and the null check will be included in the generated constructor code.
 
@@ -82,31 +189,31 @@ Lombok annotated code from the class Family:
 @Setter
 @NonNull
 private List<Person> members;
+```
 
 Equivalent Java source code:
 
-    @NonNull
-    private List<Person> members;
+```java
+@NonNull
+private List<Person> members;
      
-    public Family(@NonNull final List<Person> members) {
-        if (members == null) throw new java.lang.NullPointerException("members");
-        this.members = members;
-    }
+public Family(@NonNull final List<Person> members) {
+    if (members == null) throw new java.lang.NullPointerException("members");
+    this.members = members;
+}
      
-    @NonNull
-    public List<Person> getMembers() {
-        return members;
-    }
+@NonNull
+public List<Person> getMembers() {
+    return members;
+}
      
-    public void setMembers(@NonNull final List<Person> members) {
-        if (members == null) throw new java.lang.NullPointerException("members");
-        this.members = members;
-    }
+public void setMembers(@NonNull final List<Person> members) {
+    if (members == null) throw new java.lang.NullPointerException("members");
+    this.members = members;
+}
 ```
 
-### @ToString
-
-This annotation generates an implementation of the toString method.
+- @ToString:- This annotation generates an implementation of the toString method.
 
 By default, any non-static fields will be included in the output of the method in name-value pairs. If desired, the inclusion of the property names in the output can be suppressed by setting the annotation parameter includeFieldNames to false.
 
@@ -115,34 +222,36 @@ Specific fields can be excluded from the output of the generated method by inclu
 The output of the toString method of a superclass can also be included by setting the callSuper parameter to true.
 
 Lombok annotated code:
-   ```java
-    @ToString(callSuper=true,exclude="someExcludedField")
-    public class Foo extends Bar {
-        private boolean someBoolean = true;
-        private String someStringField;
-        private float someExcludedField;
-    }
-  ```
+
+```java
+@ToString(callSuper=true,exclude="someExcludedField")
+public class Foo extends Bar {
+    private boolean someBoolean = true;
+    private String someStringField;
+    @ToString.Exclude
+    private float someExcludedField;
+}
+```
+
 Equivalent Java source code:
 
-   ```java
-    public class Foo extends Bar {
-        private boolean someBoolean = true;
-        private String someStringField;
-        private float someExcludedField;
+```java
+public class Foo extends Bar {
+    private boolean someBoolean = true;
+    private String someStringField;
+    private float someExcludedField;
      
-        @java.lang.Override
-        public java.lang.String toString() {
-            return "Foo(super=" + super.toString() +
-                ", someBoolean=" + someBoolean +
-                ", someStringField=" + someStringField + ")";
-        }
+    @java.lang.Override
+    public java.lang.String toString() {
+        return "Foo(super=" + super.toString() +
+            ", someBoolean=" + someBoolean +
+            ", someStringField=" + someStringField + ")";
     }
+}
 
-``` 
-### @EqualsAndHashCode
+```
 
-This class level annotation will cause Lombok to generate both equals and hashCode methods, as the two are tied together intrinsically by the hashCode contract.
+- @EqualsAndHashCode:- This class level annotation will cause Lombok to generate both equals and hashCode methods, as the two are tied together intrinsically by the hashCode contract.
 
 By default, any field in the class that is not static or transient will be considered by both methods. Much like @ToString, the exclude parameter is provided to prevent a field from being included in the generated logic. One can also use the of parameter to list only those fields that should be considered.
 
@@ -153,6 +262,7 @@ When setting callSuper to true, be careful to make sure that the equals method i
 Also note that setting callSuper to true cannot be done when the class only extends Object, as it would result in an instance equality check that short-circuits the comparison of fields. This is due to the generated method calling the equals implementation on Object, which returns false if the two instances being compared are not the same instance. As a result, Lombok will generate a compile time error in this situation.
 
 Lombok annotated code:
+
 ```java
     @EqualsAndHashCode(callSuper=true,exclude={"address","city","state","zip"})
     public class Person extends SentientBeing {
@@ -167,7 +277,7 @@ Lombok annotated code:
         private String state;
         private String zip;
     }
-  ```   
+```
 
 Equivalent Java source code:
 
@@ -214,9 +324,7 @@ Equivalent Java source code:
     }
 ```
 
-### @Data
-
-The @Data annotation is likely the most frequently used annotation in the Project Lombok toolset. It combines the functionality of @ToString, @EqualsAndHashCode, @Getter, and @Setter.
+- @Data:-  It combines the functionality of @ToString, @EqualsAndHashCode, @Getter, @Setter and @RequiredArgsConstructor.
 
 Essentially, using @Data on a class is the same as annotating the class with a default @ToString and @EqualsAndHashCode, as well as annotating each field with both @Getter and @Setter. Annotating a class with @Data also triggers Lombok's constructor generation. This adds a public constructor that takes any @NonNull or final fields as parameters. This provides everything needed for a Plain Old Java Object (POJO).
 
@@ -225,79 +333,82 @@ While @Data is extremely useful, it does not provide the same granularity of con
 @Data does provide a single parameter option that can be used to generate a static factory method. Setting the value of the staticConstructor parameter to the desired method name will cause Lombok to make the generated constructor private and expose a a static factory method of the given name.
 
 Lombok annotated code:
+
 ```java
-    @Data(staticConstructor="of")
-    public class Company {
-        private final Person founder;
-        private String name;
-        private List<Person> employees;
-    }
+@Data(staticConstructor="of")
+public class Company {
+    private final Person founder;
+    private String name;
+    private List<Person> employees;
+}
 ```
+
 Equivalent Java source code:
 
 ```java
-    public class Company {
-        private final Person founder;
-        private String name;
-        private List<Person> employees;
+public class Company {
+    private final Person founder;
+    private String name;
+    private List<Person> employees;
      
-        private Company(final Person founder) {
-            this.founder = founder;
-        }
-     
-        public static Company of(final Person founder) {
-            return new Company(founder);
-        }
-     
-        public Person getFounder() {
-            return founder;
-        }
-     
-        public String getName() {
-            return name;
-        }
-     
-        public void setName(final String name) {
-            this.name = name;
-        }
-     
-        public List<Person> getEmployees() {
-            return employees;
-        }
-     
-        public void setEmployees(final List<Person> employees) {
-            this.employees = employees;
-        }
-     
-        @java.lang.Override
-        public boolean equals(final java.lang.Object o) {
-            if (o == this) return true;
-            if (o == null) return false;
-            if (o.getClass() != this.getClass()) return false;
-            final Company other = (Company)o;
-            if (this.founder == null ? other.founder != null : !this.founder.equals(other.founder)) return false;
-            if (this.name == null ? other.name != null : !this.name.equals(other.name)) return false;
-            if (this.employees == null ? other.employees != null : !this.employees.equals(other.employees)) return false;
-            return true;
-        }
-     
-        @java.lang.Override
-        public int hashCode() {
-            final int PRIME = 31;
-            int result = 1;
-            result = result * PRIME + (this.founder == null ? 0 : this.founder.hashCode());
-            result = result * PRIME + (this.name == null ? 0 : this.name.hashCode());
-            result = result * PRIME + (this.employees == null ? 0 : this.employees.hashCode());
-            return result;
-        }
-     
-        @java.lang.Override
-        public java.lang.String toString() {
-            return "Company(founder=" + founder + ", name=" + name + ", employees=" + employees + ")";
-        }
+    private Company(final Person founder) {
+        this.founder = founder;
     }
+     
+    public static Company of(final Person founder) {
+        return new Company(founder);
+    }
+     
+    public Person getFounder() {
+        return founder;
+    }
+     
+    public String getName() {
+        return name;
+    }
+     
+    public void setName(final String name) {
+        this.name = name;
+    }
+     
+    public List<Person> getEmployees() {
+        return employees;
+    }
+     
+    public void setEmployees(final List<Person> employees) {
+        this.employees = employees;
+    }
+     
+    @java.lang.Override
+    public boolean equals(final java.lang.Object o) {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (o.getClass() != this.getClass()) return false;
+        final Company other = (Company)o;
+        if (this.founder == null ? other.founder != null : !this.founder.equals(other.founder)) return false;
+        if (this.name == null ? other.name != null : !this.name.equals(other.name)) return false;
+        if (this.employees == null ? other.employees != null : !this.employees.equals(other.employees)) return false;
+        return true;
+        }
+     
+    @java.lang.Override
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = result * PRIME + (this.founder == null ? 0 : this.founder.hashCode());
+        result = result * PRIME + (this.name == null ? 0 : this.name.hashCode());
+        result = result * PRIME + (this.employees == null ? 0 : this.employees.hashCode());
+        return result;
+    }
+     
+    @java.lang.Override
+    public java.lang.String toString() {
+        return "Company(founder=" + founder + ", name=" + name + ", employees=" + employees + ")";
+    }
+}
 ```
-### @Cleanup
+
+- @Cleanup
 
 The @Cleanup annotation can be used to ensure that allocated resources are released. When a local variable is annotated with @Cleanup, any subsequent code is wrapped in a try/finally block that guarantees that the cleanup method is called at the end of the current scope.
 
@@ -306,6 +417,7 @@ By default @Cleanup assumes that the cleanup method is named "close," as with in
 There is also a caveat to consider when using the @Cleanup annotation. In the event that an exception is thrown by the cleanup method, it will preempt any exception that was thrown in the method body. This can result in the actual cause of an issue being buried and should be considered when choosing to use Project Lombok's resource management. Furthermore, with automatic resource management on the horizon in Java 7, this particular annotation is likely to be relatively short-lived.
 
 Lombok annotated code:
+
 ```java
     public void testCleanUp() {
         try {
@@ -317,7 +429,9 @@ Lombok annotated code:
         }
     }
 ```
+
 Equivalent Java source code:
+
 ```java
     public void testCleanUp() {
         try {
@@ -333,7 +447,19 @@ Equivalent Java source code:
         }
     }
 ```
-### @Synchronized
+
+- @Synchronized:-
+
+@Synchronized is a safer variant of the synchronized method modi�er. Like synchronized , the annotation
+can be used on static and instance methods only. It operates similarly to the synchronized keyword, but it
+locks on di�erent objects. The keyword locks on this , but the annotation locks on a �eld named $lock ,
+which is private.
+If the �eld does not exist, it is created for you. If you annotate a static method, the annotation locks on a
+static �eld named $LOCK instead.
+If you want, you can create these locks yourself. The $lock and $LOCK �elds will of course not be generated
+if you already created them yourself. You can also choose to lock on another �eld, by specifying it as
+parameter to the @Synchronized annotation. In this usage variant, the �elds will not be created
+automatically, and you must explicitly create them yourself, or an error will be emitted.
 
 Using the synchronized keyword on a method can result in unfortunate effects, as any developer who has worked on multi-threaded software can attest.
 
@@ -344,27 +470,56 @@ It is generally advisable to instead lock explicitly on a separate object that i
 Annotating an instance method with @Synchronized will prompt Lombok to generate a private locking field named $lock on which the method will lock prior to executing. Similarly, annotating a static method in the same way will generate a private static object named $LOCK for the static method to use in an identical fashion. A different locking object can be specified by providing a field name to the annotation's value parameter. When a field name is provided, the developer must define the property because Lombok will not generate it.
 
 Lombok annotated code:
+
 ```java
-    private DateFormat format = new SimpleDateFormat("MM-dd-YYYY");
-     
+import lombok.Synchronized;
+public class SynchronizedExample {
+    private final Object readLock = new Object();
+
     @Synchronized
-    public String synchronizedFormat(Date date) {
-        return format.format(date);
+    public static void hello() {
+        System.out.println("world");
     }
+
+    @Synchronized
+    public int answerToLife() {
+        return 42;
+    }
+
+    @Synchronized("readLock")
+    public void foo() {
+        System.out.println("bar");
+    }
+}
 ```
+
 Equivalent Java source code:
 
 ```java
-    private final java.lang.Object $lock = new java.lang.Object[0];
-    private DateFormat format = new SimpleDateFormat("MM-dd-YYYY");
-     
-    public String synchronizedFormat(Date date) {
-        synchronized ($lock) {
-            return format.format(date);
+public class SynchronizedExample {
+    private static final Object $LOCK = new Object[0];
+    private final Object $lock = new Object[0];
+    private final Object readLock = new Object();
+
+    public static void hello() {
+        synchronized($LOCK) {
+         System.out.println("world");
+     }
+    }
+    public int answerToLife() {
+        synchronized($lock) {
+         return 42;
         }
     }
+    public void foo() {
+        synchronized(readLock) {
+            System.out.println("bar");
+        }
+    }
+}
 ```
-### @SneakyThrows
+
+- @SneakyThrows
 
 @SneakyThrows is probably the Project Lombok annotation with the most detractors, since it is a direct assault on checked exceptions. There is a lot of disagreement with regards to the use of checked exceptions, with a large number of developers holding that they are a failed experiment. These developers will love @SneakyThrows. Those developers on the other side of the checked/unchecked exception fence will most likely view this as hiding potential problems.
 
@@ -377,13 +532,16 @@ Sneaky Throws
 By default, @SneakyThrows will allow any checked exception to be thrown without declaring in the throws clause. This can be limited to a particular set of exceptions by providing an array of throwable classes ( Class) to the value parameter of the annotation.
 
 Lombok annotated code:
+
 ```java
     @SneakyThrows
     public void testSneakyThrows() {
         throw new IllegalAccessException();
     }
 ```
+
 Equivalent Java source code:
+
 ```java
     public void testSneakyThrows() {
         try {
@@ -392,6 +550,7 @@ Equivalent Java source code:
             throw lombok.Lombok.sneakyThrow($ex);
         }
 ```
+
 A look at the above code and the signature of Lombok.sneakyThrow(Throwable) would lead most to believe that the exception is being wrapped in a RuntimeException and re-thrown; however this is not the case. The sneakyThrow method will never return normally and will instead throw the provided throwable completely unaltered.
 Costs and Benefits
 
@@ -643,21 +802,18 @@ These benefits do come with a cost however. Using Project Lombok in an IntelliJ 
 
 What all this translates to is no different than what must be considered for any technology choice. There are always gains to be made and losses to be had. The question is simply whether or not Project Lombok can provide more value than cost for the project at hand. If nothing else, Project Lombok is sure to inject some new life into the discussion of language features that have withered on the vine thus far, and that is a win from any perspective.
 
-
-
-### @Builder
-
- The @Builder annotation produces complex builder APIs for your classes.
-
+- @Builder:- Implements the builder pattern,making object creation easier and more readable.
 @Builder lets you automatically produce the code required to have your class be instantiable with code such as:
+
 ```java
-    Person.builder()
+Person.builder()
     .name("Adam Savage")
     .city("San Francisco")
     .job("Mythbusters")
     .job("Unchained Reaction")
     .build();
 ```
+
 @Builder can be placed on a class, or on a constructor, or on a method. While the "on a class" and "on a constructor" mode are the most common use-case, @Builder is most easily explained with the "method" use-case.
 
 A method annotated with @Builder (from now on called the target) causes the following 7 things to be generated:
@@ -672,13 +828,15 @@ A method annotated with @Builder (from now on called the target) causes the foll
 
 Each listed generated element will be silently skipped if that element already exists (disregarding parameter counts and looking only at names). This includes the builder itself: If that class already exists, lombok will simply start injecting fields and methods inside this already existing class, unless of course the fields / methods to be injected already exist. You may not put any other method (or constructor) generating lombok annotation on a builder class though; for example, you can not put @EqualsAndHashCode on the builder class.
 
-@Builder can generate so-called 'singular' methods for collection parameters/fields. These take 1 element instead of an entire list, and add the element to the list. For example: 
+@Builder can generate so-called 'singular' methods for collection parameters/fields. These take 1 element instead of an entire list, and add the element to the list. For example:
+
 ```java
     Person.builder()
     .job("Mythbusters")
     .job("Unchained Reaction")
     .build();
 ```
+
 would result in the List<String> jobs field to have 2 strings in it. To get this behavior, the field/parameter needs to be annotated with @Singular. The feature has its own documentation.
 
 Now that the "method" mode is clear, putting a @Builder annotation on a constructor functions similarly; effectively, constructors are just static methods that have a special syntax to invoke them: Their 'return type' is the class they construct, and their type parameters are the same as the type parameters of the class itself.
@@ -738,6 +896,7 @@ Ordinarily, the generated 'plural form' method (which takes in a collection, and
 With Jackson
 
 You can customize parts of your builder, for example adding another method to the builder class, or annotating a method in the builder class, by making the builder class yourself. Lombok will generate everything that you do not manually add, and put it into this builder class. For example, if you are trying to configure jackson to use a specific subtype for a collection, you can write something like:
+
 ```java
 @Value
 @Builder
@@ -855,3 +1014,97 @@ public class BuilderExample {
   }
 }
 ```
+
+- @Slf4j: Adds a logger to the class without the need to manually create one
+
+- @Value: Immutable classes can be easily created using this annotation.
+- @Delegate: Delegates methods to another field or class, reducing the need for wrapper methods.
+- @With: Generates methods that return a copy of the object with one or more fields modified.
+- @Singular: Used with @Builder to create collections with singular elements.
+
+Log:- There is multiple annotations for every logging library or packages.It will generate a logger field named log
+
+- @CommonsLog - org.apache.commons.logging.log
+- @Flogger - com.google.common.flogger.FluentLogger
+- @JBossLog - org.jboss.logging.Logger
+- @Log - java.util.logging.Logger
+- @Log4j - org.apache.log4j.Logger
+- @Log4j2 - org.apache.logging.log4j.Logger
+- @Slf4j - org.slf4j.Logger.log
+- @XSlf4j - org.slf4j.ext.XLogger
+
+TODO @Accessors
+
+## Variables
+
+- val:- Can be used as type of local variable declaration instead of writing the type.The variables are marked as final.
+
+```java
+val map =new HashMap<Integer, String>();
+map.put(0,"Lombok");
+map.put(1,"Java");
+
+for(val entry: map.entrySet()){
+    System.out.println(entry.getKey() + entry.getValue());
+}
+```
+
+```java
+final Map<Integer, String> map =new HashMap<Integer, String>();
+map.put(0,"Lombok");
+map.put(1,"Java");
+
+for(final Map.Entry<Integer, String> entry: map.entrySet()){
+    System.out.println(entry.getKey() + entry.getValue());
+}
+```
+
+- var:- Can be used as type of local variable declaration instead of writing the type.The variables are not marked as final and can be re-initialized.
+
+```java
+var map =new HashMap<Integer, String>();
+map.put(0,"Lombok");
+map.put(1,"Java");
+
+for(var entry: map.entrySet()){
+    System.out.println(entry.getKey() + entry.getValue());
+}
+```
+
+```java
+Map<Integer, String> map =new HashMap<Integer, String>();
+map.put(0,"Lombok");
+map.put(1,"Java");
+
+for(Map.Entry<Integer, String> entry: map.entrySet()){
+    System.out.println(entry.getKey() + entry.getValue());
+}
+```
+
+## Benefits of Using Lombok
+
+1. Reduces Boilerplate Code: Lombok significantly reduces the amount of repetitive code, making your codebase smaller and easier to manage.
+2. Improves Readability and Maintainability: By eliminating boilerplate code, Lombok makes it easier to read and understand your classes. This can be especially helpful
+in large projects.
+3. Saves Development Time: With Lombok handling common tasks automatically, developers can focus on more complex and meaningful aspects of their code.
+4. Supports Immutability: Lombok’s @Value annotation makes it easy to create immutable classes, promoting best practices in Java development.
+5. Integration with IDEs: Lombok integrates well with most major Java IDEs (like IntelliJ IDEA, Eclipse, and VSCode), offering real-time feedback and support for code generation.
+
+## Disadvantage of Lombok
+
+1. Increased Compilation Time: Lombok can increase compilation time because it processes annotations during the compile phase, generating additional bytecode.
+2. IDE Compatibility Issues: While Lombok supports most major IDEs,there can be occasional issues with IDEs not recognizing Lombok annotations properly, leading to confusion.
+3. Learning Curve: Developers unfamiliar with Lombok might find the annotations confusing at first, especially when debugging or understanding code written by others.
+4. Potential for Overuse: It's easy to overuse Lombok, leading to a lack of clarity in how objects are constructed or modified, particularly when using advanced features like @Builder and @Delegate.
+5. Reduced Control: Automatically generated code can sometimes behave differently than hand-written code, particularly in edge cases,reducing the developer’s control over their codebase.
+
+## When to Use and Avoid Lombok
+
+- Use Lombok When:
+    1. You’re working on a large project with a lot of repetitive code (getters, setters, etc.).
+    2. You want to increase code readability and maintainability.
+    3. You need quick prototyping with Java classes.
+- Avoid Lombok When:
+    1. You require complete control over generated code and how it behaves.
+    2. You’re working with a team unfamiliar with Lombok, which might cause confusion.
+    3. You’re facing issues with IDE compatibility or build processes due to Lombok.
