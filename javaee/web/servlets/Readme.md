@@ -1,9 +1,555 @@
 # Servlet
 
+A servlet is a Java™ technology-based Web component, managed by a container, that generates dynamic content. Like other Java technology-based components, servlets are platform-independent Java classes that are compiled to platform-neutral byte code that can be loaded dynamically into and run by a Java technology-enabled Web server. Containers, sometimes called servlet engines, are Web server extensions that provide servlet functionality. Servlets interact with Web clients via a request/response paradigm implemented by the servlet container.
+
 A servlet is a small Java program that runs within a Web server. Servlets receive and respond to requests from Web clients, usually across HTTP, the HyperText Transfer Protocol.
 
 A servlet is a Java class that runs in a Java-enabled server. An HTTP servlet is a special type of servlet that handles an HTTP request and provides an HTTP response, usually in the form of an HTML page. The most common use of WebLogic HTTP servlets is to create interactive applications using standard Web browsers for the client-side
 presentation while WebLogic Server handles the business logic as a server-side process. WebLogic HTTP servlets can access databases, Enterprise JavaBeans,messaging APIs, HTTP sessions, and other facilities of WebLogic Server
+
+## Servlet Container
+
+The servlet container is a part of a Web server or application server that provides the network services over which requests and responses are sent, decodes MIME-based
+requests, and formats MIME-based responses. A servlet container also contains and manages servlets through their lifecycle.
+
+A servlet container can be built into a host Web server, or installed as an add-on component to a Web Server via that server’s native extension API. Servlet containers
+can also be built into or possibly installed into Web-enabled application servers.
+
+All servlet containers must support HTTP as a protocol for requests and responses, but additional request/response-based protocols such as HTTPS (HTTP over SSL)
+may be supported. The required versions of the HTTP specification that a container must implement are HTTP/1.1 and HTTP/2. When supporting HTTP/2, servlet containers must support the “h2” and “h2c” protocol identifiers. This implies all servlet containers must support ALPN. Because the container may have a caching mechanism described in RFC 7234 (HTTP/1.1 Caching), it may modify requests from the clients before delivering them to the servlet, may modify responses produced by servlets before sending them to the clients, or may respond to requests without delivering them to the servlet under the compliance with RFC 7234.
+
+A servlet container may place security restrictions on the environment in which a servlet executes. In a Java Platform, Standard Edition (J2SE, v.1.3 or above) or Java
+Platform, Enterprise Edition (Java EE, v.1.3 or above) environment, these restrictions should be placed using the permission architecture defined by the Java platform. For
+example some application servers may limit the creation of a Thread object to insure that other components of the container are not negatively impacted.
+
+Java SE 8 is the minimum version of the underlying Java platform with which servlet containers must be built.
+
+The following is a typical sequence of events:-
+
+1. A client (e.g., a Web browser) accesses a Web server and makes an HTTP request.
+2. The request is received by the Web server and handed off to the servlet container.The servlet container can be running in the same process as the host Web server,
+in a different process on the same host, or on a different host from the Web server for which it processes requests.
+3. The servlet container determines which servlet to invoke based on the configuration of its servlets, and calls it with objects representing the request and response.
+4. The servlet uses the request object to find out who the remote user is, what HTTP POST parameters may have been sent as part of this request, and other relevant data. The servlet performs whatever logic it was programmed with, and generates data to send back to the client. It sends this data back to the client via the response object.
+5. Once the servlet has finished processing the request, the servlet container ensures that the response is properly flushed, and returns control back to the host Web server.
+
+Comparing Servlets with Other Technologies:- In functionality, servlets provide a higher level abstraction than Common Gateway Interface (CGI) programs but a lower level of abstraction than that provided by web frameworks such as JavaServer Faces.
+Servlets have the following advantages over other server extension mechanisms:
+
+1. They are generally much faster than CGI scripts because a different process model is used.
+2. They use a standard API that is supported by many Web servers.
+3. They have all the advantages of the Java programming language, including ease of development and platform independence.
+4. They can access the large set of APIs available for the Java platform.
+
+## The Servlet Interface
+
+The Servlet interface is the central abstraction of the Java Servlet API. All servlets implement this interface either directly, or more commonly, by extending a class that
+implements the interface. The two classes in the Java Servlet API that implement the Servlet interface are GenericServlet and HttpServlet. For most purposes, Developers will extend HttpServlet to implement their servlets.
+
+Request Handling Methods:- The basic Servlet interface defines a service method for handling client requests.This method is called for each request that the servlet container routes to an instance of a servlet.
+The handling of concurrent requests to a Web application generally requires that the Web Developer design servlets that can deal with multiple threads executing within
+the service method at a particular time.Generally the Web container handles concurrent requests to the same servlet by concurrent execution of the service method on different threads.
+
+HTTP Specific Request Handling Methods:- The HttpServlet abstract subclass adds additional methods beyond the basic Servlet interface that are automatically called by the service method in the HttpServlet class to aid in processing HTTP-based requests. These methods are:
+• doGet for handling HTTP GET requests
+• doPost for handling HTTP POST requests
+• doPut for handling HTTP PUT requests
+• doDelete for handling HTTP DELETE requests
+• doHead for handling HTTP HEAD requests
+• doOptions for handling HTTP OPTIONS requests
+• doTrace for handling HTTP TRACE requests
+Typically when developing HTTP-based servlets, a Servlet Developer will only concern himself with the doGet and doPost methods. The other methods are considered to be methods for use by programmers very familiar with HTTP programming.
+
+Number of Instances:- The servlet declaration which is either via the annotation-“Annotations and pluggability” or part of the deployment descriptor of the Web
+application containing the servlet “Deployment Descriptor”, controls how the servlet container provides instances of the servlet.
+For a servlet not hosted in a distributed environment (the default), the servlet container must use only one instance per servlet declaration. However, for a servlet
+implementing the SingleThreadModel interface, the servlet container may instantiate multiple instances to handle a heavy request load and serialize requests to a particular instance.
+In the case where a servlet was deployed as part of an application marked in the deployment descriptor as distributable, a container may have only one instance per
+servlet declaration per Java Virtual Machine (JVM™)1. However, if the servlet in a distributable application implements the SingleThreadModel interface, the container
+may instantiate multiple instances of that servlet in each JVM of the container.
+
+The use of the SingleThreadModel interface guarantees that only one thread at a time will execute in a given servlet instance’s service method. It is important to
+note that this guarantee only applies to each servlet instance, since the container may choose to pool such objects. Objects that are accessible to more than one servlet
+instance at a time, such as instances of HttpSession, may be available at any particular time to multiple servlets, including those that implement SingleThreadModel.
+It is recommended that a developer take other means to resolve those issues instead of implementing this interface, such as avoiding the usage of an instance variable or
+synchronizing the block of the code accessing those resources. The SingleThreadModel Interface is deprecated in this version of the specification.
+
+- Servlet Life Cycle:- A servlet is managed through a well defined life cycle that defines how it is loaded and instantiated, is initialized, handles requests from clients, and is taken out of service. This life cycle is expressed in the API by the init, service, and destroy methods of the javax.servlet.Servlet interface that all servlets must implement directly or indirectly through the GenericServlet or HttpServlet abstract classes.
+
+## The Request
+
+The request object encapsulates all information from the client request. In the HTTP protocol, this information is transmitted from the client to the server in the HTTP
+headers and the message body of the request.
+
+HTTP Protocol Parameters:- Request parameters for the servlet are the strings sent by the client to a servlet container as part of its request. When the request is an HttpServletRequest object,and conditions set out in ”When Parameters Are Available” on page 24 are met, the container populates the parameters from the URI query string and POST-ed data.
+The parameters are stored as a set of name-value pairs. Multiple parameter values can exist for any given parameter name. The following methods of the ServletRequest interface are available to access parameters:
+
+getParameter
+getParameterNames
+getParameterValues
+getParameterMap
+
+1. The getParameterValues method returns an array of String objects containing all the parameter values associated with a parameter name. The value returned from
+the getParameter method must be the first value in the array of String objects returned by getParameterValues.
+2. The getParameterMap method returns a java.util.Map of the parameter of the request, which contains names as keys and parameter values as map values.
+Data from the query string and the post body are aggregated into the request
+parameter set. Query string data is presented before post body data. For example, if
+a request is made with a query string of a=hello and a post body of a=goodbye&a=
+world, the resulting parameter set would be ordered a=(hello, goodbye, world).
+Path parameters that are part of a GET request (as defined by HTTP 1.1) are not
+exposed by these APIs. They must be parsed from the String values returned by the
+getRequestURI method or the getPathInfo method.
+
+The following are the conditions that must be met before post form data will be populated to the parameter set:
+
+1. The request is an HTTP or HTTPS request.
+2. The HTTP method is POST.
+3. The content type is application/x-www-form-urlencoded.
+4. The servlet has made an initial call of any of the getParameter family of methods on the request object.
+If the conditions are not met and the post form data is not included in the parameter
+set, the post data must still be available to the servlet via the request object’s input
+stream. If the conditions are met, post form data will no longer be available for
+reading directly from the request object’s input stream.
+
+File upload
+Servlet container allows files to be uploaded when data is sent as multipart/form-
+data.
+The servlet container provides multipart/form-data processing if any one of the
+following conditions is met.
+■The servlet handling the request is annotated with the @MultipartConfig as
+defined in Section 8.1.5, “@MultipartConfig” on page 8-74.
+■Deployment descriptors contain a multipart-config element for the servlet
+handling the request.
+How data in a request of type multipart/form-data is made available depends on
+whether the servlet container provides multipart/form-data processing:
+■
+If the servlet container provides multipart/form-data processing, the data is
+made available through the following methods in HttpServletRequest:
+■public Collection<Part> getParts()
+■public Part getPart(String name)
+Each part provides access to the headers, content type related with it and the
+content via the Part.getInputStream method.
+For parts with form-data as the Content-Disposition, but without a filename,
+the string value of the part will also be available through the getParameter and
+getParameterValues methods on HttpServletRequest, using the name of the
+part.
+■
+3.3
+If the servlet container does not provide the multi-part/form-data processing,
+the data will be available through the HttpServletReuqest.getInputStream.
+
+- Attributes:- Attributes are objects associated with a request. Attributes may be set by the container to express information that otherwise could not be expressed via the API,or may be set by a servlet to communicate information to another servlet (via the RequestDispatcher). Attributes are accessed with the following methods of the
+ServletRequest interface:
+
+1. getAttribute
+2. getAttributeNames
+3. setAttribute
+
+Only one attribute value may be associated with an attribute name.Attribute names beginning with the prefixes of java. and javax. are reserved for definition by this specification. Similarly, attribute names beginning with the prefixes of sun., com.sun., oracle and com.oracle are reserved for definition by Oracle Corporation. It is suggested that all attributes placed in the attribute set be named in accordance with the reverse domain name convention suggested by the Java Programming Language Specification1 for package naming.
+
+- Headers:- A servlet can access the headers of an HTTP request through the following methods of the HttpServletRequest interface:
+
+1. getHeader
+2. getHeaders
+3. getHeaderNames
+The getHeader method returns a header given the name of the header. There can be
+multiple headers with the same name, e.g. Cache-Control headers, in an HTTP
+request. If there are multiple headers with the same name, the getHeader method
+returns the first header in the request. The getHeaders method allows access to all
+the header values associated with a particular header name, returning an
+Enumeration of String objects.
+Headers may contain String representations of int or Date data. The following
+convenience methods of the HttpServletRequest interface provide access to header
+data in a one of these formats:
+
+1. getIntHeader
+2. getDateHeader
+
+If the getIntHeader method cannot translate the header value to an int, a
+NumberFormatException is thrown. If the getDateHeader method cannot translate
+the header to a Date object, an IllegalArgumentException is thrown.
+
+Request Path Elements
+The request path that leads to a servlet servicing a request is composed of many
+important sections. The following elements are obtained from the request URI path
+and exposed via the request object:
+■
+■
+■
+Context Path: The path prefix associated with the ServletContext that this
+servlet is a part of. If this context is the “default” context rooted at the base of the
+Web server’s URL name space, this path will be an empty string. Otherwise, if the
+context is not rooted at the root of the server’s name space, the path starts with a
+/ character but does not end with a / character.
+Servlet Path: The path section that directly corresponds to the mapping which
+activated this request. This path starts with a ’/’ character except in the case
+where the request is matched with the ‘/*’ or ““ pattern, in which case it is an
+empty string.
+PathInfo: The part of the request path that is not part of the Context Path or the
+Servlet Path. It is either null if there is no extra path, or is a string with a leading
+‘/’.
+The following methods exist in the HttpServletRequest interface to access this
+information:
+■
+■
+■
+getContextPath
+getServletPath
+getPathInfo
+It is important to note that, except for URL encoding differences between the request
+URI and the path parts, the following equation is always true:
+requestURI = contextPath + servletPath + pathInfo
+
+Cookies
+The HttpServletRequest interface provides the getCookies method to obtain an
+array of cookies that are present in the request. These cookies are data sent from the
+client to the server on every request that the client makes. Typically, the only
+information that the client sends back as part of a cookie is the cookie name and the
+cookie value. Other cookie attributes that can be set when the cookie is sent to the
+browser, such as comments, are not typically returned. The specification also allows
+for the cookies to be HttpOnly cookies. HttpOnly cookies indicate to the client that
+they should not be exposed to client-side scripting code (It’s not filtered out unless
+the client knows to look for this attribute). The use of HttpOnly cookies helps
+mitigate certain kinds of cross-site scripting attacks.
+
+Internationalization
+Clients may optionally indicate to a Web server what language they would prefer
+the response be given in. This information can be communicated from the client
+using the Accept-Language header along with other mechanisms described in the
+HTTP/1.1 specification. The following methods are provided in the ServletRequest
+interface to determine the preferred locale of the sender:
+■
+■
+getLocale
+getLocales
+The getLocale method will return the preferred locale for which the client wants to
+accept content. See section 14.4 of RFC 7231 (HTTP/1.1) for more information about
+how the Accept-Language header must be interpreted to determine the preferred
+language of the client.
+The getLocales method will return an Enumeration of Locale objects indicating, in
+decreasing order starting with the preferred locale, the locales that are acceptable to
+the client.
+If no preferred locale is specified by the client, the locale returned by the getLocale
+method must be the default locale for the servlet container and the getLocales
+method must contain an enumeration of a single Locale element of the default
+locale.
+
+## Servlet Context
+
+The ServletContext interface defines a servlet’s view of the Web application within
+which the servlet is running. The Container Provider is responsible for providing an
+implementation of the ServletContext interface in the servlet container. Using the
+ServletContext object, a servlet can log events, obtain URL references to resources,
+and set and store attributes that other servlets in the context can access.
+A ServletContext is rooted at a known path within a Web server. For example, a
+servlet context could be located at http://example.com/catalog. All requests that
+begin with the /catalog request path, known as the context path, are routed to the
+Web application associated with the ServletContext.
+
+Initialization Parameters
+The following methods of the ServletContext interface allow the servlet access to
+context initialization parameters associated with a Web application as specified by
+the Application Developer in the deployment descriptor:
+■
+■
+getInitParameter
+getInitParameterNames
+Initialization parameters are used by an Application Developer to convey setup
+information. Typical examples are a Webmaster’s e-mail address, or the name of a
+system that holds critical data.
+
+Configuration methods
+The following methods are added to ServletContext since Servlet 3.0 to enable
+programmatic definition of servlets, filters and the url pattern that they map to.
+These methods can only be called during the initialization of the application either
+from the contexInitialized method of a ServletContextListener
+implementation or from the onStartup method of a
+ServletContainerInitializer implementation. In addition to adding Servlets
+and Filters, one can also look up an instance of a Registration object
+corresponding to a Servlet or Filter or a map of all the Registration objects for the
+Servlets or Filters. If the ServletContext passed to the ServletContextListener’s
+contextInitialized method where the ServletContextListener was neither
+declared in web.xml or web-fragment.xml nor annotated with @WebListener
+then an UnsupportedOperationException MUST be thrown for all the methods
+defined in ServletContext for programmatic configuration of servlets, filters and
+listeners.
+
+Context Attributes
+A servlet can bind an object attribute into the context by name. Any attribute bound
+into a context is available to any other servlet that is part of the same Web
+application. The following methods of ServletContext interface allow access to this
+functionality:
+■setAttribute
+■■getAttribute
+getAttributeNames
+■removeAttribute
+
+## The Response
+
+The response object encapsulates all information to be returned from the server to the client. In the HTTP protocol, this information is transmitted from the server to
+the client either by HTTP headers or the message body of the request.
+
+- Buffering:- A servlet container is allowed, but not required, to buffer output going to the client for efficiency purposes. Typically servers that do buffering make it the default, but allow servlets to specify buffering parameters.
+The following methods in the ServletResponse interface allow a servlet to access and set buffering information:
+
+1. getBufferSize
+2. setBufferSize
+3. isCommitted
+4. reset
+5. resetBuffer
+6. flushBuffer
+
+These methods are provided on the ServletResponse interface to allow buffering operations to be performed whether the servlet is using a ServletOutputStream or a Writer.
+The getBufferSize method returns the size of the underlying buffer being used. If no buffering is being used, this method must return the int value of 0 (zero).
+The servlet can request a preferred buffer size by using the setBufferSize method.
+The buffer assigned is not required to be the size requested by the servlet, but must
+be at least as large as the size requested. This allows the container to reuse a set of
+fixed size buffers, providing a larger buffer than requested if appropriate. The method must be called before any content is written using a ServletOutputStream
+or Writer. If any content has been written or the response object has been
+committed, this method must throw an IllegalStateException.
+The isCommitted method returns a boolean value indicating whether any response
+bytes have been returned to the client. The flushBuffer method forces content in
+the buffer to be written to the client.
+The reset method clears data in the buffer when the response is not committed.
+Headers, status codes and the state of calling getWriter or getOutputStream set
+by the servlet prior to the reset call must be cleared as well. The resetBuffer
+method clears content in the buffer if the response is not committed without clearing
+the headers and status code.
+If the response is committed and the reset or resetBuffer method is called, an
+IllegalStateException must be thrown. The response and its associated buffer will
+be unchanged.
+When using a buffer, the container must immediately flush the contents of a filled
+buffer to the client. If this is the first data that is sent to the client, the response is
+considered to be committed.
+
+- Headers:- A servlet can set headers of an HTTP response via the following methods of the HttpServletResponse interface:
+
+1. setHeader - The setHeader method sets a header with a given name and value. A previous header is replaced by the new header. Where a set of header values exist for the name, the values are cleared and replaced with the new value.
+2. addHeader - The addHeader method adds a header value to the set with a given name. If there are no headers already associated with the name, a new set is created.
+
+Headers may contain data that represents an int or a Date object. The following convenience methods of the HttpServletResponse interface allow a servlet to set a
+header using the correct formatting for the appropriate data type:
+
+1. setIntHeader
+2. setDateHeader
+3. addIntHeader
+4. addDateHeader
+
+## Filtering
+
+Filters are Java components that allow on the fly transformations of payload and header information in both the request into a resource and the response from a resource.
+
+The Java Servlet API classes and methods that provide a lightweight framework for filtering active and static content. It describes how filters are configured in a Web
+application, and conventions and semantics for their implementation.
+
+A filter is a reusable piece of code that can transform the content of HTTP requests,responses, and header information. Filters do not generally create a response or
+respond to a request as servlets do, rather they modify or adapt the requests for a resource, and modify or adapt responses from a resource.
+Filters can act on dynamic or static content.
+Among the types of functionality available to the developer needing to use filters are the following:
+
+1. The accessing of a resource before a request to it is invoked.
+2. The processing of the request for a resource before it is invoked.
+3. The modification of request headers and data by wrapping the request in customized versions of the request object.
+4. The modification of response headers and response data by providing customized versions of the response object.
+5. The interception of an invocation of a resource after its call.
+6. Actions on a servlet, on groups of servlets, or static content by zero, one, or more filters in a specifiable order.
+
+Examples of Filtering Components
+
+- Authentication filters
+- Logging and auditing filters
+- Image conversion filters
+- Data compression filters
+- Encryption filters
+- Tokenizing filters
+- Filters that trigger resource access events
+- XSL/T filters that transform XML content
+- MIME-type chain filters
+- Caching filters
+
+## Sessions
+
+The Hypertext Transfer Protocol (HTTP) is by design a stateless protocol. To build
+effective Web applications, it is imperative that requests from a particular client be
+associated with each other. Many strategies for session tracking have evolved over
+time, but all are difficult or troublesome for the programmer to use directly.
+This specification defines a simple HttpSession interface that allows a servlet
+container to use any of several approaches to track a user’s session without
+involving the Application Developer in the nuances of any one approach.
+
+Session Tracking Mechanisms
+The following sections describe approaches to tracking a user’s sessions
+Cookies
+Session tracking through HTTP cookies is the most used session tracking mechanism
+and is required to be supported by all servlet containers.
+The container sends a cookie to the client. The client will then return the cookie on
+each subsequent request to the server, unambiguously associating the request with a
+session. The standard name of the session tracking cookie must be JSESSIONID.
+Containers may allow the name of the session tracking cookie to be customized
+through container specific configuration.
+All servlet containers MUST provide an ability to configure whether or not the
+container marks the session tracking cookie as HttpOnly. The established
+configuration must apply to all contexts for which a context specific configuration
+has not been established (see SessionCookieConfig javadoc for more details).
+If a web application configures a custom name for its session tracking cookies, the
+same custom name will also be used as the name of the URI parameter if the session
+id is encoded in the URL (provided that URL rewriting has been enabled).
+
+SSL Sessions
+Secure Sockets Layer, the encryption technology used in the HTTPS protocol, has a
+built-in mechanism allowing multiple requests from a client to be unambiguously
+identified as being part of a session. A servlet container can easily use this data to
+define a session.
+
+URL Rewriting
+URL rewriting is the lowest common denominator of session tracking. When a client
+will not accept a cookie, URL rewriting may be used by the server as the basis for
+session tracking. URL rewriting involves adding data, a session ID, to the URL path
+that is interpreted by the container to associate the request with a session.
+The session ID must be encoded as a path parameter in the URL string. The name of
+the parameter must be jsessionid. Here is an example of a URL containing encoded
+path information:
+http://www.example.com/catalog/index.html;jsessionid=1234
+URL rewriting exposes session identifiers in logs, bookmarks, referer headers, cached HTML,
+and the URL bar. URL rewriting should not be used as a session tracking mechanism where
+cookies or SSL sessions are supported and suitable.
+
+Session Integrity
+Web containers must be able to support the HTTP session while servicing HTTP
+requests from clients that do not support the use of cookies. To fulfill this
+requirement, Web containers commonly support the URL rewriting mechanism.
+
+## Annotations and pluggability
+
+In a web application, classes using annotations will have their annotations processed only if they are located in the WEB-INF/classes directory, or if they are packaged
+in a jar file located in WEB-INF/lib within the application.
+
+The web application deployment descriptor contains a “metadata-complete” attribute on the web-app element. This attribute defines whether this deployment descriptor and any web fragments, if any, are complete, or whether the class files available to this module and packaged with this application should be examined for annotations that specify deployment information. Deployment information, in this
+sense, refers to any information that could have been specified by the deployment
+descriptor or fragments, but instead is specified as annotations on classes.
+If the value of the “metadata-complete” attribute is specified as true, the
+deployment tool must ignore any annotations that specify such deployment
+information in the class files packaged in the web application. Please see
+Section 8.2.3, “Assembling the descriptor from web.xml, web-fragment.xml and
+annotations” on page 8-82, Section 8.4, “Processing annotations and fragments” on
+page 8-97 and Section 15.5.1, “Handling of metadata-complete” on page 15-194 for
+additional details on the handling of “metadata-complete”.
+If the “metadata-complete” attribute is not specified, or its value is false, the
+deployment tool must examine the class files of the application for such annotations.
+Note that a true value for “metadata-complete” does not preempt the
+processing of all annotations, only those listed below.
+
+Annotations that do not have equivalents in the deployment XSD include
+javax.servlet.annotation.HandlesTypes and all of the CDI-related
+annotations. These annotations must be processed during annotation scanning,
+regardless of the value of “metadata-complete”.
+When EJBs are packaged in a .war file, and the .war file contains an ejb-jar.xml
+file, the metadata-complete attribute of the ejb-jar.xml file determines the
+processing of the annotations for enterprise beans. If there is no ejb-jar.xml file,
+and the web.xml specifies the metadata-complete attribute as “true”, these
+annotations are processed as though there were an ejb-jar.xml file whose
+metadata-complete attribute was specified as “true”. See the Enterprise
+JavaBeans™ specification for requirements pertaining to annotations for EJBs.
+The following are the annotations in javax.servlet. All of these have corresponding
+deployment descriptor metadata covered by the Web xsd.
+From javax.servlet.annotation:
+■
+■
+■
+■
+■
+■
+■
+■
+HttpConstraint
+HttpMethodConstraint
+MultipartConfig
+ServletSecurity
+WebFilter
+WebInitParam
+WebListener
+WebServlet
+The following annotations from related packages are also covered by the web.xml
+and associated fragments.
+From javax.annotation:
+■
+■
+■
+■
+PostConstruct
+PreDestroy
+Resource
+Resources
+From javax.annotation.security:
+DeclareRoles
+■ RunAs
+■
+From javax.annotation.sql:
+DataSourceDefinition
+■ DataSourceDefinitions
+■
+From javax.ejb:
+■
+■
+EJB
+EJBs
+From javax.jms:
+■
+■
+■
+■
+JMSConnectionFactoryDefinition
+JMSConnectionFactoryDefinitions
+JMSDestinationDefinition
+JMSDestinationDefinitions
+From javax.mail:
+■
+■
+MailSessionDefinition
+MailSessionDefinitions
+From javax.persistence:
+■
+■
+■
+■
+PersistenceContext
+PersistenceContexts
+PersistenceUnit
+PersistenceUnits
+From javax.resource:
+■
+■
+■
+■
+AdministeredObjectDefinition
+AdministeredObjectDefinitions
+ConnectionFactoryDefinition
+ConnectionFactoryDefinitions
+All annotations in the following packages:
+■javax.jws
+■javax.jws.soap
+■javax.xml.ws
+■javax.xml.ws.soap
+■javax.xml.ws.spi
+Following are the annotations that MUST be supported by a Servlet compliant web
+container.
+
+## Dispatching Requests
+
+When building a Web application, it is often useful to forward processing of a request to another servlet, or to include the output of another servlet in the response.
+The RequestDispatcher interface provides a mechanism to accomplish this.
+
+When asynchronous processing is enabled on the request, the AsyncContext allows a user to dispatch the request back to the servlet container.
+
+- Obtaining a RequestDispatcher:- An object implementing the RequestDispatcher interface may be obtained from the
+ServletContext via the following methods:
+
+1. The getRequestDispatcher method takes a String argument describing a path within the scope of the ServletContext. This path must be relative to the root of the
+ServletContext and begin with a ‘/’, or be empty. The method uses the path to look up a servlet, using the servlet path matching rules in Chapter 12, “Mapping
+Requests to Servlets”, wraps it with a RequestDispatcher object, and returns the resulting object. If no servlet can be resolved based on the given path, a
+RequestDispatcher is provided that returns the content for that path.
+2. The getNamedDispatcher method takes a String argument indicating the name of a servlet known to the ServletContext. If a servlet is found, it is wrapped with a
+RequestDispatcher object and the object is returned. If no servlet is associated with the given name, the method must return null.
 
 ## Jakarta Servlet
 
