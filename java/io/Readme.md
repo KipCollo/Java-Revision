@@ -93,6 +93,101 @@ NOTE:- The java.io.File is the I/O class, while Files is an NIO.2 helper class.F
 
 ## Operating on File and Path
 
+## Creating, Moving, and Deleting Files and Directories
+
+Creating, moving, and deleting have some nuance.
+
+- Making Directories:- To create a directory, we use these Files methods:
+
+```java
+public static Path createDirectory(Path dir,FileAttribute<?>... attrs) throws IOException
+public static Path createDirectories(Path dir,FileAttribute<?>... attrs) throws IOException
+```
+
+The createDirectory() method will create a directory and throw an exception if it already exists or if the paths leading up to the directory do not exist.
+The createDirectories() method creates the target directory along with any nonexistent parent directories leading up to the path. If all of the directories already exist,
+createDirectories() will simply complete without doing anything. This is useful in situations where you want to ensure a directory exists and create it if it does not.
+
+Both of these methods also accept an optional list of FileAttribute<?> values to apply to the newly created directory or directories.
+
+The following shows how to create directories:
+
+```java
+Files.createDirectory(Path.of("/bison/field"));
+Files.createDirectories(Path.of("/bison/field/pasture/green"));
+```
+
+The first example creates a new directory, field, in the directory /bison, assuming /bison exists; otherwise, an exception is thrown. Contrast this with the second example,
+which creates the directory green along with any of the following parent directories if they do not already exist, including bison, field, and pasture.
+
+- Copying Files:- The Files class provides a method for copying files and directories within the file system.
+
+```java
+public static Path copy(Path source, Path target,CopyOption... options) throws IOException
+```
+
+The method copies a file or directory from one location to another using Path objects.
+The following shows an example of copying a file and a directory:
+
+```java
+Files.copy(Paths.get("/panda/bamboo.txt"),Paths.get("/pandasave/bamboo.txt"));
+Files.copy(Paths.get("/turtle"), Paths.get("/turtleCopy"));
+```
+
+When directories are copied, the copy is shallow. A shallow copy means that the files and subdirectories within the directory are not copied. A deep copy means that the entire tree is copied, including all of its content and subdirectories. A deep copy typically requires recursion, where a method calls itself.
+
+```java
+public void copyPath(Path source, Path target) {
+   try {
+      Files.copy(source, target);
+         if(Files.isDirectory(source))
+            try (Stream<Path> s = Files.list(source)) {
+               s.forEach(p -­> copyPath(p,target.resolve(p.getFileName())));
+               }
+            } catch(IOException e) {
+         // Handle exception
+            }
+   } catch(IOException e) {
+// Handle exception
+}
+```
+
+The method first copies the path, whether a file or a directory. If it is a directory, only a shallow copy is performed. Next, it checks whether the path is a directory and, if it is, performs a recursive copy of each of its elements. What if the method comes across a symbolic
+link? Don’t worry: the JVM will not follow symbolic links when using the list() method.
+
+The method first copies the path, whether a file or a directory. If it is a directory, only a
+shallow copy is performed. Next, it checks whether the path is a directory and, if it is, per-
+forms a recursive copy of each of its elements. What if the method comes across a symbolic
+link? Don’t worry: the JVM will not follow symbolic links when using the list() method.
+Copying and Replacing Files
+By default, if the target already exists, the copy() method will throw an exception.
+You can change this behavior by providing the StandardCopyOption enum value
+REPLACE_EXISTING to the method. The following method call will overwrite the
+movie.txt file if it already exists:
+Files.copy(Paths.get("book.txt"), Paths.get("movie.txt"),
+StandardCopyOption.REPLACE_EXISTING);
+For the exam, you need to know that without the REPLACE_EXISTING option, this
+method will throw an exception if the file already exists.
+Copying Files with I/O Streams
+The Files class includes two copy() methods that operate with I/O streams.
+public static long copy(InputStream in, Path target,
+CopyOption... options) throws IOException
+public static long copy(Path source, OutputStream out)
+throws IOException
+The first method reads the contents of an I/O stream and writes the output to a file. The
+second method reads the contents of a file and writes the output to an I/O stream. These
+methods are quite convenient if you need to quickly read/write data from/to disk.
+The following are examples of each copy() method:
+try (var is = new FileInputStream("source-­
+data.txt")) {
+// Write I/O stream data to a file
+Files.copy(is, Paths.get("/mammals/wolf.txt"));
+}
+Files.copy(Paths.get("/fish/clown.xsl"), System.out);
+While we used FileInputStream in the first example, the I/O stream could have been
+any valid I/O stream including website connections, in-­memory stream resources, and so
+forth. The second example prints the contents of a file directly to the System.out stream.
+
 ## java.io
 
 package java.io: Provides for system input and output through data streams, serialization and the file system. Unless otherwise noted, passing a null argument to a constructor or method in any class or interface in this package will cause a NullPointerException to be thrown. A pathname string passed as a String argument to a constructor or method in any class or interface in this package will be interpreted as described in the class specification of File.
@@ -451,3 +546,17 @@ They differs depending on what is executing the program.For example, if you are 
 NOTE:- Using Logging APIs:- While System.out and System.err are incredibly useful for debugging stand-­alone or simple applications, they are rarely used in professional software development. Most applications rely on a logging service or API.While many logging APIs are available, they tend to share a number of similar attributes.
 First you create a static logging object in each class. Then you log a message with an appropriate logging level: debug(), info(), warn(), or error(). The debug() and
 info() methods are useful as they allow developers to log things that aren’t errors but may be useful
+
+## Review of Key APIs
+
+1. File - I/O representation of location in file system
+2. Files - Helper methods for working with Path
+3. Path - NIO.2 representation of location in file system
+4. Paths - Contains factory methods to get Path
+5. URI - Uniform resource identifier for files, URLs, etc.
+6. FileSystem - NIO.2 representation of file system
+7. FileSystems - Contains factory methods to get FileSystem
+8. InputStream - Superclass for reading files based on bytes
+9. OuputStream - Superclass for writing files based on bytes
+10. Reader - Superclass for reading files based on characters
+11. Writer - Superclass for writing files based on characters

@@ -38,7 +38,7 @@ public int getLenth(int side){
 (int side)->{return side.length()}//side->side.length()
 ```
 
-### Characteristics
+## Characteristics
 
 1. Lambda Expressions an take any no. of parameters.
 2. If multiple parameters are present then it shuld be separated with comma.

@@ -210,39 +210,32 @@ Embeddable types can be nested. That is, an @Embeddable class may have an attrib
 
 We can think of the API of Hibernate in terms of three basic elements:
 
-    an implementation of the JPA-defined APIs, most importantly, of the interfaces EntityManagerFactory and EntityManager, and of the JPA-defined O/R mapping annotations,
-
-    a native API exposing the full set of available functionality, centered around the interfaces SessionFactory, which extends EntityManagerFactory, and Session, which extends EntityManager, and
-
-    a set of mapping annotations which augment the O/R mapping annotations defined by JPA, and which may be used with the JPA-defined interfaces, or with the native API.
+1. an implementation of the JPA-defined APIs, most importantly, of the interfaces EntityManagerFactory and EntityManager, and of the JPA-defined O/R mapping annotations,
+2. a native API exposing the full set of available functionality, centered around the interfaces SessionFactory, which extends EntityManagerFactory, and Session, which extends EntityManager, and
+3. a set of mapping annotations which augment the O/R mapping annotations defined by JPA, and which may be used with the JPA-defined interfaces, or with the native API.
 
 persistence-related code comes in two layers:
 
-    a representation of our data model in Java, which takes the form of a set of annotated entity classes, and
-
-    a larger number of functions which interact with Hibernate’s APIs to perform the persistence operations associated with your various transactions.
+1. a representation of our data model in Java, which takes the form of a set of annotated entity classes, and
+2. a larger number of functions which interact with Hibernate’s APIs to perform the persistence operations associated with your various transactions.
 
 Most people implement the domain model as a set of what we used to call "Plain Old Java Objects", that is, as simple Java classes with no direct dependencies on technical infrastructure, nor on application logic which deals with request processing, transaction management, communications, or interaction with the database.
 
 The second part of the code is much trickier to get right. This code must:
 
-    manage transactions and sessions,
-
-    interact with the database via the Hibernate session,
-
-    fetch and prepare data needed by the UI, and
-
-    handle failures.
+1. manage transactions and sessions,
+2. interact with the database via the Hibernate session,
+3. fetch and prepare data needed by the UI, and
+4. handle failures.
 
 ## Testing persistence logic
 
 When we write tests for our persistence logic, we’re going to need:
 
-    a database, with
+A database, with
 
-    an instance of the schema mapped by our persistent entities, and
-
-    a set of test data, in a well-defined state at the beginning of each test.
+1. an instance of the schema mapped by our persistent entities, and
+2. a set of test data, in a well-defined state at the beginning of each test.
 
 ## Entities
 
@@ -271,7 +264,7 @@ class Book {
 Alternatively, the class may be identified as an entity type by providing an XML-based mapping for the class.
 Mapping entities using XML
 
-When XML-based mappings are used, the <entity> element is used to declare an entity class:
+When XML-based mappings are used, the *entity* element is used to declare an entity class:
 
 ```xml
 <entity-mappings>
@@ -825,3 +818,5 @@ Specifies a column that should be used to maintain the order of a List.
 Specified a column that should be used to persist the keys of a Map.
 
 We use the @Column annotation to map basic attributes.
+
+TODO @CreationTimestamp,@UpdateTimestamp

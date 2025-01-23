@@ -1,7 +1,6 @@
 package io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -10,13 +9,15 @@ import java.nio.file.Paths;
 
 public class Demo {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
 
         File file = new File("~/Projects/Java/Java-Revision/java/io");
         Path file2 = file.toPath();
         Path fie = Path.of("Collo.txt");
         Path fie2 = Paths.get("col2.txt");
         Path fs = FileSystems.getDefault().getPath("fs.txt");
+
+        Files.createDirectories(Path.of("~/Projects/Java/Java-Revision/java/io/collo"));
     
     
         System.out.println(Files.exists(fie2));
@@ -26,12 +27,12 @@ public class Demo {
         System.out.println("Helo, World..");
         System.err.println("Error..");
 
-        try{
-        int values = System.in.read();
-        System.out.println(values);
-        } catch (IOException e) {
-            System.out.println(e.getStackTrace());
-        }
+        // try{
+        // int values = System.in.read();
+        // System.out.println(values);
+        // } catch (IOException e) {
+        //     System.out.println(e.getStackTrace());
+        // }
     }
 
 }

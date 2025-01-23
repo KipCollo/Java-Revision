@@ -95,3 +95,4 @@ Vault is a tool for securely accessing secrets. A secret is anything that to whi
 To enable the config server to use a Vault backend, you can run your config server with the vault profile. For example, in your config server’s you application.properties, can add spring.profiles.active=vault.
 
 By default, the config server assumes that your Vault server runs at 127.0.0.1:8200. It also assumes that the name of backend is secret and the key is application. All of these defaults can be configured in your config server’s application.properties.
+b<63m>

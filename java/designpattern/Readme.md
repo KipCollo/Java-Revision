@@ -28,15 +28,11 @@ Design Patterns are class and method-level solutions to common problems in objec
 
 ## Construction/Creational Pattern
 
-**BUILDER**  Move the construction logic for an object logic for an object outside the class to instantiate, typically to allow pieceal construction or to simplify the object.
-
-**FACTORY METHOD** Define the interface for creating an object while retaining control of which class to instantiate.
-
-**ABSTRACT FACTORY** Provide for creation of a family of related or dependent objects.
-
-**PROTOTYPE** Provides new objects by copying an example.
-
-**MEMENTO** Provide for storage and restoration of an object's state.
+1. **BUILDER**  Move the construction logic for an object logic for an object outside the class to instantiate, typically to allow pieceal construction or to simplify the object.
+2. **FACTORY METHOD** Define the interface for creating an object while retaining control of which class to instantiate.
+3. **ABSTRACT FACTORY** Provide for creation of a family of related or dependent objects.
+4. **PROTOTYPE** Provides new objects by copying an example.
+5. **MEMENTO** Provide for storage and restoration of an object's state.
 
 ## Operation Pattern
 
