@@ -2,6 +2,10 @@
 
 Persistence simply means that we would like our application’s data to outlive the applications process. In Java terms, we would like the state of (some of) our objects to live beyond the scope of the JVM so that the same state is available later.
 
+## ORM
+
+Object/Relational Mapping refers to the technique of mapping data from an object model representation to a relational data model representation (and vice versa).
+
 ## JPA (Java Persistence API)
 
 JPA is a specification for ORM (Object-Relational Mapping), which maps Java objects to database tables and abstracts SQL operations.
