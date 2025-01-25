@@ -1,5 +1,21 @@
 # Networking
 
+The Internet is the global network of millions of computers. Your computer can connect to the Internet through an Internet Service Provider (ISP) using a dialup, DSL, or cable modem, or through a local area network (LAN).
+
+When a computer needs to communicate with another computer, it needs to know the other computer’s address.
+
+An Internet Protocol (IP) address uniquely identifies the computer on the Internet. An IP address consists of four dotted decimal numbers between 0 and 255, such as 130.254.204.31. Since it is not easy to remember so many numbers, they are often mapped to meaningful names called domain names, such as liang.armstrong.edu. Special servers called Domain Name Servers (DNS) on the Internet translate host names into IP addresses.
+
+When a computer contacts liang.armstrong.edu, it first asks the DNS to translate this domain name into a numeric IP address and then sends the request using the IP address.
+The Internet Protocol is a low-level protocol for delivering data from one computer to another across the Internet in packets. Two higher-level protocols used in conjunction with the IP are the Transmission Control Protocol (TCP) and the User Datagram Protocol (UDP).
+
+TCP enables two hosts to establish a connection and exchange streams of data. TCP guarantees delivery of data and also guarantees that packets will be delivered in the same order in which they were sent.
+
+UDP is a standard, low-overhead, connectionless, host-to-host protocol that is used over the IP. UDP allows an application program on one computer to send a datagram to an application program on another computer.
+
+Java supports both stream-based and packet-based communications. Stream-based communications use TCP for data transmission, whereas packet-based communications use UDP.
+Since TCP can detect lost transmissions and resubmit them, transmissions are lossless and reliable. UDP, in contrast, cannot guarantee lossless transmission. Stream-based communications are used in most areas of Java programming.
+
 Java Networking is a concept of connecting two or more computing devices together so that we can share resources.
 
 When computing devices such as laptops, desktops, servers, smartphones, and tablets and an eternally-expanding arrangement of IoT gadgets such as cameras, door locks, doorbells, refrigerators, audio/visual systems, thermostats, and various sensors are sharing information and data with each other is known as networking.
@@ -72,138 +88,6 @@ The java.net package includes various interfaces also that provide an easy-to-us
 4. SocketOption- The SocketOption interface helps the users to control the behavior of sockets. Often, it is essential to develop necessary features in Sockets. SocketOptions allows the user to set various standard options.
 5. SocketImplFactory- The SocketImplFactory interface defines a factory for SocketImpl instances. It is used by the socket class to create socket implementations that implement various policies.
 6. ProtocolFamily- This interface represents a family of communication protocols. The ProtocolFamily interface contains a method known as name(), which returns the name of the protocol family.
-
-## Java Socket Programming
-
-Java Socket programming is used for communication between the applications running on different JRE. Java Socket programming can be connection-oriented or connection-less.
-
-Socket and ServerSocket classes are used for connection-oriented socket programming and DatagramSocket and DatagramPacket classes are used for connection-less socket programming.
-
-The client in socket programming must know two information:
-
-1. IP Address of Server
-2. Port number.
-
-### Socket Class
-
-A socket is simply an endpoint for communications between the machines. The Socket class can be used to create a socket.
-
-![socket-programming](https://user-images.githubusercontent.com/2780145/68625991-64f2e400-0500-11ea-9616-3702cb213cdd.png)
-
-**Important methods :**
-|Method|Description|
-|-|-|
-|void connect(SocketAddress host, int timeout)|connects the socket to the particularized host|
-|int getPort()|returns the port to which the socket is pinned on the remote machine|
-|InetAddress getInetAddress()|returns the location of the other computer to which the socket is connected|
-|int getLocalPort()|returns the port to which the socket is joined on the local machine|
-|SocketAddress getRemoteSocketAddress()|returns the location of the remote socket|
-|InputStream getInputStream()|returns the input stream of the socket|
-|OutputStream getOutputStream()|returns the output stream of the socket|
-|synchronized void close()|closes the socket|
-
-### ServerSocket Class
-
-The ServerSocket class can be used to create a server socket. This object is used to establish communication with the clients.
-
-**Important methods :**
-|Method|Description|
-|-|-|
-|int getLocalPort()|returns the port that the server socket is monitoring on|
-|void setSoTimeout(int timeout)|sets the time-out in which the server socket pauses for a client during the accept() method|
-|Socket accept()|waits for an incoming client; returns the socket and establish a connection between server and client|
-|void bind(SocketAddress host, int backlog)|bind the socket to the particularized server and port in the object of SocketAddress|
-|synchronized void close()|closes the server socket|
-
-## Example of Java Socket Programming
-
-### Creating Server
-
-```java
-ServerSocket ss = new ServerSocket(6666);  
-Socket s = ss.accept(); //establishes connection and waits for the client   
-```
-
-### Creating Client
-
-```java
-Socket s = new Socket("localhost",6666);  
-```
-
-### Simple Socket example where client sends a text; the server receives and prints it.
-
-#### SERVER
-
-```java
-ServerSocket ss = new ServerSocket(6666);  
-Socket s=ss.accept(); //establishes connection   
-DataInputStream dis = new DataInputStream(s.getInputStream());  
-String  str = (String)dis.readUTF();  
-System.out.println("message= "+str);  
-ss.close();  
-```
-
-#### CLIENT
-
-```java
-Socket s = new Socket("localhost",6666);  
-DataOutputStream dout = new DataOutputStream(s.getOutputStream());  
-dout.writeUTF("Hello Server");  
-dout.flush();  
-dout.close();  
-s.close();  
-```
-
-Open two command prompts and execute each program
-After running the client application, a message will be displayed on the server console.
-
-### More complex Socket example where
-
-- First, client will write to the server; server will receive and print.
-- Then, server will write to the client; client will receive and print.
-
-#### SERVER
-
-```java
-ServerSocket ss = new ServerSocket(3333);
-Socket s = ss.accept();
-DataInputStream din = new DataInputStream(s.getInputStream());
-DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-String str = "", str2 = "";
-while (!str.equals("stop")) {
-    str = din.readUTF();
-    System.out.println("client says: " + str);
-    str2 = br.readLine();
-    dout.writeUTF(str2);
-    dout.flush();
-}
-din.close();
-s.close();
-ss.close();
-```
-
-#### CLIENT
-
-```java
-Socket s = new Socket("localhost", 3333);
-DataInputStream din = new DataInputStream(s.getInputStream());
-DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-String str = "", str2 = "";
-while (!str.equals("stop")) {
-    str = br.readLine();
-    dout.writeUTF(str);
-    dout.flush();
-    str2 = din.readUTF();
-    System.out.println("Server says: " + str2);
-}
-
-dout.close();
-s.close();
-```
 
 ### URL Class
 
@@ -357,3 +241,169 @@ Conclusion:
 Java 21 provides solid support for HTTP/2 and HTTP/3 (experimental), making it a good choice for many networking tasks.
 OkHttp, however, is still a better choice for advanced features like connection pooling, HTTP/3 support, WebSockets, interceptors, and more granular control over the networking behavior.
 If you're working on complex, performance-sensitive applications or need full HTTP/3 and WebSocket support, OkHttp is likely the better choice, even in Java 21.
+
+## Client/Server Computing
+
+Java provides the ServerSocket class for creating a server socket and the Socket class for creating a client socket. Two programs on the Internet communicate through
+a server socket and a client socket using I/O streams.
+
+Networking is tightly integrated in Java. The Java API provides the classes for creating sockets to facilitate program communications over the Internet.
+
+Sockets are the endpoints of logical connections between two hosts and can be used to send and receive data. Java treats socket communications much as it treats I/O operations; thus, programs can read from or write to sockets as easily as they can read from or write to files.
+
+Network programming usually involves a server and one or more clients. The client sends requests to the server, and the server responds. The client begins by attempting to establish a connection to the server. The server can accept or deny the connection. Once a connection is established, the client and the server communicate through sockets.
+
+The server must be running when a client attempts to connect to the server. The server waits for a connection request from the client.
+
+Java Socket programming is used for communication between the applications running on different JRE. Java Socket programming can be connection-oriented or connection-less.
+
+Socket and ServerSocket classes are used for connection-oriented socket programming and DatagramSocket and DatagramPacket classes are used for connection-less socket programming.
+
+**Server Sockets**:-To establish a server, you need to create a server socket and attach it to a port, which is where the server listens for connections. The port identifies the TCP service on the socket. Port numbers range from 0 to 65536, but port numbers 0 to 1024 are reserved for privileged services.
+
+For every client connecting to server a new socket is created.
+
+Step 1: Create a server socket on a port, e.g.,8000, using the following statement:
+
+```java
+ServerSocket serverSocket = new ServerSocket(8000);
+```
+
+Step 2: Create a socket to connect to a client,using the following statement:
+
+```java
+Socket socket =serverSocket.accept();
+```
+
+Step 3: A client program uses the following statement to connect to the server:
+
+```java
+Socket socket = new Socket(serverHost, 8000);
+```
+
+The server creates a server socket and, once a connection to a client is established, connects to the client with a client socket.
+
+For instance, the email server runs on port 25, and the Web server usually runs on port 80.You can choose any port number that is not currently used by other programs. The following statement creates a server socket serverSocket:
+
+```java
+ServerSocket serverSocket = new ServerSocket(port);
+```
+
+NOTE:- Attempting to create a server socket on a port already in use would cause a java.net.BindException.
+
+**Client Sockets**:-After a server socket is created, the server can use the following statement to listen for connections:
+
+```java
+Socket socket = serverSocket.accept();
+```
+
+This statement waits until a client connects to the server socket. The client issues the following statement to request a connection to a server:
+connect to client
+
+The client in socket programming must know two information:
+
+1. IP Address of Server
+2. Port number.
+
+```java
+Socket socket = new Socket(serverName, port);
+```
+
+This statement opens a socket so that the client program can communicate with the server.serverName is the server’s Internet host name or IP address. The following statement creates a socket on the client machine to connect to the host 130.254.204.33 at port 8000:
+
+```java
+Socket socket = new Socket("130.254.204.33", 8000)
+```
+
+Alternatively, you can use the domain name to create a socket, as follows:
+
+```java
+Socket socket = new Socket("liang.armstrong.edu", 8000);
+```
+
+When you create a socket with a host name, the JVM asks the DNS to translate the host name into the IP address.
+
+NOTE:- A program can use the host name localhost or the IP address 127.0.0.1 to refer to the machine on which a client is running.
+
+If the server is not running, the client program terminates with a java.net.ConnectException. After it is connected, the client gets input and output streams—wrapped by data input and output streams—in order to receive and send data to the server.
+
+**Data Transmission through Sockets**:- After the server accepts the connection, communication between the server and the client is conducted in the same way as for I/O streams. The statements needed to create the streams and to exchange data between them.
+
+To get an input stream and an output stream, use the getInputStream() and getOutputStream() methods on a socket object. For example, the following statements
+create an InputStream stream called input and an OutputStream stream called output from a socket:
+
+```java
+InputStream input = socket.getInputStream();
+OutputStream output = socket.getOutputStream();
+```
+
+The InputStream and OutputStream streams are used to read or write bytes. You can use DataInputStream, DataOutputStream, BufferedReader, and PrintWriter to
+wrap on the InputStream and OutputStream to read or write data, such as int, double, or String. The following statements, for instance, create the DataInputStream stream
+input and the DataOutput stream output to read and write primitive data values:
+
+```java
+DataInputStream input = new DataInputStream(socket.getInputStream());
+DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+```
+
+The server can use input.readDouble() to receive a double value from the client and output.writeDouble(d) to send the double value d to the client.
+
+Recall that binary I/O is more efficient than text I/O because text I/O requires encoding and decoding. Therefore, it is better to use binary I/O for transmitting data between a server and a client to improve performance
+
+## The InetAddress Class
+
+The server program can use the InetAddress class to obtain the information about the IP address and host name for the client.
+Occasionally, you would like to know who is connecting to the server. You can use the InetAddress class to find the client’s host name and IP address. The InetAddress class
+models an IP address. You can use the following statement in the server program to get an instance of InetAddress on a socket that connects to the client.
+
+```java
+InetAddress inetAddress = socket.getInetAddress();
+System.out.println("Client's IP Address is " + inetAddress.getHostAddress());
+```
+
+You can also create an instance of InetAddress from a host name or IP address using the static getByName method. For example, the following statement creates an InetAddress
+for the host liang.armstrong.edu.
+
+```java
+InetAddress address = InetAddress.getByName("liang.armstrong.edu");
+```
+
+**Serving Multiple Clients**:-A server can serve multiple clients. The connection to each client is handled by one thread.
+Multiple clients are quite often connected to a single server at the same time. Typically, a server runs continuously on a server computer, and clients from all over the Internet can connect to it. You can use threads to handle the server’s multiple clients simultaneously—simply create a thread for each connection. Here is how the server handles the establishment of a connection:
+
+```java
+while (true) {
+Socket socket = serverSocket.accept(); // Connect to a client
+Thread thread = new ThreadClass(socket);
+thread.start();
+}
+```
+
+The server socket can have many connections. Each iteration of the while loop creates a new connection. Whenever a connection is established, a new thread is created to handle communication between the server and the new client, and this allows multiple connections to run at the same time.
+
+## Socket Class
+
+A socket is simply an endpoint for communications between the machines. The Socket class can be used to create a socket.
+
+**Important methods :**
+
+- void connect(SocketAddress host, int timeout)|connects the socket to the particularized host|
+- int getPort()|returns the port to which the socket is pinned on the remote machine|
+- InetAddress getInetAddress()|returns the location of the other computer to which the socket is connected|
+- int getLocalPort()|returns the port to which the socket is joined on the local machine|
+- SocketAddress getRemoteSocketAddress()|returns the location of the remote socket|
+- InputStream getInputStream()|returns the input stream of the socket|
+- OutputStream getOutputStream()|returns the output stream of the socket|
+- synchronized void close()|closes the socket|
+
+### ServerSocket Class
+
+The ServerSocket class can be used to create a server socket. This object is used to establish communication with the clients.
+
+**Important methods :**
+
+- int getLocalPort()|returns the port that the server socket is monitoring on|
+- void setSoTimeout(int timeout)|sets the time-out in which the server socket pauses for a client during the accept() method|
+- Socket accept()|waits for an incoming client; returns the socket and establish a connection between server and client|
+- void bind(SocketAddress host, int backlog)|bind the socket to the particularized server and port in the object of SocketAddress|
+- synchronized void close()|closes the server socket|
