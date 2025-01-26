@@ -13,17 +13,18 @@ Users are sometimes unsure whether a BeanFactory or an ApplicationContext are be
 The main usage scenario when you might prefer to use the BeanFactory is when memory usage is the greatest concern (such as in an applet where every last kilobyte counts), and you don't need all the features of the ApplicationContext.
 
 Includes:
+
 1. Application context
 2. UI support
 3. Validation
 4. JNDI, EJB support & Remoting Mail
 
-
 ## ApplicationContext
 
-While the beans package provides basic functionality for managing and manipulating beans, often in a programmatic way, the context package adds ApplicationContext, which enhances BeanFactory functionality in a more framework-oriented style. 
+While the beans package provides basic functionality for managing and manipulating beans, often in a programmatic way, the context package adds ApplicationContext, which enhances BeanFactory functionality in a more framework-oriented style.
 
 The basis for the context package is the ApplicationContext interface, located in the org.springframework.context package.Deriving from the BeanFactory interface, it provides all the functionality of BeanFactory. To allow working in a more framework-oriented fashion, using layering and hierarchical contexts, the context package also provides the following:
+
 - MessageSource, providing access to messages in, i18n-style
 - Access to resources, such as URLs and files
 - Event propagation to beans implementing the ApplicationListener interface
@@ -41,10 +42,7 @@ Annotation support for the Application Context, including JSR-250 "common" annot
 
 It includes:
 
-1. @ComponentScan - Configures component scanning directives for use with @Configuration classes.
-
-- Either basePackageClasses() or basePackages() (or its alias value()) may be specified to define specific packages to scan. If specific packages are not defined, scanning will occur recursively beginning with the package of the class that declares this annotation. 
-
+1. @ComponentScan - Configures component scanning directives for use with @Configuration classes.Either basePackageClasses() or basePackages() (or its alias value()) may be specified to define specific packages to scan. If specific packages are not defined, scanning will occur recursively beginning with the package of the class that declares this annotation.
 2. @Import- Indicates one or more component classes to import — typically @Configuration classes.
 3. @ImportResource - Indicates one or more resources containing bean definitions to import.
 4. @Lazy - Indicates whether a bean is to be lazily initialized.
@@ -162,14 +160,15 @@ Strategy interface for resolving the scope of bean definitions.
 TypeFilterUtils
 Collection of utilities for working with @ComponentScan type filters.
 
-
 * @Lazy can be annotated with class level or method level.
-1. @Component,@Configuration - Class level. 
+
+1. @Component,@Configuration - Class level.
 2. @Bean- Method level
 
 Default scope of bean is singleton,Generally they are pre-initialised to discover errors in configuration.To initialize bean lazilly, we use @Lazy annotation in java config or lazy-init attribute in XML config app.If we want early initialisation,we use @Lazy(value="false")
 
 Lazy initialisation could be;
+
 1. Bean will not be initialized until reference/called by another bean
 2. Explicitly called from ApplicationContext
 

@@ -12,13 +12,11 @@ To implement spring core,use the steps:
 
 In Spring, configurations are used to define beans and their dependencies. This can be done using XML configuration files, Java-based configuration, or annotations. The most common approach is using Java-based configuration with @Configuration and @Bean annotations.It does not create objects instead it just provides instruction of:
 
-* Objects to be created
-* How to be created
-* What dependencies to inject
+- Objects to be created
+- How to be created
+- What dependencies to inject
 
-1. Java-based Configuration
-
-@Configuration: Indicates that a class declares one or more @Bean methods and may be processed by the Spring container to generate bean definitions and service requests.
+**Java-based Configuration**:- @Configuration: Indicates that a class declares one or more @Bean methods and may be processed by the Spring container to generate bean definitions and service requests.
 
 ```java
 @Configuration
@@ -42,9 +40,7 @@ public class AppConfig {
 }
 ```
 
-2. XML-based Configuration
-
-Defining Beans: Beans can be defined in an XML configuration file using the <bean> tag.
+**XML-based Configuration**:- Defining Beans: Beans can be defined in an XML configuration file using the <bean> tag.
 
 ```xml
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -56,9 +52,8 @@ Defining Beans: Beans can be defined in an XML configuration file using the <bea
 </beans>
 ```
 
-3. Annotation-based Configuration
+**Annotation-based Configuration**:- @ComponentScan: Configures component scanning directives for use with @Configuration classes.
 
-@ComponentScan: Configures component scanning directives for use with @Configuration classes.
 ```java
 @Configuration
 @ComponentScan(basePackages = "com.example")
@@ -75,6 +70,7 @@ public class MyComponent {
 ```
 
 @Autowired: Marks a constructor, field, setter method, or config method to be autowired by Spring's dependency injection facilities.
+
 ```java
 @Component
 public class MyService {
@@ -89,12 +85,11 @@ public class MyService {
 
 The configurations will be given to Dependency injector
 
-    Configurations(i.e config.xml)--------->Dependency injector
+Configurations(i.e config.xml)--------->Dependency injector
 
 ## Dependency Injector
 
 It reads the configurations files and validates it and creates container to store BeanFactory reference.If you want object you just get it from the container intead of creating manually.
-
 
 ### Container overview
 
@@ -102,10 +97,10 @@ The container gets its instructions on what objects to instantiate, configure, a
 
 Container is just like HashMap<Key, Value> where key is id and value is classname.Spring uses Reflection to create objects in JVM.
 
-
 ### The IoC container
 
 It includes:
+
 1. BeanFactory
 2. ApplicationContext
 
@@ -117,17 +112,16 @@ The BeanFactory is the actual container which instantiates, configures, and mana
 
 A BeanFactory is represented by the interface org.springframework.beans.factory.BeanFactory, for which there are multiple implementations. The most commonly used simple BeanFactory implementation is org.springframework.beans.factory.xml.XmlBeanFactory. (This should be qualified with the reminder that ApplicationContexts are a subclass of BeanFactory, and most users end up using XML variants of ApplicationContext).
 
-* XMLBeanFactory implements BeanFactory(Mostly for standalone applications)
-* ApplcationContext extends BeanFactory and implements several classes:(Mostly standalone,web apps,I18n apps,AOP,Application Events)
-   - FileSystemXmlApplicationContext
-   - ClassPathXmlApplicationContext(XML config)
-   - AnnotationConfigApplicationContext(Java config)
+- XMLBeanFactory implements BeanFactory(Mostly for standalone applications)
+- ApplcationContext extends BeanFactory and implements several classes:(Mostly standalone,web apps,I18n apps,AOP,Application Events)
+   1. FileSystemXmlApplicationContext
+   2. ClassPathXmlApplicationContext(XML config)
+   3. AnnotationConfigApplicationContext(Java config)
 
 ```java
 ApplicationContext context = new ClassPathXmlApplicationContext("config.xml")//XML based
 ApplicationContext context = new AnnotationConfigApplicationContext("JavaCponfig.class")//Java based config
 ```
-
 
 ```java
 BeanFactory factory = new XmlBeanFactory(new ClassPathresource("config.xml"));
@@ -137,17 +131,18 @@ BeanFactory factory = new XmlBeanFactory(new ClassPathresource("config.xml"));
 ClassPathResource res = new ClassPathResource("beans.xml");
 XmlBeanFactory factory = new XmlBeanFactory(res);
 ```
-* Processes:
+
+- Processes:
+
 1. Reads and validates xml config files
 2. If valid, the XMLBeanFactory creates inmemory logical partition in JVM
 3. It loads the springbean configs and place metadata for config in logical partition.
 4. Logical memory created is called IoC and returns reference of IoC container as BeanFactory
 5. You can access the object
 
-```
 Object obj = beanFactory.getBean("objectName")
-```
-* The beanFactory searches the bean from the container by its id name if not found it throws exception and exits.If found it will load the class into JVM memory and instantiates the object of the class.
+
+- The beanFactory searches the bean from the container by its id name if not found it throws exception and exits.If found it will load the class into JVM memory and instantiates the object of the class.
 
 BeanFactory provides the configuration framework and basic functionality, and the ApplicationContext adds more enterprise-specific functionality. The ApplicationContext is a complete superset of the BeanFactory, and is used exclusively in this chapter in descriptions of Spring’s IoC container.
 
@@ -155,22 +150,23 @@ In Spring, the objects that form the backbone of your application and that are m
 
 Several implementations of the ApplicationContext interface are supplied out-of-the-box with Spring. In standalone applications it is common to create an instance of ClassPathXmlApplicationContext or FileSystemXmlApplicationContext. While XML has been the traditional format for defining configuration metadata you can instruct the container to use Java annotations or code as the metadata format by providing a small amount of XML configuration to declaratively enable support for these additional metadata formats.
 
-The interface org.springframework.context.ApplicationContext represents the Spring IoC container and is responsible for instantiating, configuring, and assembling the aforementioned beans. 
+The interface org.springframework.context.ApplicationContext represents the Spring IoC container and is responsible for instantiating, configuring, and assembling the aforementioned beans.
 
 ## Getting the Objects
 
 Managing dependencies can include:
+
 1. Dependency Lookup: The developer writes code to manually get the object from container.
 2. Dependency Injection: Automatic provision of objects from container.
 
 ### IoC(Inversion of Controller)
 
-* Inversion A--->B---->C If class have multiple  dependencies and is accessed by one class.
+- Inversion A--->B---->C If class have multiple  dependencies and is accessed by one class.
 
 Can be:
+
 1. DI
 2. Guice
-
 
 NB: Objects reference is stored in containers and objects stred in JVM
 
@@ -182,7 +178,6 @@ Dependency injection (DI) is a specialized form of IoC, whereby objects define t
 
 dependent(target): It is an object which is depending on another object to get some info.
 dependency(source): It is an object required by another object to carry out the functionality.
-
 
 #### Types of Dependency Injection in Spring
 
@@ -293,6 +288,7 @@ public class MyService {
 Field injection is not directly supported in XML configuration. However, you can achieve similar functionality by using setter injection.
 
 ### Drawbacks of XML
+
 1. Need to learn xml to work with xml configurations.
 2. It is not type safety.Can't recognize error during compile time
 3. Less readble
@@ -314,6 +310,7 @@ To make objects during startup you can use **component scan**.You don't need to 
 ```
 
 NOTE:
+
 1. Manual Config: Developer writes config manually
  - xml config
  - java based config
@@ -341,7 +338,7 @@ String userName = p.getProperty("userName");
 String password = p.getProperty("password");
 ```
 
-* Instead of writing the Java code you can use **@PropertySource Annotation**. Used to load properties file.
+- Instead of writing the Java code you can use **@PropertySource Annotation**. Used to load properties file.
 When it is executed environment container is created.
 
 
@@ -412,7 +409,7 @@ Environment could be:
 2. Development
 3. Production
 
-* Without spring:
+- Without spring:
 Configure profile name(dev,test,prod) in server configuration.
 i.e 
 catalina.properties
@@ -421,14 +418,16 @@ catalina.properties
 During startup, all value wil be set to JVM
   System.setProperty("env");
 
-* With Spring:
+- With Spring:
 @Profile- used to get env value from jvm which was set during app startup.can be used in class,method level.
 
 For standalone apps,set env using the options
+
 1. System.setProperty("environment","dev")
 2. spring.profiles.active=dev
 
 For web apps:
+
 1. Tomcat: catalina.properties-->env=dev
 2. Jboss: server.xml----->env=dev
 
@@ -442,4 +441,3 @@ Whenever we set env values,during app startup it will be set in jvm.
    String env = System.getProperty("env")
 
 2. Using profiles annotation,it internally uses System.getProperty()
-

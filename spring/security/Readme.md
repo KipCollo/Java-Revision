@@ -315,3 +315,72 @@ builder.eraseCredentials(false);
 }
 }
 ```
+
+## PASSWORD ENCODING
+
+Password encoding ensures that passwords are securely stored and compared, protecting against attacks such as credential theft. The framework provides several built-in encoders and encourages the use of secure algorithms like BCrypt, which includes salting and hashing.
+
+How Password Encoding Works
+
+1. Encoding: Converts a plain-text password into a hashed format before storage.
+2. Matching: When a user logs in, the plain-text password they provide is encoded and compared with the stored hashed password.
+
+Common Password Encoders in Spring Security
+
+- BCryptPasswordEncoder:- Implements the BCrypt hashing algorithm with a built-in salt.Resistant to brute force and rainbow table attacks.
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+   return new BCryptPasswordEncoder();
+}
+```
+
+- Pbkdf2PasswordEncoder:- Uses the PBKDF2 algorithm for password hashing.Supports configurable hashing strength.
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+   return new Pbkdf2PasswordEncoder("secret", 185000, 256); // Custom secret, iterations, and hash width
+}
+```
+
+- Argon2PasswordEncoder:- Implements the Argon2 hashing algorithm, designed for secure password hashing.
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+   return new Argon2PasswordEncoder();
+}
+```
+
+- SCryptPasswordEncoder:- Uses the SCrypt algorithm, designed to be memory-intensive.
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+   return new SCryptPasswordEncoder();
+}
+```
+
+- NoOpPasswordEncoder (NOT Recommended):- Stores passwords in plain text (use only for testing).
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+   return NoOpPasswordEncoder.getInstance();
+}
+```
+
+- DelegatingPasswordEncoder:- Allows using multiple encoders and prefixing encoded passwords with identifiers (e.g., {bcrypt}, {noop}).
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+Map<String, PasswordEncoder> encoders = new HashMap<>();
+   encoders.put("bcrypt", new BCryptPasswordEncoder());
+   encoders.put("noop", NoOpPasswordEncoder.getInstance());
+    
+   return new DelegatingPasswordEncoder("bcrypt", encoders);
+}
+```
