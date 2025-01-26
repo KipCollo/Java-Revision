@@ -76,6 +76,127 @@ In Spring Security 3.0, the codebase has been sub-divided into separate jars whi
 
 7. OpenID - spring-security-openid.jar:- OpenID web authentication support. Used to authenticate users against an external OpenID server. org.springframework.security.openid. Requires OpenID4Java.
 
+## SECURITY FILTERCHAIN
+
+Spring Security provides a powerful and flexible filter chain to control access to application resources. Here's an overview of how the Spring Security filter chain works:
+
+- **FilterChainProxy**:- FilterChainProxy is the central component in the Spring Security filter chain. It delegates the actual filtering to one or more security filters, which can be configured for different URLs.
+
+- **Security Filters**:- Several filters can be applied, each performing a specific security-related task. Some of the commonly used filters are:
+
+ 1. WebAsyncManagerIntegrationFilter: Integrates the SecurityContext with the WebAsyncManager.
+ 2. SecurityContextPersistenceFilter: Manages the SecurityContext persistence between requests.
+ 3. HeaderWriterFilter: Adds security headers to the response.
+ 4. CsrfFilter: Protects against Cross-Site Request Forgery attacks.
+ 5. LogoutFilter: Handles logout requests.
+ 6. UsernamePasswordAuthenticationFilter: Processes authentication requests for username and password.
+ 7. DefaultLoginPageGeneratingFilter: Generates a default login page.
+ 8. BasicAuthenticationFilter: Processes HTTP basic authentication.
+ 9. RequestCacheAwareFilter: Caches and retrieves previously requested URLs.
+ 10. SecurityContextHolderAwareRequestFilter: Makes the SecurityContext accessible through the HttpServletRequest.
+ 11. AnonymousAuthenticationFilter: Provides anonymous authentication support.
+ 12. SessionManagementFilter: Manages the security of HTTP sessions.
+ 13. ExceptionTranslationFilter: Translates authentication exceptions to HTTP responses.
+ 14. FilterSecurityInterceptor: Protects web resources by enforcing the configured access control rules.
+
+- **Configuring the Filter Chain**:- The filter chain can be configured using Java-based configuration (@Configuration) or XML-based configuration. Here's an example using Java-based configuration:
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/public/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+            .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+            .logout()
+                .permitAll();
+    }
+
+    @Bean
+    public CustomFilter customFilter() {
+        return new CustomFilter();
+    }
+}
+```
+
+- **Custom Filters** -You can also create and add custom filters to the filter chain. For example:
+
+```java
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import org.springframework.web.filter.OncePerRequestFilter;
+
+public class CustomFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+        // Custom filter logic here
+        filterChain.doFilter(request, response);
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // Initialization logic here
+    }
+
+    @Override
+    public void destroy() {
+        // Cleanup logic here
+    }
+}
+```
+
+To add the custom filter to the filter chain:
+
+```java
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class)
+        .csrf().disable()
+        .authorizeRequests()
+            .antMatchers("/public/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+        .formLogin()
+            .loginPage("/login")
+            .permitAll()
+            .and()
+        .logout()
+            .permitAll();
+}
+```
+
+- **Understanding the Order**:The order in which filters are applied is crucial. Misordering can lead to unexpected behavior. Spring Security ensures the correct order by default, but custom filters need to be added in the right place.
+
+By understanding and configuring the Spring Security filter chain correctly, you can effectively manage authentication, authorization, and other security concerns in your application.
+
 ## Authentication Providers
 
 1. In-Memory Authentication:- Useful for simple applications or testing
@@ -384,3 +505,28 @@ Map<String, PasswordEncoder> encoders = new HashMap<>();
    return new DelegatingPasswordEncoder("bcrypt", encoders);
 }
 ```
+
+## Spring Security Features
+
+1. Authorization:This functionality is provided by Spring Security and allows the user to be authorized before accessing resources. It enables developers to set access controls for resources.
+2. Single sign-on:  This feature allows a user to utilize a single account to access different apps (user name and password).
+3. Software Localization: This capability enables us to create user interfaces for applications in any language.
+4. Remember-me: With the help of HTTP Cookies, Spring Security provides this capability. It remembers the user and prevents them from logging in from the same workstation until they log out.
+5. LDAP (Lightweight Directory Access Protocol): That is an open application protocol for managing and interacting with dispersed directory information services over the Internet Protocol.
+6. JAAS (Java Authentication and Authorization Service) LoginModule: This is a Java-based Pluggable Authentication Module. It is supported by Spring Security’s authentication procedure.
+7. Web Form Authentication: Web forms capture and authenticate user credentials from the web browser during this procedure. While we wish to build web form authentication, Spring Security supports it.
+8. Digest Access Authentication: We can make the authentication procedure more secure with this functionality than with Basic Access Authentication. Before delivering sensitive data over the network, it requests that the browser verify the user’s identity.
+9. HTTP Authorization:Using Apache Ant paths or regular expressions, Spring provides this functionality for HTTP authorization of web request URLs.
+10. Basic Access Authentication: Spring Security has support for Basic Access Authentication, which is used to give a user name and password when performing network requests.
+
+## Features Added in Spring Security 6.0
+
+1. OAuth 2.0 Login: This feature allows users to connect to the app using their current GitHub or Google accounts. The Authorization Code Grant defined in the OAuth 2.0 Authorization Framework is used to implement this functionality.
+2. Reactive Support: Spring Security 6.0 adds support for reactive programming and reactive web runtimes, as well as the ability to interact with Spring WebFlux.
+3. Modernized Password Encoding: Spring Security 6.0 introduces the DelegatingPasswordEncoder, a new way to store passwords. The format for storing passwords is: {id} encodedPassword. List of ids for various password encoders are:
+
+    - {bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG
+    - {noop}password
+    - {pbkdf2}5d923b44a6d129f3ddf3e3c8d29412723dcbde72445e8ef6bf3b508fbf17fa4ed4d6b99ca763d8dc
+    - {scrypt}$e0801$8bWJaSu2IKSn9Z9kM+TPXfOc/9bdYSrN1oD9qfVThWEwdRTnO7re7Ei+fUZRJ68k9lTyuTeUp4of4g24hHnazw==$OAOec05+bXxvuu/1qZ6NUR+xQYvYv7BeL1QxwRpY5Pc=
+    - {sha256}97cde38028ad898ebc02e690819fa220e88c62e0699403e94fff291cfffaf8410849f27605abcbc0
