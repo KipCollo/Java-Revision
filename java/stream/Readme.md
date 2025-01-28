@@ -2,8 +2,12 @@
 
 Stream API is used to process collections of objects. A stream in Java is a sequence of objects that supports various methods that can be pipelined to produce the desired result.Stream is an interface, containing stream() method.Stream method returns an object of type stream.Any operation can be performed inside stream method.Any changes done inside stream can be reflected on actal list.Once we work with stream we can't reuse.
 
+The Stream API in Java, introduced in Java 8, provides a powerful way to work with sequences of data. It supports functional-style operations on collections and other data sources, making code concise, readable, and efficient.
+
 Streams allows us to process a collection of data in a declarative way.A stream in Java is a sequence of data. A stream pipeline consists of the operations that run
 on a stream to produce a result.
+
+A stream is a sequence of elements that supports aggregate operations like map, filter, reduce, etc.Streams don’t store data. Instead, they operate on data from a source (e.g., collections, arrays, I/O channels).They allow declarative programming, focusing on what to do rather than how to do it.
 
 Use of Stream in Java:
 
@@ -11,6 +15,16 @@ Use of Stream in Java:
 - Enable us to perform operations like filtering, mapping, reducing, and sorting.
 
 Streams don’t change the original data structure, they only provide the result as per the pipelined methods.Each intermediate operation is lazily executed and returns a stream as a result, hence various intermediate operations can be pipelined. Terminal operations mark the end of the stream and return the result.
+
+Charcteristics:-
+
+1. Pipeline Concept:- A stream pipeline has three stages:
+      - Source: Generates the stream (e.g., a list or an array).
+      - Intermediate Operations: Transform the stream (e.g., filter, map).
+      - Terminal Operations: Produce a result or side effects (e.g., collect, forEach).
+
+2. Lazy Evaluation:- Intermediate operations are not executed until a terminal operation is invoked.
+3. Single-Use:- Streams cannot be reused once operated on. A new stream must be created for additional operations.
 
 Mapping
 Filtering
@@ -33,6 +47,8 @@ var count2 = movies.stream()
       .filter(movie -> movie.getLikes() > 10)
       .count();
 ```
+
+## Creating Streams
 
 Streams can be created from:-
 
@@ -86,6 +102,9 @@ Syntax:
 
 ```Java
 <R> Stream<R> map(Function<? super T, ? extends R> mapper)
+
+list.stream()
+      .map(String::toUpperCase)
 ```
 
 - filter() - The filter method is used to select elements as per the Predicate passed as an argument.*Stream<T> filter(Predicate<? super T> predicate)*
@@ -97,6 +116,10 @@ movies.stream()
 
 movies.stream()
       .filter(m -> m.getLikes() > 10)
+
+list.stream()
+    .filter(s -> s.startsWith("A"))
+    .forEach(System.out::println);
 ```
 
 - sorted() - The sorted method is used to sort the stream.
@@ -106,6 +129,10 @@ Syntax:
 ```java
 Stream<T> sorted()
 Stream<T> sorted(Comparator<? super T> comparator)
+
+list.stream()
+    .sorted()
+    .forEach(System.out::println);
 ```
 
 - flatMap()
@@ -143,12 +170,17 @@ This example showcases how Java Streams can be used to process and manipulate co
 
 Terminal Operations are the type of Operations that return the result. These Operations are not processed further just return a final result value.
 
-- collect() - The collect method is used to return the result of the intermediate operations performed on the stream.
+- collect() - The collect method is used to return the result of the intermediate operations performed on the stream.Gathers the stream elements into a collection.
 
 Syntax:
 
-```JAva
+```Java
 <R, A> R collect(Collector<? super T, A, R> collector)
+
+List<String> result = list.stream()
+                          .filter(s -> s.length() > 3)
+                          .collect(Collectors.toList());
+
 ```
 
 - forEach() - The forEach method is used to iterate through every element of the stream.
@@ -157,6 +189,8 @@ Syntax:
 
 ```Java
 void forEach(Consumer<? super T> action)
+
+list.stream().forEach(System.out::println);
 ```
 
 - reduce()
@@ -168,6 +202,9 @@ The reduce method is used to reduce the elements of a stream to a single value. 
 ```Java
 T reduce(T identity, BinaryOperator<T> accumulator)
 Optional<T> reduce(BinaryOperator<T> accumulator)
+
+int sum = numbers.stream()
+                 .reduce(0, Integer::sum);
 ```
 
 - count()- Returns the count of elements in the stream.
@@ -204,51 +241,15 @@ boolean anyMatch(Predicate<? super T> predicate)
 
 Note: Intermediate Operations are running based on the concept of Lazy Evaluation, which ensures that every method returns a fixed value(Terminal operation) before moving to the next method.
 
-## Difference between Stream.of() and Arrays.stream() method in Java
+## Parallel Streams
 
-Arrays.stream() The stream(T[] array) method of Arrays class in Java, is used to get a Sequential Stream from the array passed as the parameter with its elements. It returns a sequential Stream with the elements of the array, passed as parameter, as its source. Example: Java Code // Java program to demonstrate Arrays.stream() method import java.uti
+Java streams can be parallelized for performance improvement. This divides the work across multiple threads:
 
-## Character Stream Vs Byte Stream in Java
-
-A stream is a sequence of data. I/O Stream refers to a stream that is unlikely a method to sequentially access a file. I/O Stream means an input source or output destination representing different types of sources e.g. disk files. The java.io package provides classes that allow you to convert between Unicode character streams and byte streams of no
-
-## foreach() loop vs Stream foreach() vs Parallel Stream foreach()
-
-foreach() loopLambda operator is not used: foreach loop in Java doesn't use any lambda operations and thus operations can be applied on any value outside of the list that we are using for iteration in the foreach loop. The foreach loop is concerned over iterating the collection or array by storing each element of the list on a local variable and do
-4 min read
-
-## Java Stream | Collectors toCollection() in Java
-
-Collectors toCollection(Supplier<C> collectionFactory) method in Java is used to create a Collection using Collector. It returns a Collector that accumulates the input elements into a new Collection, in the order in which they are passed.
-public static <T, C extends Collection<T>> Collector<T, ?, C> toCollection(Supp
-2 min read
-
-## Stream skip() method in Java with examples
-
-Prerequisite : Streams in java The skip(long N) is a method of java.util.stream.Stream object. This method takes one long (N) as an argument and returns a stream after removing first N elements. skip() can be quite expensive on ordered parallel pipelines, if the value of N is large, because skip(N) is constrained to skip the first N elements in the
-3 min read
-
-## Stream.concat() in Java
-
-Stream.concat() method creates a concatenated stream in which the elements are all the elements of the first stream followed by all the elements of the second stream. The resulting stream is ordered if both of the input streams are ordered, and parallel if either of the input streams is parallel. Syntax : static <T> Stream<T> concat(Str
-4 min read
-
-## Stream.distinct() in Java
-
-distinct() returns a stream consisting of distinct elements in a stream. distinct() is the method of Stream interface. This method uses hashCode() and equals() methods to get distinct elements. In case of ordered streams, the selection of distinct elements is stable. But, in case of unordered streams, the selection of distinct elements is not neces
-
-## Stream sorted() in Java
-
-Stream sorted() returns a stream consisting of the elements of this stream, sorted according to natural order. For ordered streams, the sort method is stable but for unordered streams, no stability is guaranteed. It is a stateful intermediate operation i.e, it may incorporate state from previously seen elements when processing new elements. Syntax
-
-## Stream.max() method in Java with Examples
-
-Stream.max() returns the maximum element of the stream based on the provided Comparator. A Comparator is a comparison function, which imposes a total ordering on some collection of objects. max() is a terminal operation which combines stream elements and returns a summary result. So, max() is a special case of reduction. The method returns Optional
-
-## Stream sorted (Comparator comparator) method in Java
-
-Stream sorted(Comparator comparator) returns a stream consisting of the elements of this stream, sorted according to the provided Comparator. For ordered streams, the sort method is stable but for unordered streams, no stability is guaranteed. It is a stateful intermediate operation i.e, it may incorporate state from previously seen elements when p
-3 min read
+```java
+list.parallelStream()
+    .filter(s -> s.startsWith("A"))
+    .forEach(System.out::println);
+```
 
 ## OPTIONALS
 
