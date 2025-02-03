@@ -5,6 +5,149 @@ Spring Security provides comprehensive security services for J2EE-based enterpri
 security features of J2EE's Servlet Specification or EJB Specification lack the depth required for typical enterprise application scenarios. Whilst mentioning these standards, it's important to recognise that they are not portable at a WAR or EAR level. Therefore, if you switch server environments, it is typically a lot
 of work to reconfigure your application's security in the new target environment. Using Spring Security overcomes these problems, and also brings you dozens of other useful, customisable security features
 
+The Spring Security framework provides the WebSecurity and HttpSecurity classes to provide both global and resource-specific mechanisms to restrict access to APIs and assets. The WebSecurity class helps to configure security at a global level, while HttpSecurity provides methods to configure security for a specific resource.
+
+**HttpSecurity**:- The HttpSecurity class helps to configure security for specific HTTP requests.Also, it permits using the requestMatcher() method to restrict security configuration to a specific HTTP endpoint.
+
+To enable HTTP Security in Spring, we need to create a SecurityFilterChain bean.
+
+Furthermore, it provides flexibility to configure authorization for a specific HTTP request. We can create a role-based authentication with the hasRole() method.
+
+```java
+@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/admin/**")
+      .authenticated()
+      .anyRequest()
+      .permitAll())
+      .formLogin(withDefaults());
+    return http.build();
+}
+```
+
+In the code above, we use the HttpSecurity class to restrict access to the “/admin/**” endpoint. Any request made to the endpoint will require authentication before access is granted.
+
+Furthermore, HttpSecurity provides a method to configure authorization for a restricted endpoint. Let’s modify our example code to permit only a user with an admin role to access the “/admin/**” endpoint:
+
+```java
+// ...
+http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/admin/**").hasRole("ADMIN"))
+// ...
+```
+
+```java
+@Bean 
+ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+      .anyRequest().authenticated()
+      .and().httpBasic();
+    return http.build();
+}
+```
+
+The above configuration makes sure any request to the application is authenticated with form based login or HTTP basic authentication.
+
+Also, it is exactly similar to the following XML configuration:
+
+```xml
+<http>
+    <intercept-url pattern="/**" access="isAuthenticated()"/>
+    <form-login />
+    <http-basic />
+</http>
+```
+
+Form Login - Interestingly, Spring Security generates a login page automatically, based on the features that are enabled and using standard values for the URL which processes the submitted login:
+
+```java
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+      .anyRequest().authenticated()
+      .and().formLogin()
+      .loginPage("/login").permitAll();
+    return http.build();
+}
+```
+
+Here the automatically generated login page is convenient to get up and running quickly.
+
+**WebSecurity**:- The WebSecurity class helps to configure security at a global level in a Spring application. We can customize WebSecurity by exposing the WebSecurityCustomizer bean.Unlike the HttpSecurity class, which helps configure security rules for specific URL patterns or individual resources, WebSecurity configuration applies globally to all requests and resources.
+
+Furthermore, it provides methods to debug logging for Spring Security filters, ignore security checks for certain requests and resources, or configure a firewall for a Spring application.
+
+Additionally, the WebSecurity class provides a method named ignoring(). The ignoring() method helps Spring Security to ignore an instance of a RequestMatcher. It’s recommended that register requests are of only static resources.
+
+Here’s an example that uses the ignoring() method to ignore static resources in a Spring application:
+
+```java
+@Bean
+WebSecurityCustomizer ignoringCustomizer() {
+    return (web) -> web.ignoring().requestMatchers("/resources/**", "/static/**");
+}
+```
+
+Here, we use the ignoring() method to bypass static resources from a security check.
+
+Notably, Spring advises that the ignoring() method shouldn’t be used for dynamic requests but only for static resources because it bypasses the Spring Security filter chain. This is recommended for static assets like CSS, images, etc.
+
+However, dynamic requests need to pass through authentication and authorization to provide different access rules because they carry sensitive data. Also, if we ignore dynamic endpoints completely, we lose total security control. This could open an application for different attacks like CSRF attacks or SQL injection.
+
+The debug() Method
+
+Additionally, the debug() method enables logging of Spring Security internals to assist with debugging configuration or request failures. This could be helpful in diagnosing security rules without the need for a debugger.
+
+Let’s see an example code that uses the debug() method to debug security:
+
+```java
+@Bean
+WebSecurityCustomizer debugSecurity() {
+    return (web) -> web.debug(true);
+}
+```
+
+Here, we invoke debug() on the WebSecurity instance and set it to true. This globally enables debug logging across all security filters.
+
+The httpFirewall() Method
+
+Also, the WebSecurity class provides the httpFirewall() method to configure a firewall for a Spring application. It helps to set rules to permit certain actions at the global level.
+
+Let’s use the httpFirewall() method to determine which HTTP methods should be allowed in our application:
+
+```java
+@Bean
+HttpFirewall allowHttpMethod() {
+    List<String> allowedMethods = new ArrayList<String>();
+    allowedMethods.add("GET");
+    allowedMethods.add("POST");
+    StrictHttpFirewall firewall = new StrictHttpFirewall();
+    firewall.setAllowedHttpMethods(allowedMethods);
+    return firewall;
+}
+
+@Bean
+WebSecurityCustomizer fireWall() {
+    return (web) -> web.httpFirewall(allowHttpMethod());
+}
+```
+
+In this tutorial, we’ll look in detail at the key usage of HttpSecurity and WebSecurity. Also, we’ll see the differences between the two classes.
+
+HttpSecurity and WebSecurity configurations can work together to provide global and resource-specific security rules.
+
+However, if similar security rules are configured in both, the WebSecurity configuration takes the highest precedence:
+
+```java
+@Bean
+WebSecurityCustomizer ignoringCustomizer() {
+    return (web) -> web.ignoring().antMatchers("/admin/**");
+}
+
+// ...
+ http.authorizeHttpRequests((authorize) -> authorize.antMatchers("/admin/**").hasRole("ADMIN"))
+// ...
+```
+
 Two main areas that Spring Security targets:
 
 1. “Authentication” is the process of establishing a principal is who they claim to be (a “principal” generally means a user,device or some other system which can perform an action in your application).
@@ -40,19 +183,6 @@ At an authentication level, Spring Security supports a wide range of authenticat
 
 - Intergration:- Works seamlessly with other Spring projects i.e Spring MVC,Spring Boot.It also supports OAuth2,OpenID Connect,SAML and JWT for modern authentication.
 
-## Components in Spring Security
-
-1. Filter Chain:- Series of filters that process incoming requests.
-2. SecurityContext:- Holds authentication information(principal,credentials and roles).Managed via SecurityContextHolder.
-3. AuthenticationManager:- Core interface for handling authentication.Works with AuthenticationProvider to validate credentials.
-4. GrantedAuthority:- Represents user permissions(e.g roles like ROLE_USER,ROLE_ADMIN)
-5. UserDetailsService:- Loads user-specific data from database or other sources.Often used with UserDetails for custom User Management.
-
-## Spring Security Configurations
-
-- Java Config
-- XML configuration
-
 ## Project Modules
 
 In Spring Security 3.0, the codebase has been sub-divided into separate jars which more clearly separate different functionaltiy areas and third-party dependencies
@@ -76,133 +206,117 @@ In Spring Security 3.0, the codebase has been sub-divided into separate jars whi
 
 7. OpenID - spring-security-openid.jar:- OpenID web authentication support. Used to authenticate users against an external OpenID server. org.springframework.security.openid. Requires OpenID4Java.
 
-## SECURITY FILTERCHAIN
+## Spring Security Features
 
-Spring Security provides a powerful and flexible filter chain to control access to application resources. Here's an overview of how the Spring Security filter chain works:
+1. Authorization:This functionality is provided by Spring Security and allows the user to be authorized before accessing resources. It enables developers to set access controls for resources.
+2. Single sign-on:  This feature allows a user to utilize a single account to access different apps (user name and password).
+3. Software Localization: This capability enables us to create user interfaces for applications in any language.
+4. Remember-me: With the help of HTTP Cookies, Spring Security provides this capability. It remembers the user and prevents them from logging in from the same workstation until they log out.
+5. LDAP (Lightweight Directory Access Protocol): That is an open application protocol for managing and interacting with dispersed directory information services over the Internet Protocol.
+6. JAAS (Java Authentication and Authorization Service) LoginModule: This is a Java-based Pluggable Authentication Module. It is supported by Spring Security’s authentication procedure.
+7. Web Form Authentication: Web forms capture and authenticate user credentials from the web browser during this procedure. While we wish to build web form authentication, Spring Security supports it.
+8. Digest Access Authentication: We can make the authentication procedure more secure with this functionality than with Basic Access Authentication. Before delivering sensitive data over the network, it requests that the browser verify the user’s identity.
+9. HTTP Authorization:Using Apache Ant paths or regular expressions, Spring provides this functionality for HTTP authorization of web request URLs.
+10. Basic Access Authentication: Spring Security has support for Basic Access Authentication, which is used to give a user name and password when performing network requests.
 
-- **FilterChainProxy**:- FilterChainProxy is the central component in the Spring Security filter chain. It delegates the actual filtering to one or more security filters, which can be configured for different URLs.
+## Features Added in Spring Security 6.0
 
-- **Security Filters**:- Several filters can be applied, each performing a specific security-related task. Some of the commonly used filters are:
+1. OAuth 2.0 Login: This feature allows users to connect to the app using their current GitHub or Google accounts. The Authorization Code Grant defined in the OAuth 2.0 Authorization Framework is used to implement this functionality.
+2. Reactive Support: Spring Security 6.0 adds support for reactive programming and reactive web runtimes, as well as the ability to interact with Spring WebFlux.
+3. Modernized Password Encoding: Spring Security 6.0 introduces the DelegatingPasswordEncoder, a new way to store passwords. The format for storing passwords is: {id} encodedPassword. List of ids for various password encoders are:
 
- 1. WebAsyncManagerIntegrationFilter: Integrates the SecurityContext with the WebAsyncManager.
- 2. SecurityContextPersistenceFilter: Manages the SecurityContext persistence between requests.
- 3. HeaderWriterFilter: Adds security headers to the response.
- 4. CsrfFilter: Protects against Cross-Site Request Forgery attacks.
- 5. LogoutFilter: Handles logout requests.
- 6. UsernamePasswordAuthenticationFilter: Processes authentication requests for username and password.
- 7. DefaultLoginPageGeneratingFilter: Generates a default login page.
- 8. BasicAuthenticationFilter: Processes HTTP basic authentication.
- 9. RequestCacheAwareFilter: Caches and retrieves previously requested URLs.
- 10. SecurityContextHolderAwareRequestFilter: Makes the SecurityContext accessible through the HttpServletRequest.
- 11. AnonymousAuthenticationFilter: Provides anonymous authentication support.
- 12. SessionManagementFilter: Manages the security of HTTP sessions.
- 13. ExceptionTranslationFilter: Translates authentication exceptions to HTTP responses.
- 14. FilterSecurityInterceptor: Protects web resources by enforcing the configured access control rules.
+    - {bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG
+    - {noop}password
+    - {pbkdf2}5d923b44a6d129f3ddf3e3c8d29412723dcbde72445e8ef6bf3b508fbf17fa4ed4d6b99ca763d8dc
+    - {scrypt}$e0801$8bWJaSu2IKSn9Z9kM+TPXfOc/9bdYSrN1oD9qfVThWEwdRTnO7re7Ei+fUZRJ68k9lTyuTeUp4of4g24hHnazw==$OAOec05+bXxvuu/1qZ6NUR+xQYvYv7BeL1QxwRpY5Pc=
+    - {sha256}97cde38028ad898ebc02e690819fa220e88c62e0699403e94fff291cfffaf8410849f27605abcbc0
 
-- **Configuring the Filter Chain**:- The filter chain can be configured using Java-based configuration (@Configuration) or XML-based configuration. Here's an example using Java-based configuration:
+requestMatchers() configures if an URL will be processed by that SecurityFilterChain. So if an URL does not match it , the whole SecurityFilterChain will be skipped which means Spring Security will not handle this URL after that. If you do not configure it , the default is to match all URLs.
 
-```java
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+The authorizeRequests() configures the authorisation stuff for an URL such as things like if it requires to be authenticated or if only certain roles can access it etc. It only has effect for those URLs that are processed by that SecurityFilterChain (i.e. Those URLs that are matched by requestMatchers())
 
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+## Core
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/public/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-            .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-            .logout()
-                .permitAll();
-    }
+Core classes and interfaces related to user authentication and authorization, as well as the maintenance of a security context.
 
-    @Bean
-    public CustomFilter customFilter() {
-        return new CustomFilter();
-    }
-}
-```
+AuthenticatedPrincipal- Representation of an authenticated Principal once an Authentication request has been successfully authenticated by the AuthenticationManager.authenticate(Authentication) method.
+Authentication - Represents the token for an authentication request or for an authenticated principal once the request has been processed by the AuthenticationManager.authenticate(Authentication) method.
+AuthenticationException- Abstract superclass for all exceptions related to an Authentication object being invalid for whatever reason.
+CredentialsContainer- Indicates that the implementing object contains sensitive data, which can be erased using the eraseCredentials method.
+GrantedAuthority - Represents an authority granted to an Authentication object.
+SpringSecurityCoreVersion- Internal class used for checking version compatibility in a deployed application.
+SpringSecurityMessageSource- The default MessageSource used by Spring Security.
+Transient - A marker for Authentications that should never be stored across requests, for example a bearer token authentication
 
-- **Custom Filters** -You can also create and add custom filters to the filter chain. For example:
+Authentication:- Represents the token for an authentication request or for an authenticated principal once the request has been processed by the AuthenticationManager.authenticate(Authentication) method.
+
+Once the request has been authenticated, the Authentication will usually be stored in a thread-local SecurityContext managed by the SecurityContextHolder by the authentication mechanism which is being used. An explicit authentication can be achieved, without using one of Spring Security's authentication mechanisms, by creating an Authentication instance and using the code:
 
 ```java
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import org.springframework.web.filter.OncePerRequestFilter;
-
-public class CustomFilter extends OncePerRequestFilter {
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        // Custom filter logic here
-        filterChain.doFilter(request, response);
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // Initialization logic here
-    }
-
-    @Override
-    public void destroy() {
-        // Cleanup logic here
-    }
-}
+ SecurityContext context = SecurityContextHolder.createEmptyContext();
+ context.setAuthentication(anAuthentication);
+ SecurityContextHolder.setContext(context);
 ```
 
-To add the custom filter to the filter chain:
+Note that unless the Authentication has the authenticated property set to true, it will still be authenticated by any security interceptor (for method or web invocations) which encounters it.
 
-```java
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+In most cases, the framework transparently takes care of managing the security context and authentication objects for you.
 
-@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http
-        .addFilterBefore(customFilter(), UsernamePasswordAuthenticationFilter.class)
-        .csrf().disable()
-        .authorizeRequests()
-            .antMatchers("/public/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-        .formLogin()
-            .loginPage("/login")
-            .permitAll()
-            .and()
-        .logout()
-            .permitAll();
-}
-```
+### USERDETAILS
 
-- **Understanding the Order**:The order in which filters are applied is crucial. Misordering can lead to unexpected behavior. Spring Security ensures the correct order by default, but custom filters need to be added in the right place.
+The standard interfaces for implementing user data DAOs.Can be the traditional UserDetailsService which uses a unique username to identify the user or, for more complex requirements, the AuthenticationUserDetailsService.
 
-By understanding and configuring the Spring Security filter chain correctly, you can effectively manage authentication, authorization, and other security concerns in your application.
+1. memory- Exposes an in-memory authentication repository.
+2. jdbc - Exposes a JDBC-based authentication repository, implementing org.springframework.security.core.userdetails.UserDetailsService UserDetailsService.
+3. cache- Implementations of UserCache.
 
-## Authentication Providers
+- UserDetails:- Provides core user information.Implementations are not used directly by Spring Security for security purposes. They simply store user information which is later encapsulated into Authentication objects. This allows non-security related user information (such as email addresses, telephone numbers etc) to be stored in a convenient location.
+Concrete implementations must take particular care to ensure the non-null contract detailed for each method is enforced. See User for a reference implementation (which you might like to extend or use in your code):-
+  1. Collection<? extends GrantedAuthority> getAuthorities():- Returns the authorities granted to the user.
+  2. String getPassword():- Returns the password used to authenticate the user.
+  3. String getUsername():- Returns the username used to authenticate the user.
+  4. default boolean isAccountNonExpired():- Indicates whether the user's account has expired.
+  5. default boolean isAccountNonLocked():- Indicates whether the user is locked or unlocked.
+  6. default boolean isCredentialsNonExpired():- Indicates whether the user's credentials (password) has expired.
+  7. default boolean isEnabled():- Indicates whether the user is enabled or disabled.
 
-1. In-Memory Authentication:- Useful for simple applications or testing
-2. Database Authentication:- Authenticate using relational database
-3. LDAP Authentication:- Authentiate users against LDAP directory.
-4. OAuth2 and JWT:- For token-based authentication,Spring Security integrates with OAuth2 and supports JWTs for stateless application.
+- UserDetailsService:- Core interface which loads user-specific data.It is used throughout the framework as a user DAO and is the strategy used by the DaoAuthenticationProvider.The interface requires only one read-only method, which simplifies support for new data-access strategies.
+  - UserDetails loadUserByUsername(String username) throws UsernameNotFoundException- Locates the user based on the username. In the actual implementation, the search may possibly be case sensitive, or case insensitive depending on how the implementation instance is configured. In this case, the UserDetails object that comes back may have a username that is of a different case than what was actually requested..
+
+- UsernameNotFoundException:- Thrown if an UserDetailsService implementation cannot locate a User by its username.
+  1. UsernameNotFoundException(String msg) - Constructs a UsernameNotFoundException with the specified message.
+  2. UsernameNotFoundException(String msg, Throwable cause)- Constructs a UsernameNotFoundException with the specified message and root cause
+
+- User:- Models core user information retrieved by a UserDetailsService.Developers may use this class directly, subclass it, or write their own UserDetails implementation from scratch.
+equals and hashcode implementations are based on the username property only, as the intention is that lookups of the same user principal object (in a user registry, for example) will match where the objects represent the same user, not just when all the properties (authorities, password for example) are the same.
+- Note that this implementation is not immutable. It implements the CredentialsContainer interface, in order to allow the password to be erased after authentication. This may cause side-effects if you are storing instances in-memory and reusing them. If so, make sure you return a copy from your UserDetailsService each time it is invoked.
+
+- UserCache:- Provides a cache of UserDetails objects.Implementations should provide appropriate methods to set their cache parameters (e.g. time-to-live) and/or force removal of entities before their normal expiration. These are not part of the UserCache interface contract because they vary depending on the type of caching system used (in-memory, disk, cluster, hybrid etc.).
+- Caching is generally only required in applications which do not maintain server-side state, such as remote clients or web services. The authentication credentials are then presented on each invocation and the overhead of accessing a database or other persistent storage mechanism to validate would be excessive. In this case, you would configure a cache to store the UserDetails information rather than loading it each time.
+
+## authentication
+
+Core classes and interfaces related to user authentication, which are used throughout Spring Security.
+Of key importance is the AuthenticationManager and its default implementation ProviderManager, which maintains a list AuthenticationProviders to which it delegates authentication requests.
+
+- AuthenticationManager - This is a functional interface and can therefore be used as the assignment target for a lambda expression or method reference.Processes an Authentication request.
+  - Authentication authenticate(Authentication authentication) - Attempts to authenticate the passed Authentication object, returning a fully populated Authentication object (including granted authorities) if successful.
+An AuthenticationManager must honour the following contract concerning exceptions:
+  1. A DisabledException must be thrown if an account is disabled and the AuthenticationManager can test for this state.
+  2. A LockedException must be thrown if an account is locked and the AuthenticationManager can test for account locking.
+  3. A BadCredentialsException must be thrown if incorrect credentials are presented. Whilst the above exceptions are optional, an AuthenticationManager must always test credentials.
+
+Exceptions should be tested for and if applicable thrown in the order expressed above (i.e. if an account is disabled or locked, the authentication request is immediately rejected and the credentials testing process is not performed). This prevents credentials being tested against disabled or locked accounts.
+Implementing class include ObservationAuthenticationManager, ProviderManager.
+
+- AuthenticationProvider:- Indicates a class can process a specific Authentication implementation.Implementing class includes DaoAuthenticationProvider, JaasAuthenticationProvider, JwtAuthenticationProvider,LdapAuthenticationProvider, OAuth2AuthorizationCodeAuthenticationProvider, OAuth2LoginAuthenticationProvider, OidcAuthorizationCodeAuthenticationProvider, OneTimeTokenAuthenticationProvider
+  1. In-Memory Authentication:- Useful for simple applications or testing
+  2. Database Authentication:- Authenticate using relational database
+  3. LDAP Authentication:- Authentiate users against LDAP directory.
+  4. OAuth2 and JWT:- For token-based authentication,Spring Security integrates with OAuth2 and supports JWTs for stateless application.
+
+- ProviderManager:- Iterates an Authentication request through a list of AuthenticationProviders.AuthenticationProviders are usually tried in order until one provides a non-null response. A non-null response indicates the provider had authority to decide on the authentication request and no further providers are tried. If a subsequent provider successfully authenticates the request, the earlier authentication exception is disregarded and the successful authentication will be used. If no subsequent provider provides a non-null response, or a new AuthenticationException, the last AuthenticationException received will be used. If no provider returns a non-null response, or indicates it can even process an Authentication, the ProviderManager will throw a ProviderNotFoundException. A parent AuthenticationManager can also be set, and this will also be tried if none of the configured providers can perform the authentication. This is intended to support namespace configuration options though and is not a feature that should normally be required.
+- The exception to this process is when a provider throws an AccountStatusException, in which case no further providers in the list will be queried. Post-authentication, the credentials will be cleared from the returned Authentication object, if it implements the CredentialsContainer interface. This behaviour can be controlled by modifying the eraseCredentialsAfterAuthentication property.
 
 ### OAuth2
 
@@ -247,286 +361,4 @@ spring:
     client-secret: my-client-secret
 ```
 
-### Username/Password Authentication
-
-- Publish an AuthenticationManager bean: A fairly common requirement is publishing an AuthenticationManager bean to allow for custom authentication, such as in a @Service or Spring MVC @Controller.
-For example, you may want to authenticate users via a REST API instead of using Form Login.
-
-You can configure username and password authentication using the following:
-Simple Username/Password Example
-
-```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-http
- .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
- .httpBasic(Customizer.withDefaults())
- .formLogin(Customizer.withDefaults());
-
-return http.build();
-}
-
-@Bean
-public UserDetailsService userDetailsService() {
-UserDetails userDetails = User.withDefaultPasswordEncoder()
-.username("user")
-.password("password")
-.roles("USER")
-.build();
-return new InMemoryUserDetailsManager(userDetails);
-}
-}
-```
-
-The preceding configuration automatically registers an in-memory UserDetailsService with the SecurityFilterChain , registers the DaoAuthenticationProvider with the default AuthenticationManager , and enables Form Login and HTTP Basic authentication.
-
-Publish an AuthenticationManager bean: A fairly common requirement is publishing an AuthenticationManager bean to allow for custom authentication, such as in a @Service or Spring MVC @Controller.
-
-For example, you may want to authenticate users via a REST API instead of using Form Login.
-You can publish such an AuthenticationManager for custom authentication scenarios using the following configuration:
-
-Publish AuthenticationManager bean for Custom Authentication
-
-```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-http
-.authorizeHttpRequests((authorize) -> authorize
-.requestMatchers("/login").permitAll()
-.anyRequest().authenticated()
-);
-return http.build();
-}
-
-@Bean
-public AuthenticationManager authenticationManager(
-UserDetailsService userDetailsService,
-PasswordEncoder passwordEncoder) {
-DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-authenticationProvider.setUserDetailsService(userDetailsService);
-authenticationProvider.setPasswordEncoder(passwordEncoder);
-return new ProviderManager(authenticationProvider);
-}
-
-@Bean
-public UserDetailsService userDetailsService() {
-UserDetails userDetails = User.withDefaultPasswordEncoder()
-.username("user")
-.password("password")
-.roles("USER")
-.build();
-return new InMemoryUserDetailsManager(userDetails);
-}
-
-@Bean
-public PasswordEncoder passwordEncoder() {
-return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-}
-}
-```
-
-With the preceding configuration in place, you can create a @RestController that uses the AuthenticationManager as follows:
-Create a @RestController for Authentication
-
-```java
-@RestController
-public class LoginController {
-private final AuthenticationManager authenticationManager;
-
-public LoginController(AuthenticationManager authenticationManager) {
-this.authenticationManager = authenticationManager;
-}
-@PostMapping("/login")
-public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
-Authentication authenticationRequest =
-UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
-Authentication authenticationResponse =
-this.authenticationManager.authenticate(authenticationRequest);
-// ...
-}
-public record LoginRequest(String username, String password) {
-}
-}
-```
-
-Customize the AuthenticationManager
-Normally, Spring Security builds an AuthenticationManager internally composed of a DaoAuthenticationProvider for username/password authentication. In cer-
-tain cases, it may still be desired to customize the instance of AuthenticationManager used by Spring Security. For example, you may need to simply disable creden-
-tial erasure for cached users.
-The recommended way to do this is to simply publish your own AuthenticationManager bean, and Spring Security will use it. You can publish an
-AuthenticationManager using the following configuration:
-
-```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-http
-.authorizeHttpRequests((authorize) -> authorize
-.requestMatchers("/login").permitAll()
-.anyRequest().authenticated()
-)
-.httpBasic(Customizer.withDefaults())
-.formLogin(Customizer.withDefaults());
-return http.build();
-}
-
-@Bean
-public AuthenticationManager authenticationManager(
-UserDetailsService userDetailsService,
-PasswordEncoder passwordEncoder) {
-DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-authenticationProvider.setUserDetailsService(userDetailsService);
-authenticationProvider.setPasswordEncoder(passwordEncoder);
-ProviderManager providerManager = new ProviderManager(authenticationProvider);
-providerManager.setEraseCredentialsAfterAuthentication(false);
-return providerManager;
-}
-
-@Bean
-public UserDetailsService userDetailsService() {
-UserDetails userDetails = User.withDefaultPasswordEncoder()
-.username("user")
-.password("password")
-.roles("USER")
-.build();
-return new InMemoryUserDetailsManager(userDetails);
-}
-
-@Bean
-public PasswordEncoder passwordEncoder() {
-return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-}
-}
-```
-
-Alternatively, you can take advantage of the fact that the AuthenticationManagerBuilder used to build Spring Security’s global AuthenticationManager is pub-
-lished as a bean. You can configure the builder as follows:
-Configure global AuthenticationManagerBuilder
-
-```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-// ...
-return http.build();
-}
-
-@Bean
-public UserDetailsService userDetailsService() {
-// Return a UserDetailsService that caches users
-// ...
-}
-@Autowired
-public void configure(AuthenticationManagerBuilder builder) {
-builder.eraseCredentials(false);
-}
-}
-```
-
-## PASSWORD ENCODING
-
-Password encoding ensures that passwords are securely stored and compared, protecting against attacks such as credential theft. The framework provides several built-in encoders and encourages the use of secure algorithms like BCrypt, which includes salting and hashing.
-
-How Password Encoding Works
-
-1. Encoding: Converts a plain-text password into a hashed format before storage.
-2. Matching: When a user logs in, the plain-text password they provide is encoded and compared with the stored hashed password.
-
-Common Password Encoders in Spring Security
-
-- BCryptPasswordEncoder:- Implements the BCrypt hashing algorithm with a built-in salt.Resistant to brute force and rainbow table attacks.
-
-```java
-@Bean
-public PasswordEncoder passwordEncoder() {
-   return new BCryptPasswordEncoder();
-}
-```
-
-- Pbkdf2PasswordEncoder:- Uses the PBKDF2 algorithm for password hashing.Supports configurable hashing strength.
-
-```java
-@Bean
-public PasswordEncoder passwordEncoder() {
-   return new Pbkdf2PasswordEncoder("secret", 185000, 256); // Custom secret, iterations, and hash width
-}
-```
-
-- Argon2PasswordEncoder:- Implements the Argon2 hashing algorithm, designed for secure password hashing.
-
-```java
-@Bean
-public PasswordEncoder passwordEncoder() {
-   return new Argon2PasswordEncoder();
-}
-```
-
-- SCryptPasswordEncoder:- Uses the SCrypt algorithm, designed to be memory-intensive.
-
-```java
-@Bean
-public PasswordEncoder passwordEncoder() {
-   return new SCryptPasswordEncoder();
-}
-```
-
-- NoOpPasswordEncoder (NOT Recommended):- Stores passwords in plain text (use only for testing).
-
-```java
-@Bean
-public PasswordEncoder passwordEncoder() {
-   return NoOpPasswordEncoder.getInstance();
-}
-```
-
-- DelegatingPasswordEncoder:- Allows using multiple encoders and prefixing encoded passwords with identifiers (e.g., {bcrypt}, {noop}).
-
-```java
-@Bean
-public PasswordEncoder passwordEncoder() {
-Map<String, PasswordEncoder> encoders = new HashMap<>();
-   encoders.put("bcrypt", new BCryptPasswordEncoder());
-   encoders.put("noop", NoOpPasswordEncoder.getInstance());
-    
-   return new DelegatingPasswordEncoder("bcrypt", encoders);
-}
-```
-
-## Spring Security Features
-
-1. Authorization:This functionality is provided by Spring Security and allows the user to be authorized before accessing resources. It enables developers to set access controls for resources.
-2. Single sign-on:  This feature allows a user to utilize a single account to access different apps (user name and password).
-3. Software Localization: This capability enables us to create user interfaces for applications in any language.
-4. Remember-me: With the help of HTTP Cookies, Spring Security provides this capability. It remembers the user and prevents them from logging in from the same workstation until they log out.
-5. LDAP (Lightweight Directory Access Protocol): That is an open application protocol for managing and interacting with dispersed directory information services over the Internet Protocol.
-6. JAAS (Java Authentication and Authorization Service) LoginModule: This is a Java-based Pluggable Authentication Module. It is supported by Spring Security’s authentication procedure.
-7. Web Form Authentication: Web forms capture and authenticate user credentials from the web browser during this procedure. While we wish to build web form authentication, Spring Security supports it.
-8. Digest Access Authentication: We can make the authentication procedure more secure with this functionality than with Basic Access Authentication. Before delivering sensitive data over the network, it requests that the browser verify the user’s identity.
-9. HTTP Authorization:Using Apache Ant paths or regular expressions, Spring provides this functionality for HTTP authorization of web request URLs.
-10. Basic Access Authentication: Spring Security has support for Basic Access Authentication, which is used to give a user name and password when performing network requests.
-
-## Features Added in Spring Security 6.0
-
-1. OAuth 2.0 Login: This feature allows users to connect to the app using their current GitHub or Google accounts. The Authorization Code Grant defined in the OAuth 2.0 Authorization Framework is used to implement this functionality.
-2. Reactive Support: Spring Security 6.0 adds support for reactive programming and reactive web runtimes, as well as the ability to interact with Spring WebFlux.
-3. Modernized Password Encoding: Spring Security 6.0 introduces the DelegatingPasswordEncoder, a new way to store passwords. The format for storing passwords is: {id} encodedPassword. List of ids for various password encoders are:
-
-    - {bcrypt}$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG
-    - {noop}password
-    - {pbkdf2}5d923b44a6d129f3ddf3e3c8d29412723dcbde72445e8ef6bf3b508fbf17fa4ed4d6b99ca763d8dc
-    - {scrypt}$e0801$8bWJaSu2IKSn9Z9kM+TPXfOc/9bdYSrN1oD9qfVThWEwdRTnO7re7Ei+fUZRJ68k9lTyuTeUp4of4g24hHnazw==$OAOec05+bXxvuu/1qZ6NUR+xQYvYv7BeL1QxwRpY5Pc=
-    - {sha256}97cde38028ad898ebc02e690819fa220e88c62e0699403e94fff291cfffaf8410849f27605abcbc0
+You can add trace leve of logging to check the logs

@@ -5,6 +5,9 @@ The Spring Security Web module provides the integration of Spring Security with 
 ## Key Components of Spring Security Web
 
 - **Security Filter Chain**:- The security filter chain is central to Spring Security Web. It processes incoming HTTP requests and applies security logic before passing the request to the application.
+
+Defines a filter chain which is capable of being matched against an HttpServletRequest.
+
 It consists of multiple filters, including:
 
 - Authentication Filters: Handle login processes and validate credentials.
@@ -199,3 +202,13 @@ http.cors().configurationSource(request -> {
 - OAuth2 Support: Integrates with third-party OAuth2 providers like Google and GitHub.
 
 Spring Security Web is a powerful and flexible module for securing web applications. It builds on Spring Security Core to provide comprehensive security features, such as filter chains, session management, CSRF protection, and CORS support. Its modular design allows developers to easily customize and extend security configurations for any type of web application.
+
+## SERVER
+
+1. SecurityWebFilterChain - Defines a filter chain which is capable of being matched against a ServerWebExchange in order to decide whether it applies to that request.
+2. ServerAuthenticationEntryPoint - Used to request authentication
+3. ServerRedirectStrategy - A strategy for performing redirects.
+4. WebFilterChainProxy - Used to delegate to a List of SecurityWebFilterChain instances.
+5. WebFilterChainProxy.DefaultWebFilterChainDecorator - A WebFilterChainProxy.WebFilterChainDecorator that uses the DefaultWebFilterChain
+6. WebFilterChainProxy.WebFilterChainDecorator - A strategy for decorating the provided filter chain with one that accounts for the SecurityFilterChain for a given request.
+7. WebFilterExchange - A composite of the ServerWebExchange and the WebFilterChain.
