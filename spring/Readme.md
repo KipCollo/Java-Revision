@@ -258,3 +258,22 @@ Many people run their Spring applications in a container that itself provides an
 To be clear about this: the problems reported are usually not with JCL per se, or even with commons-logging: rather they are to do with binding commons-logging to another framework (often Log4J). This can fail because commons-logging changed the way they do the runtime discovery in between the older versions (1.0) found in some containers and the modern versions that most people use now (1.1). Spring does not use any unusual parts of the JCL API, so nothing breaks there, but as soon as Spring or your application tries to do any logging you can find that the bindings to Log4J are not working.
 
 In such cases with WAS the easiest thing to do is to invert the class loader hierarchy (IBM calls it "parent last") so that the application controls the JCL dependency, not the container. That option isn’t always open, but there are plenty of other suggestions in the public domain for alternative approaches, and your mileage may vary depending on the exact version and feature set of the container.
+
+## Features
+
+1. Core technologies: dependency injection, events, resources, i18n, validation, data binding, type conversion, SpEL, AOP.
+2. Testing: mock objects, TestContext framework, Spring MVC Test, WebTestClient.
+3. Data Access: transactions, DAO support, JDBC, ORM, Marshalling XML.
+4. Spring MVC and Spring WebFlux web frameworks.
+5. Integration: remoting, JMS, JCA, JMX, email, tasks, scheduling, cache and observability.
+6. Languages: Kotlin, Groovy, dynamic languages.
+
+## Core Technologies
+
+This part of the reference documentation covers all the technologies that are absolutely integral to the Spring Framework.
+
+Foremost amongst these is the Spring Framework’s Inversion of Control (IoC) container. A thorough treatment of the Spring Framework’s IoC container is closely followed by comprehensive coverage of Spring’s Aspect-Oriented Programming (AOP) technologies. The Spring Framework has its own AOP framework, which is conceptually easy to understand and which successfully addresses the 80% sweet spot of AOP requirements in Java enterprise programming.
+
+Coverage of Spring’s integration with AspectJ (currently the richest — in terms of features — and certainly most mature AOP implementation in the Java enterprise space) is also provided.
+
+AOT processing can be used to optimize your application ahead-of-time. It is typically used for native image deployment using GraalVM.

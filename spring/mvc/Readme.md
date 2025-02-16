@@ -1,6 +1,10 @@
 # Spring MVC
 
+Spring MVC is a powerful web framework that is part of the Spring ecosystem.
 Its a module in sring framework.Spring MVC is used to develop web apps and and distributed applications.
+
+Spring MVC simplifies web development with its separation of concern and robust and scalable capabilities.
+Spring MVC provides a variety of annotations that simplify the development of web applications by allowing developers to define behavior and configurations directly in their code.
 
 * Web applications-Using servlets and JSPs we can develop web apps but dev has to write lots of boiler-plate codes.Boiler-plate code is code common for all apps.
 i.e

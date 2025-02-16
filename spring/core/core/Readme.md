@@ -405,13 +405,14 @@ public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer
 ## Loading Properties file based on ENVIRONMENT/profiles
 
 Environment could be:
+
 1. Test
 2. Development
 3. Production
 
 - Without spring:
 Configure profile name(dev,test,prod) in server configuration.
-i.e 
+i.e
 catalina.properties
  environment=dev
 
