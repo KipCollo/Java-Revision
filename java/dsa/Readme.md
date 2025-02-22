@@ -4,15 +4,15 @@
 
 ## Algorithms
 
- 1. Compression Algorithm
- 2. Graph algorithm
- 3. Optimization and Scheduling algorithm
- 4. Greedy Algorithm
- 5. Randomized algorithm
- 6. Brute Force algorithm
- 7. Dynamic programming algorithm
- 8. Divide and Conquer algorithm
- 9. Simple Recursive algorithm
+1. Compression Algorithm
+2. Graph algorithm
+3. Optimization and Scheduling algorithm
+4. Greedy Algorithm
+5. Randomized algorithm
+6. Brute Force algorithm
+7. Dynamic programming algorithm
+8. Divide and Conquer algorithm
+9. Simple Recursive algorithm
 
 •1. Why are strings immutable in Java?
 •2. What is the difference between creating a String using new() and as a literal?

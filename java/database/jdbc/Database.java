@@ -1,15 +1,20 @@
-/* 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
 public class Database {
 
+    private static final String url = "jdbc:postgresql://localhost:5432/polling_app";
+    private static final String user = "postgres";
+    private static final String password = "postgres";
+
+
     public Connection connect(String username, String password){
 
         Connection conn = null;
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName("");
 
             String url ="jdbc:postgresql://localhost:5432/polling_app";
             conn = DriverManager.getConnection( url, username ,password);
@@ -39,5 +44,14 @@ public class Database {
         System.out.println(e);
      }
   }
+
+  public static void main(String[] args) {
+    try {
+        Class.forName("org.postgresql.Driver");
+
+        //First display existing records
+        try(Connection connection = DriverManager.getConnection(url, user, password);
+    } catch (Exception e) {
+    }
+  }
 }
-*/

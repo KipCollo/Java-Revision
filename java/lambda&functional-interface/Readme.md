@@ -368,3 +368,9 @@ public class Show{
     }
 }
 ```
+
+Functional interfaces are used to call Lambda expressions.Lambda expressions is used to reduce no. of lines of code.
+
+           calls                         calls
+
+Stream API-------->Functional Interface--------->Lambda Expressions
