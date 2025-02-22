@@ -68,6 +68,13 @@ public class Zoo{
 
 The formal name of this feature is *local variable type inference*.You can only use this feature for local variables.
 
+Rules on scope include:
+
+- Local variables: In scope from declarations to the end of the block.
+- Method parameters: In scope for duration of the method.
+- Instance variables: In scope from declaration until objects is eligible for garbage collections.
+- class variables: In scope from declarations until the program ends.
+
 ## Data Types
 
 Java types can split into two categories:-
@@ -199,3 +206,21 @@ int y = Integer.parseInt(y)
 ```
 
 ## Java Garbage Collections
+
+Java provides a garbage collector to automatically look for objects that aren't needed anymore.Java code exists inside off a JVM,which includes numerous processes independent from your application code.One of the most important of those is a built-in garbage collector.
+
+All java objects are stored in the program memory's heap.The heap,also referred as free store,represents a large pool of unused memory allocated to your java application.If your program keeps instantiating objects and leaving them on the heap, eventually it will run out of memory and crash.Garbage collection solves this problem.
+
+`Garbage collection` refers to the process of automatically freeing memory on the heap by deleting objects that are no longer reachable in your program.There are many different algorithms for garbage collections
+
+In Java and other languages, `eligible for garbage collection` refers to an object’s state of no longer being accessible in a program and therefore able to be garbage collected.
+Java includes a built-­in method to help support garbage collection where you can suggest that garbage collection run.
+
+```java
+System.gc();
+```
+
+**Tracing Eligibility**:-The JVM waits patiently and monitors each object until it determines that the code no longer needs that memory. An object will remain on the heap until it is no longer reachable. An object is no longer reachable when one of two situations occurs:
+
+1. The object no longer has any references pointing to it.
+2. All references to the object have gone out of scope.
