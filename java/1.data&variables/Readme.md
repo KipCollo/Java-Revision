@@ -33,7 +33,7 @@ There are only four rules to remember for legal identifiers:
 4. You cannot use the same name as a Java reserved word. A reserved word is a special word that Java has held aside so that you are not allowed to use it. Remember that Java
 is case sensitive, so you can use versions of the keywords that only differ in case.
 
-**Initializing Variables**:-Before you can use a variable, it needs a value. Some types of variables get this value set automatically, and others require the programmer to specify it.
+`Initializing Variables`:-Before you can use a variable, it needs a value. Some types of variables get this value set automatically, and others require the programmer to specify it.
 
 - Local Variables:- A local variable is variable defined within a constructor,method or initializer block.
 
@@ -55,7 +55,7 @@ public void find(boolean check){}
 
 NOTE:-Instance and class variables does not require you to initialize them.as soon as you declare these variables,they are given default value.The compiler doesn't know what value to use and so wants the simplest value it can give the type `null for object,zero for numeric types,false for boolean,char is NUL`.
 
-**Inferring Type with var**:- You can use the keyword `var` instead of the type when declaring local variables under certain conditions.
+`Inferring Type with var`:- You can use the keyword `var` instead of the type when declaring local variables under certain conditions.
 
 ```java
 public class Zoo{
@@ -203,6 +203,12 @@ TODO Using wrapper classes for conversion.
 
 String y = "23";
 int y = Integer.parseInt(y)
+```
+
+## Constants
+
+```Java
+final float PI =3.14F;
 ```
 
 ## Java Garbage Collections
