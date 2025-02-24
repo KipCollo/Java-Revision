@@ -452,3 +452,279 @@ int result = (int) (Math.random() * 100)// result is random e.g 67
 ```
 
 Since it is a random number, we can’t know the result in advance. However, we can rule out certain numbers. For example, it can’t be negative because that’s less than 0. It can’t be 1.0 because that’s not less than 1.
+
+## Arrays
+
+Arrays are used to store multiple values in a single variable, instead of declaring separate variables for each value.An array is a collection of a fixed number of elements, wherein the elements are of same data types.
+
+- Properties
+   1. Stores data of specified type.
+   2. Elements are located in contiguous memory.
+   3. Each elements has unique index.
+   4. Size of array is defined.
+
+- Types of Arrays
+
+1. One Dimensional: An array with a bunch of values having been declared with single index.i.e a[i]->i btwn 0 and N.
+2. Multi Dimensional- Two dimensional, Three dimensional..N dimensional: 2D array with bunch of values declared with double index.i.e `a[i(Row)][j(Column)]`->i and j btwn 0 and N.
+
+- `Creating Array`
+
+We can:
+
+- Declare: Create reference to Array.
+- Instantiate: Creates an array
+- Initialization: Assigns value to cells in array.
+
+- `Declaring(O(1))`
+
+Syntax:
+
+dataType arrayName[];
+
+To declare an array, define the variable type with square brackets:
+
+```Java
+String[] cars;
+```
+
+- `Insatiate.(O(1))`
+
+In Java array is an object, **arrayName** is a reference variable.To store data we must initiate the array object.
+
+arrayName = new datatype[intExp];
+
+The **intExp** rep number of components in array.
+
+```Java
+cars = new String[10];
+```
+
+You can combine the statement:
+
+dataType[] arrayName = new datatype[intExp];
+
+```Java
+String[] cars = new String[10];
+```
+
+- `Initialize`
+
+- When array is initialised, Java automatically initialises it's components to their default values.e.g numeric are initialised to 0.
+
+- `Insertion`
+
+- To add components to array you use:
+
+```Java
+cars[0]="Volvo";
+cars[1]="Toyota";// all sum to (O(N))
+```
+
+- Shorter way to declare and initialize an Array. To insert values to it, you can place the values in a comma-separated list, inside curly braces:
+
+```java
+String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};//(O(1))
+```
+
+- To create an array of integers, you could write:
+
+```java
+int[] myNum = {10, 20, 30, 40};
+```
+
+- `Accessing Array Components`:- The general format to access an array is:
+
+arrayName[indexExp]
+
+```Java
+myNum[1];
+```
+
+The [] operator is called **array subscripting operator**
+
+```java
+import java.util.Arrays;
+
+public class Array1 {
+
+ public static void main (String[] args) 
+ {   
+ // declares an Array of integers.
+ int[] arr;
+  
+ // allocating memory for 5 integers.(Insatiate)
+ arr = new int[5];
+  
+ // initialize the elements of the array
+ arr[0] = 10;
+ arr[1] = 20;
+ arr[2] = 30;
+ arr[3] = 40;
+ arr[4] = 50;
+  
+ // accessing element at a position
+
+ System.out.println(arr[1]);
+ 
+ // accessing the elements of the specified array
+ for (int i = 0; i < arr.length; i++)
+  System.out.println("index " + i + 
+         " : "+ arr[i]);   
+ 
+ // Print all the array elements using for-each
+ System.out.println("Print using foreach loop");
+    for (int element: arr)
+        System.out.println(element);
+
+ String[] cars= {"Volvo", "Mercedes"};
+
+ // Accessing arrays using Array class
+ System.out.println(Arrays.toString(cars));
+
+ 
+    }
+
+ 
+}
+```
+
+- `Sorting`:- Java makes it easy to sort an array by providing a sort method—­or rather, a bunch of sort methods. Just like StringBuilder allowed you to pass almost anything to append(), you can pass almost any array to Arrays.sort().
+Arrays requires an import. To use it, you must have either of the following two statements in your class:
+
+```java
+import java.util.*;// import whole package including Arrays
+import java.util.Arrays;// import just Arrays
+```
+
+There is one exception,You can write java.util.Arrays every time it is used in the class instead of specifying it as an import.
+Remember that if you are shown a code snippet, you can assume the necessary imports are there. This simple example sorts three numbers:
+
+```java
+int[] numbers = { 6, 9, 1 };
+Arrays.sort(numbers);
+for (int i = 0; i < numbers.length; i++)
+  System.out.print(numbers[i] + " ");
+```
+
+- Just printing the array variable directly would give the annoying hash of `[I@2bd9c3e7`. Alternatively, we could have printed Arrays.toString(numbers) instead of using the loop. That would have output [1, 6, 9].
+
+```java
+String[] strings = { "10", "9", "100" };
+Arrays.sort(strings);
+for (String s : strings)
+  System.out.print(s + " ");
+```
+
+- `Searching`:- Java also provides a convenient way to search, but only if the array is already sorted.Rules for binary search.
+  1. Target element found in sorted array - Index of match
+  2. Target element not found in sorted array - Negative value showing one smaller than the negative of the index, where a match needs to be inserted to preserve sorted order
+  3. Unsorted array - A surprise; this result is undefined
+
+```java
+int[] numbers = {2,4,6,8};
+System.out.println(Arrays.binarySearch(numbers, 2)); // 0
+System.out.println(Arrays.binarySearch(numbers, 4)); // 1
+System.out.println(Arrays.binarySearch(numbers, 1)); // -­
+System.out.println(Arrays.binarySearch(numbers, 3)); // -­
+System.out.println(Arrays.binarySearch(numbers, 9)); // -­
+```
+
+- `Comparing`:- Java also provides methods to compare two arrays to determine which is “smaller.” First we cover the compare() method, and then we go on to mismatch(). These methods are overloaded to take a variety of parameters.
+
+- Using compare():- There are a bunch of rules you need to know before calling compare().
+  1. A negative number means the first array is smaller than the second.
+  2. A zero means the arrays are equal.
+  3. A positive number means the first array is larger than the second.
+
+```java
+System.out.println(Arrays.compare(new int[] {1}, new int[] {2}));
+```
+
+This code prints a negative number. It should be pretty intuitive that 1 is smaller than 2,
+making the first array smaller.
+Now that you know how to compare a single value, let’s look at how to compare arrays
+of different lengths:
+■■
+■■
+■■
+If both arrays are the same length and have the same values in each spot in the same
+order, return zero.
+If all the elements are the same but the second array has extra elements at the end,
+return a negative number.
+If all the elements are the same, but the first array has extra elements at the end, return a
+positive number.
+■■If the first element that differs is smaller in the first array, return a negative number.
+■■If the first element that differs is larger in the first array, return a positive number.
+Finally, what does smaller mean? Here are some more rules that apply here and to
+compareTo(), which you see in Chapter 8, “Lambdas and Functional Interfaces”:
+■■null is smaller than any other value.
+■■For numbers, normal numeric order applies.
+■■For strings, one is smaller if it is a prefix of another.
+■■For strings/characters, numbers are smaller than letters.
+■■For strings/characters, uppercase is smaller than lowercase.
+
+Using mismatch()
+Now that you are familiar with compare(), it is time to learn about mismatch(). If the
+arrays are equal, mismatch() returns -­1. Otherwise, it returns the first index where they
+differ. Can you figure out what these print?
+System.out.println(Arrays.mismatch(new int[] {1}, new int[] {1}));
+System.out.println(Arrays.mismatch(new String[] {"a"},
+new String[] {"A"}));
+System.out.println(Arrays.mismatch(new int[] {1, 2}, new int[] {1}));
+In the first example, the arrays are the same, so the result is -­1. In the second example,
+the entries at element 0 are not equal, so the result is 0. In the third example, the entries at
+element 0 are equal, so we keep looking. The element at index 1 is not equal. Or, more spe-
+cifically, one array has an element at index 1, and the other does not. Therefore, the result is 1.
+To make sure you understand the compare() and mismatch() methods, study
+Table 4.5. If you don’t understand why all of the values are there, please go back and study
+this section again.
+
+Using Methods with Varargs
+When you’re creating an array yourself, it looks like what we’ve seen thus far. When one
+is passed to your method, there is another way it can look. Here are three examples with a
+main() method:
+public static void main(String[] args)
+public static void main(String args[])
+public static void main(String... args) // varargs
+
+- **Working with Multidimensional Arrays**:-Arrays are objects, and of course, array components can be objects and it can hold other arrays
+
+- `Creating a Multidimensional Array`:- Multiple array separators are all it takes to declare arrays with multiple dimensions. You can locate them with the type or variable name in the declaration, just as before:
+
+```java
+int[][] vars1;// 2D array
+int vars2 [][];// 2D array
+int[] vars3[];// 2D array
+int[] vars4 [], space [][]; // a 2D AND a 3D array
+```
+
+You can specify the size of your multidimensional array in the declaration if you like:
+
+```java
+String [][] rectangle = new String[3][2];
+```
+
+Result of this statement is an array rectangle with three elements, each of which refers to an array of two elements. You can think of the addressable range as `[0][0]`through `[2][1]`, but don’t think of it as a structure of addresses like [0,0] or [2,1].
+
+Using a Multidimensional Array
+The most common operation on a multidimensional array is to loop through it. This
+example prints out a 2D array:
+var twoD = new int[3][2];
+for(int i = 0; i < twoD.length; i++) {
+for(int j = 0; j < twoD[i].length; j++)
+System.out.print(twoD[i][j] + " "); // print element
+System.out.println();
+// time for a new row
+}
+We have two loops here. The first uses index i and goes through the first subarray for twoD.
+The second uses a different loop variable, j. It is important that these be different variable names
+so the loops don’t get mixed up. The inner loop looks at how many elements are in the second-­
+level array. The inner loop prints the element and leaves a space for readability. When the inner
+loop completes, the outer loop goes to a new line and repeats the process for the next element.
+This entire exercise would be easier to read with the enhanced for loop.
+for(int[] inner : twoD) {
+for(int num : inner)
+System.out.print(num + " ");
+System.out.println();
+}

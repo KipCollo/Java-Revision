@@ -376,7 +376,6 @@ Each application module has the following structure:
 
     src/main/webapp/WEB-INF: configuration files for web applications (web applications only)
 
-
 ## Java EE Containers
 
 Normally, thin-client multitiered applications are hard to write because they involve many lines of intricate code to handle transaction and state management, multithreading, resource pooling, and other complex low-level details. The component-based and platform-independent Java EE architecture makes applications easy to write because business logic is organized into reusable components. In addition, the Java EE server provides underlying services in the form of a container for every component type. Because you do not have to develop these services yourself, you are free to concentrate on solving the business problem at hand.
