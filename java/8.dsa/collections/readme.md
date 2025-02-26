@@ -1,21 +1,15 @@
-# Collections Framework in Java
+# Collections Framework
 
-The java.util package contains all the classes and interfaces for Collection framework.
+A collection is a group of objects contained in a single object.The Java Collections framework is a set of classes in java.util package for storing collections.
+There are five main interfaces:-
 
-**Map :**
-An object that maps keys to values. A map is not ordered and cannot contain duplicate keys (but can contain duplicate values). Each key can map to at most one value.
+1. `Map` :An object that maps keys to values. A map is not ordered and cannot contain duplicate keys (but can contain duplicate values). Each key can map to at most one value.
+2. `Collection` :A collection represents a group of objects, known as its elements. The JDK provides implementations of more specific subinterfaces like Set and List.
+3. `List` :A list is an ordered list of objects, where the same object may well appear more than once. For example: [1, 7, 1, 3, 1, 1, 1, 5]. You can add an element anywhere in the list, change an element anywhere in the list, or remove an element from any position in the list.
+4. `Queue` :A queue is also ordered, but you'll only ever touch elements at one end. All elements get inserted at the "end" and removed from the "beginning" (or head) of the queue. You can find out how many elements are in the queue,.
+5. `Set` :A set is not ordered and cannot contain duplicates. Any given object either is or isn't in the set. {7, 5, 3, 1} is the exact same set as {1, 7, 3, 5}. You can add or remove elements, and you can find out if a certain element exists.
 
-**Collection :**
-A collection represents a group of objects, known as its elements. The JDK provides implementations of more specific subinterfaces like Set and List.
-
-**List :**
-A list is an ordered list of objects, where the same object may well appear more than once. For example: [1, 7, 1, 3, 1, 1, 1, 5]. It makes sense to talk about the "third element" in a list. You can add an element anywhere in the list, change an element anywhere in the list, or remove an element from any position in the list.
-
-**Queue :**
-A queue is also ordered, but you'll only ever touch elements at one end. All elements get inserted at the "end" and removed from the "beginning" (or head) of the queue. You can find out how many elements are in the queue, but you can't find out what, say, the "third" element is. You'll see it when you get there.
-
-**Set :**
-A set is not ordered and cannot contain duplicates. Any given object either is or isn't in the set. {7, 5, 3, 1} is the exact same set as {1, 7, 3, 5}. You again can't ask for the "third" element or even the "first" element, since they are not in any particular order. You can add or remove elements, and you can find out if a certain element exists.
+NOTE:- Map doesn't implements the Collection interface.It is considered a part of the Collection framework even though it isn't technically a collection.
 
 <table class="alt">
 <tbody>

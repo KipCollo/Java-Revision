@@ -1,78 +1,46 @@
 # Persistence
 
 The Java Persistence API provides an object/relational mapping facility to Java developers for managing relational data in Java applications. Java Persistence consists of three areas:
+
 1. The Java Persistence API
 2. The query language
 3. Object/relational mapping metadata
 
-## Entities
-
-An entity is a lightweight persistence domain object. Typically an entity represents a table in a relational database, and each entity instance corresponds to a row in that table. The primary programming artifact of an entity is the entity class, although entities can use helper classes.
+`Entities`:- An entity is a lightweight persistence domain object. Typically an entity represents a table in a relational database, and each entity instance corresponds to a row in that table. The primary programming artifact of an entity is the entity class, although entities can use helper classes.
 
 The persistent state of an entity is represented either through persistent fields or persistent properties. These fields or properties use object/relational mapping annotations to map the entities and entity relationships to the relational data in the underlying data store.
 
-Requirements for Entity Classes
+- An entity class must follow these requirements:
+  1. The class must be annotated with the javax.persistence.Entity annotation.
+  2. The class must have a public or protected, no-argument constructor. The class may have other constructors.
+  3. The class must not be declared final. No methods or persistent instance variables must be declared final.
+  4. If an entity instance be passed by value as a detached object, such as through a session bean’s remote business interface, the class must implement the Serializable interface.
+  5. Entities may extend both entity and non-entity classes, and non-entity classes may extend entity classes.
+  6. Persistent instance variables must be declared private, protected, or package-private, and can only be accessed directly by the entity class’s methods. Clients must access the entity’s state through accessor or business methods.
 
-An entity class must follow these requirements:
-
-    The class must be annotated with the javax.persistence.Entity annotation.
-
-    The class must have a public or protected, no-argument constructor. The class may have other constructors.
-
-    The class must not be declared final. No methods or persistent instance variables must be declared final.
-
-    If an entity instance be passed by value as a detached object, such as through a session bean’s remote business interface, the class must implement the Serializable interface.
-
-    Entities may extend both entity and non-entity classes, and non-entity classes may extend entity classes.
-
-    Persistent instance variables must be declared private, protected, or package-private, and can only be accessed directly by the entity class’s methods. Clients must access the entity’s state through accessor or business methods.
-
-Persistent Fields and Properties in Entity Classes
-
-The persistent state of an entity can be accessed either through the entity’s instance variables or through JavaBeans-style properties. The fields or properties must be of the following Java language types:
-
-    Java primitive types
-
-    java.lang.String
-
-    Other serializable types including:
-
-        Wrappers of Java primitive types
-
-        java.math.BigInteger
-
-        java.math.BigDecimal
-
-        java.util.Date
-
-        java.util.Calendar
-
-        java.sql.Date
-
-        java.sql.Time
-
-        java.sql.TimeStamp
-
-        User-defined serializable types
-
-        byte[]
-
-        Byte[]
-
-        char[]
-
-        Character[]
-
-    Enumerated types
-
-    Other entities and/or collections of entities
-
-    Embeddable classes
+- `Persistent Fields and Properties in Entity Classes`:- The persistent state of an entity can be accessed either through the entity’s instance variables or through JavaBeans-style properties. The fields or properties must be of the following Java language types:
+  1. Java primitive types
+  2. java.lang.String
+  3. Wrappers of Java primitive types
+  4. java.math.BigInteger
+  5. java.math.BigDecimal
+  6. java.util.Date
+  7. java.util.Calendar
+  8. java.sql.Date
+  9. java.sql.Time
+  10. java.sql.TimeStamp
+  11. User-defined serializable types
+  12. byte[]
+  13. Byte[]
+  14. char[]
+  15. Character[]
+  16. Enumerated types
+  17. Other entities and/or collections of entities
+  18. Embeddable classes
 
 Entities may either use persistent fields or persistent properties. If the mapping annotations are applied to the entity’s instance variables, the entity uses persistent fields. If the mapping annotations are applied to the entity’s getter methods for JavaBeans-style properties, the entity uses persistent properties. You cannot apply mapping annotations to both fields and properties in a single entity.
-Persistent Fields
 
-If the entity class uses persistent fields, the Persistence runtime accesses entity class instance variables directly. All fields not annotated javax.persistence.Transient or not marked as Java transient will be persisted to the data store. The object/relational mapping annotations must be applied to the instance variables.
+- `Persistent Fields`:- If the entity class uses persistent fields, the Persistence runtime accesses entity class instance variables directly. All fields not annotated javax.persistence.Transient or not marked as Java transient will be persisted to the data store. The object/relational mapping annotations must be applied to the instance variables.
 Persistent Properties
 
 If the entity uses persistent properties, the entity must follow the method conventions of JavaBeans components. JavaBeans-style properties use getter and setter methods that are typically named after the entity class’s instance variable names. For every persistent property property of type Type of the entity, there is a getter method getProperty and setter method setProperty. If the property is a boolean, you may use isProperty instead of getProperty. For example, if a Customer entity uses persistent properties, and has a private instance variable called firstName, the class defines a getFirstName and setFirstName method for retrieving and setting the state of the firstName instance variable.

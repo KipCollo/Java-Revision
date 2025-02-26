@@ -710,6 +710,8 @@ Result of this statement is an array rectangle with three elements, each of whic
 Using a Multidimensional Array
 The most common operation on a multidimensional array is to loop through it. This
 example prints out a 2D array:
+
+```java
 var twoD = new int[3][2];
 for(int i = 0; i < twoD.length; i++) {
 for(int j = 0; j < twoD[i].length; j++)
@@ -717,6 +719,8 @@ System.out.print(twoD[i][j] + " "); // print element
 System.out.println();
 // time for a new row
 }
+```
+
 We have two loops here. The first uses index i and goes through the first subarray for twoD.
 The second uses a different loop variable, j. It is important that these be different variable names
 so the loops don’t get mixed up. The inner loop looks at how many elements are in the second-­
