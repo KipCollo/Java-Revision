@@ -52,7 +52,7 @@ Let’s take a look at an example. The following fall() method declares that it 
 ```java
 void fall(int distance) throws IOException {
 if(distance > 10) {
-throw new IOException();
+ throw new IOException();
 }
 }
 ```
@@ -353,6 +353,136 @@ try {
 ```
 
 System.exit() tells Java, “Stop. End the program right now. Do not pass Go. Do not collect $200.” When System.exit() is called in the try or catch block, the finally block does not run.
+
+**Automating Resource Management**:Often, your application works with files, databases, and various connection objects. Commonly, these external data sources are referred to as resources. In many cases, you open a connection to the resource, whether it’s over the network or within a file system. You then read/write the data you want. Finally, you close the resource to indicate that you are
+done with it.
+What happens if you don’t close a resource when you are done with it? In short, a lot of bad things could happen. If you are connecting to a database, you could use up all available connections, meaning no one can talk to the database until you release your connections. Although you commonly hear about memory leaks causing programs to fail, a resource leak is just as bad and occurs when a program fails to release its connections to a resource, resulting in the resource becoming inaccessible. This could mean your program can no longer talk to the database—­or, even worse, all programs are unable to reach the database!
+A resource is typically a file or database that requires some kind of stream or connection to read or write data.
+
+- `Introducing Try-­with-­Resources`:- Java includes the try-­with-­resources statement to automatically close all resources opened in a try clause. This feature is also known as automatic resource
+management, because Java automatically takes care of the closing.
+
+```java
+public void readFile(String file) {
+FileInputStream is = null;
+try {
+   is = new FileInputStream("myfile.txt");
+   // Read file data
+} catch (IOException e) {
+   e.printStackTrace();
+} finally {
+   if(is != null) {
+      try {
+         is.close();
+      } catch (IOException e2) {
+         e2.printStackTrace();
+    }
+   }
+ }
+}
+```
+
+```java
+public void readFile(String file) {
+   try (FileInputStream is = new FileInputStream("myfile.txt")) {
+      // Read file data
+   } catch (IOException e) {
+      e.printStackTrace();
+   }
+}
+```
+
+Behind the scenes, the compiler replaces a try-­with-­resources block with a try and finally block. We refer to this “hidden” finally block as an implicit finally block since it is created
+and used by the compiler automatically. You can still create a programmer-­defined finally block when using a try-­with-­resources statement; just be aware that the implicit one will be called first.
+
+- `Basics of Try-­with-­Resources`:-When multiple resources are opened, they are closed in the reverse of the order in which they were created. Parentheses are used to list those resources, and semicolons are used to separate the declarations.
+
+```java
+try(var in = new FileInputStream("data.txt");
+   var out = new FileOutputStream("output.txt");){
+      //protected code
+}catch (IOException e){
+   //Exception handler
+} finally{
+   // finally block
+}
+```
+
+A catch block is optional with a try-­with-­resources statement. For example, we can rewrite the previous readFile() example so that the method declares the exception to make it even shorter:
+
+```java
+public void readFile(String file) throws IOException {
+   try (FileInputStream is = new FileInputStream("myfile.txt")) {
+      // Read file data
+   }
+}
+```
+
+A try-­with-­resources statement differs from a try statement in that neither of catch block is required, although a developer may add both. Implicit finally block runs before any programmer-­coded ones.
+
+- `Constructing Try-­with-­Resources Statements`:- Only classes that implement the AutoCloseable interface can be used in a try-­with-­resources statement. For example, the following does not compile as String does not implement the AutoCloseable interface:
+
+```java
+try (String reptile = "lizard") {}
+```
+
+Inheriting AutoCloseable requires implementing a compatible close() method.
+
+```java
+interface AutoCloseable {
+public void close() throws Exception;
+}
+```
+
+From method overriding,the implemented version of close() can choose to throw Exception or a subclass or not throw any exceptions at all.The following custom resource class that
+simply prints a message when the close() method is called:
+
+```java
+public class MyFileClass implements AutoCloseable {
+   private final int num;
+   public MyFileClass(int num) { this.num = num; }
+   @Override public void close() {
+      System.out.println("Closing: " + num);
+} }
+```
+
+NOTE:- You can encounter resources that implement Closeable rather than AutoCloseable. Since Closeable extends AutoCloseable, they are both supported in try-­with-­resources statements. The only difference between the two is that Closeable’s close() method declares IOException, while AutoCloseable’s close() method declares Exception.
+
+- `Declaring Resources`:- While try-­with-­resources does support declaring multiple variables, each variable must be declared in a separate statement. For example, the following do not compile:
+
+```java
+try (MyFileClass is = new MyFileClass(1),// DOES NOT COMPILE
+   os = new MyFileClass(2)) {
+}
+try (MyFileClass ab = new MyFileClass(1),// DOES NOT COMPILE
+   MyFileClass cd = new MyFileClass(2)) {
+}
+```
+
+The first example does not compile because it is missing the data type, and it uses a comma (,) instead of a semicolon (;). The second example does not compile because it also uses a comma (,) instead of a semicolon (;). Each resource must include the data type and be separated by a semicolon (;).
+You can declare a resource using var as the data type in a try-­with-­resources statement, since resources are local variables.
+
+```java
+try (var f = new BufferedInputStream(new FileInputStream("it.txt"))) {
+// Process file
+}
+```
+
+Declaring resources is a common situation where using var is quite helpful, as it shortens the already long line of code.
+
+- `Scope of Try-­with-­Resources`:- The resources created in the try clause are in scope only within the try block. This is another way to remember that the implicit finally runs before any catch/finally blocks that you code yourself. The implicit close has run already, and the resource is no longer available.
+
+```java
+try (Scanner s = new Scanner(System.in)) {
+   s.nextLine();
+} catch(Exception e) {
+   s.nextInt(); // DOES NOT COMPILE
+} finally {
+   s.nextInt(); // DOES NOT COMPILE
+}
+```
+
+- `Order of Operations`:- When working with try-­with-­resources statements, it is important to know that resources are closed in the reverse of the order in which they are created.
 
 ## Formatting Values
 
