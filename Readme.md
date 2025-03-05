@@ -63,7 +63,7 @@ It incudes all Frameworks,Tools and Technologies for modern development.
 ## RESTful & Web Services
 
 1. JAX-RSAPI:- for building RESTful web services.
-2. OpenAPIAPI:- documentation and testing tool.
+2. OpenAPI:- documentation and testing tool.
 3. SwaggerAPI:- documentation and testing tool.
 
 ## Development Tools
