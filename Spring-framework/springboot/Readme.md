@@ -101,36 +101,3 @@ There are 3 ways:
 
 2. Using start.spring.io: No need to write manual code.
 3. Using spring starter project using IDEs.
-
-## Best practises
-
-* Controller(API Layer): This folder contains REST APIs endpoints.Marked with @RestController annotation,it handles HTTP requests(GET,PUT,DELETE,POST)
-It calls the Service layer and returns the resuts to user in JSON format.
-E.g
-
-  1. /products endpoints returns list of products
-  2. /products/{id} endpoint displays a specific products
-
-* Service Layer(Business Logic): This layer handles business rules and logic.Processes data received from the Controller.
-All dependencies are injected using using constructor injection
-E.g
- When adding a new product,stock and price limitations are checked here
-
-* Repository layer(Database Operations): Establishes a connection with he database.It provides CRUD operations through JpaRepository or CrudRepository.
-E.g
-  productRepository is used to query product ojects from database.
-
-* Model Layer(Entity and DTO Objects): This alyer stores both entity and DTO classes.Entity objects corresponds to database tables.DTO objects are used for data transfers and prevent direct sharing of Entities with the API
-E.g
-  ProductEntity
-  ProductDTO: Object that Returns only necessary information
-
-* Mapper Layer(Entity-DTO conversion): This layer handles conversation btwn Entity and DTO.Can utilze MapStruct or manual mapper classes
-E.g
-  The ProductMapper class converts  product object to ProductDTO.
-
-* Exception Layer(error Handling): This layer contains specific exception classes and a Global Exception Handler to manage errors occurring in project
-Global error management is ensured with @ControllerAdvice annotation
-E.g
-  ProductNotFoundException: thrown when a product is not found
-  GlobalExceptionHandler: Returns a standard response for all errors occurring in project

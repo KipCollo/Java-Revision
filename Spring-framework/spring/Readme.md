@@ -277,3 +277,50 @@ Foremost amongst these is the Spring Framework’s Inversion of Control (IoC) co
 Coverage of Spring’s integration with AspectJ (currently the richest — in terms of features — and certainly most mature AOP implementation in the Java enterprise space) is also provided.
 
 AOT processing can be used to optimize your application ahead-of-time. It is typically used for native image deployment using GraalVM.
+
+## Three-Tier app
+
+A multitier architecture provides our application with a more production-ready look.Most real-world applications follow this architecture pattern.They include:
+
+1. `Client tier`:- Responsible for user interfaces.Maps to frontend.
+2. `Application tier`:- It contains all business logic together with the interfaces to interact with it nd the data interfaces for persistence.Maps with what we call backend.
+3. `Data store`:- It is database,file system,etc that persists application's data.
+
+The applications tier is designed using layers:
+
+1. `Business Layer`:-The classes that model our domain and business specifics.It's where intelligence of the application resides.Composed of entities and services providing business logic.Sometimes this layer is divided into two parts domains(entities) and applications(services).
+2. `Presentation Layer`:- Represented by Controller classes,which will provide functionality to Web Client.REST API implementation resides here.
+3. `Data Layer`:- Responsible for persisting entities in data storage,usually database.It can typically include Data Access Object(DAO) classes,which work with direct representation of database models or repository classes,which are domain-centric and translate from domains to database layer.
+
+## Best practises
+
+* `Controller(API Layer)`: This folder contains REST APIs endpoints.Marked with @RestController annotation,it handles HTTP requests(GET,PUT,DELETE,POST)
+It calls the Service layer and returns the results to user in JSON format.
+E.g
+
+  1. /products endpoints returns list of products
+  2. /products/{id} endpoint displays a specific products
+
+* `Service Layer(Business Logic)`: This layer handles business rules and logic.Processes data received from the Controller.
+All dependencies are injected using using constructor injection
+E.g
+ When adding a new product,stock and price limitations are checked here
+
+* `Repository layer(Database Operations)`: Establishes a connection with he database.It provides CRUD operations through JpaRepository or CrudRepository.
+E.g
+  productRepository is used to query product objects from database.
+
+* `Model Layer(Entity and DTO Objects)`: This layer stores both entity and DTO classes.Entity objects corresponds to database tables.DTO objects are used for data transfers and prevent direct sharing of Entities with the API
+E.g
+  ProductEntity
+  ProductDTO: Object that Returns only necessary information
+
+* `Mapper Layer(Entity-DTO conversion)`: This layer handles conversation between Entity and DTO.Can utilize MapStruct or manual mapper classes
+E.g
+  The ProductMapper class converts  product object to ProductDTO.
+
+* `Exception Layer(error Handling)`: This layer contains specific exception classes and a Global Exception Handler to manage errors occurring in project
+Global error management is ensured with @ControllerAdvice annotation
+E.g
+  ProductNotFoundException: thrown when a product is not found
+  GlobalExceptionHandler: Returns a standard response for all errors occurring in project

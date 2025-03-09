@@ -4,7 +4,7 @@ Spring Cloud provides tools for developers to quickly build some of the common p
 
 ## Features
 
-1. Distributed/versioned con�guration
+1. Distributed/versioned configuration
 2. Service registration and discovery
 3. Routing
 4. Service-to-service calls
@@ -16,9 +16,9 @@ Spring Cloud provides tools for developers to quickly build some of the common p
 
 ## Spring cloud and Microservice
 
-Prerequisitives:
+Pre-requisitives:
 
-1. Java API/Libaries(Rest API's,Spring Boot)
+1. Java API/Libraries(Rest API's,Spring Boot)
 2. Cloud(AWS,Azure)
 3. Third party tools(apache,Netflix)
 
