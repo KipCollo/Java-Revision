@@ -1,8 +1,86 @@
 # JavaMail
 
-The JavaMailTM API provides classes that model a mail system. The javax.mail package defines classes that are common to all mail systems. The javax.mail.internet package defines classes that are specific to mail systems based on internet standards such as MIME, SMTP, POP3, and IMAP. The JavaMail API includes the javax.mail package and subpackages.
+The JavaMail API provides a set of abstract classes defining objects that comprise a mail system. The API defines classes like Message, Store and Transport. The API can be extended
+and can be subclassed to provide new protocols and to add functionality when necessary.
+In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols
+and conform to specifications RFC822 and RFC2045. They are ready to be used in application development
 
-For an overview of the JavaMail API, read the JavaMail specification.
+The JavaMailTM API provides classes that model a mail system.
+
+1. The javax.mail package defines classes that are common to all mail systems.
+2. The javax.mail.internet package defines classes that are specific to mail systems based on internet standards such as MIME, SMTP, POP3, and IMAP.
+
+The JavaMail API includes the javax.mail package and subpackages.
+
+- The JavaMail API is designed to serve several audiences:
+   1. Client, server, or middleware developers interested in building mail and messaging applications using the Java programming language.
+   2. Application developers who need to “mail-enable” their applications.
+   3. Service Providers who need to implement specific access and transfer protocols. For example; a telecommunications company can use the JavaMail API to implement a
+PAGER Transport protocol that sends mail messages to alphanumeric pagers.
+
+## Goals and Design Principles
+
+The JavaMail API is designed to make adding electronic mail capability to simple applications easy, while also supporting the creation of sophisticated user interfaces. It includes appropriate
+convenience classes which encapsulate common mail functions and protocols. It fits with other packages for the Java platform in order to facilitate its use with other Java APIs, and it uses
+familiar programming models.
+The JavaMail API is therefore designed to satisfy the following development and runtime requirements:
+
+- Simple, straightforward class design is easy for a developer to learn and implement.
+- Use of familiar concepts and programming models support code development that interfaces well with other Java APIs.
+    1. Uses familiar exception-handling and JDK 1.1 event-handling programming models.
+    2. Uses features from the JavaBeans Activation Framework (JAF) to handle access to data based on data-type and to facilitate the addition of data types and commands on
+those data types. The JavaMail API provides convenience functions to simplify these coding tasks.
+- Lightweight classes and interfaces make it easy to add basic mail-handling tasks to any application.
+- Supports the development of robust mail-enabled applications, that can handle a variety of complex mail message formats, data types, and access and transport protocols.
+
+The JavaMail API draws heavily from IMAP, MAPI, CMC, c-client and other messaging system APIs: many of the concepts present in these other systems are also present in the
+JavaMail API. It is simpler to use because it uses features of the Java programming language not available to these other APIs, and because it uses the Java programming language’s object
+model to shelter applications from implementation complexity.
+
+The JavaMail API design is driven by the needs of the applications it supports—but it is also important to consider the needs of API implementors. It is critically important to enable the
+implementation of messaging systems written using the Java programming language that interoperate with existing messaging systems—especially Internet mail. It is also important to
+anticipate the development of new messaging systems. The JavaMail API conforms to current standards while not being so constrained by current standards that it stifles future innovation.
+
+## Architectural Overview
+
+JavaMail provides elements that are used to construct an interface to a messaging system, including system components and interfaces. While this specification does not define any specific implementation, JavaMail does include several classes that implement RFC822 and MIME Internet messaging standards. These classes are delivered as part of the JavaMail class package.
+
+The JavaMail architectural components are layered as:
+
+1. The Abstract Layer declares classes, interfaces and abstract methods intended to support mail handling functions that all mail systems support. API elements comprising the Abstract Layer are intended to be subclassed and extended as necessary in order to support standard data types, and to interface with message access and message transport protocols as necessary.
+2. The internet implementation layer implements part of the abstract layer using internet standards - RFC822 and MIME.
+3. JavaMail uses the JavaBeans Activation Framework (JAF) in order to encapsulate message data, and to handle commands intended to interact with that data. Interaction with message data should take place via JAF-aware JavaBeans, which are not provided by the JavaMail API.
+
+JavaMail clients use the JavaMail API and Service Providers implement the JavaMail API.The layered design architecture allows clients to use the same JavaMail API calls to send,receive and store a variety of messages using different data-types from different message stores and using different message transport protocols.
+
+- `The JavaMail Framework`:-The JavaMail API is intended to perform the following functions, which comprise the standard mail handling process for a typical client application:
+
+1. Create a mail message consisting of a collection of header attributes and a block of data of some known data type as specified in the Content-Type header field. JavaMail uses the Part interface and the Message class to define a mail message. It uses the JAF defined DataHandler object to contain data placed in the message.
+2. Create a Session object, which authenticates the user, and controls access to the message store and transport.
+3. Send the message to its recipient list.
+4. Retrieve a message from a message store.
+5. Execute a high-level command on a retrieved message. High-level commands like view and print are intended to be implemented via JAF-Aware JavaBeans.
+
+Note – The JavaMail framework does not define mechanisms that support message delivery,security, disconnected operation, directory services or filter functionality.
+
+- `Major JavaMail API Components`:- Major components comprising the JavaMail architecture.
+
+1. The Message Class:- The Message class is an abstract class that defines a set of attributes and a content for a mail message. Attributes of the Message class specify addressing information and define the structure of the content, including the content type. The content is represented as a DataHandler object that wraps around the actual data.
+The Message class implements the Part interface. The Part interface defines attributes that are required to define and format data content carried by a Message object, and to interface successfully to a mail system. The Message class adds From, To, Subject,Reply-To, and other attributes necessary for message routing via a message transport system. When contained in a folder, a Message object has a set of flags associated with it.JavaMail provides Message subclasses that support specific messaging implementations.
+ The content of a message is a collection of bytes, or a reference to a collection of bytes,encapsulated within a Message object. JavaMail has no knowledge of the data type or format of the message content. A Message object interacts with its content through an intermediate layer—the JavaBeans Activation Framework (JAF). This separation allows a Message object to handle any arbitrary content and to transmit it using any appropriate transmission protocol by using calls to the same API methods. The message recipient usually knows the content data type and format and knows how to handle that content.The JavaMail API also supports multipart Message objects, where each Bodypart defines its own set of attributes and content.
+The JavaMail API also supports multipart Message objects, where each Bodypart defines its own set of attributes and content
+
+2. Message Storage and Retrieval:- Messages are stored in Folder objects. A Folder object can contain subfolders as well as messages, thus providing a tree-like folder hierarchy. The Folder class declares methods that fetch, append, copy and delete messages. A Folder object can also send events to components registered as event listeners.
+ The Store class defines a database that holds a folder hierarchy together with its messages.The Store class also specifies the access protocol that accesses folders and retrieves messages stored in folders. The Store class also provides methods to establish a connection to the database, to fetch folders and to close a connection. Service providers implementing Message Access protocols (IMAP4, POP3, etc.) start off by subclassing the Store class. A user typically starts a session with the mail system by connecting to a particular Store implementation.
+
+3. Message Composition and Transport:- A client creates a new message by instantiating an appropriate Message subclass. It sets attributes like the recipient addresses and the subject, and inserts the content into the Message object. Finally, it sends the Message by invoking the Transport.send method.
+The Transport class models the transport agent that routes a message to its destination addresses. This class provides methods that send a message to a list of recipients. Invoking the Transport.send method with a Message object identifies the appropriate transport based on its destination addresses.
+
+4. The Session Class:- The Session class defines global and per-user mail-related properties that define the interface between a mail-enabled client and the network. JavaMail system components use the Session object to set and get specific properties. The Session class also provides a default authenticated session object that desktop applications can share. The Session class is a final concrete class. It cannot be subclassed.
+The Session class also acts as a factory for Store and Transport objects that implement specific access and transport protocols. By calling the appropriate factory method on a Session object, the client can obtain Store and Transport objects that support specific protocols.
+
+- `The JavaMail Event Model`:- The JavaMail event model conforms to the JDK 1.1 event-model specification, as described in the JavaBeans Specification. The JavaMail API follows the design patterns defined in the JavaBeans Specification for naming events, event methods and event listener registration.
+All events are subclassed from the MailEvent class. Clients listen for specific events by registering themselves as listeners for those events. Events notify listeners of state changes as a session progresses. During a session, a JavaMail component generates a specific event-type to notify objects registered as listeners for that event-type. The JavaMail Store, Folder,and Transport classes are event sources. This specification describes each specific event in the section that describes the class that generates that event.
 
 The code to send a plain text message can be as simple as the following:
 
@@ -25,7 +103,6 @@ The code to send a plain text message can be as simple as the following:
 
 The JavaMail download bundle contains many more complete examples in the "demo" directory.
 
-Don't forget to see the JavaMail API FAQ for answers to the most common questions. The JavaMail web site contains many additional resources.
 
 The JavaMail API supports the following standard properties, which may be set in the Session object, or in the Properties object used to create the Session object. The properties are always set as strings; the Type column describes how the string is interpreted. For example, use
 
@@ -74,85 +151,43 @@ The JavaMail API provides a set of abstract classes defining objects that compri
 
 In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols and conform to specifications RFC822 and RFC2045. They are ready to be used in application development.
 
-## Architectural Overview
-
-JavaMail provides elements that are used to construct an interface to a messaging system, including system components and interfaces. While this specification does not define any specific implementation, JavaMail does include several classes that implement RFC822 and MIME Internet messaging standards. These classes are delivered as part of the JavaMail class package.
-
-The JavaMail architectural components are layered as shown below:
-
-1. The Abstract Layer declares classes, interfaces and abstract methods intended to support mail handling functions that all mail systems support. API elements comprising the Abstract Layer are intended to be subclassed and extended as necessary in order to support standard data types, and to interface with message access and message transport protocols as necessary.
-2. The internet implementation layer implements part of the abstract layer using internet standards - RFC822 and MIME.
-3. JavaMail uses the JavaBeans Activation Framework (JAF) in order to encapsulate message data, and to handle commands intended to interact with that data. Interaction with message data should take place via JAF-aware JavaBeans, which are not provided by the JavaMail API.
-
-JavaMail clients use the JavaMail API and Service Providers implement the JavaMail API.The layered design architecture allows clients to use the same JavaMail API calls to send,receive and store a variety of messages using different data-types from different message stores and using different message transport protocols.
-
-## The JavaMail Framework
-
-The JavaMail API is intended to perform the following functions, which comprise the standard mail handling process for a typical client application:
-
-1. Create a mail message consisting of a collection of header attributes and a block of data of some known data type as specified in the Content-Type header field. JavaMail uses the Part interface and the Message class to define a mail message. It uses the JAF defined DataHandler object to contain data placed in the message.
-2. Create a Session object, which authenticates the user, and controls access to the message store and transport.
-3. Send the message to its recipient list.
-4. Retrieve a message from a message store.Execute a high-level command on a retrieved message. High-level commands like view and print are intended to be implemented via JAF-Aware JavaBeans.
-
-Note – The JavaMail framework does not define mechanisms that support message delivery,security, disconnected operation, directory services or filter functionality.
-
-## Major JavaMail API Components
-
-- The Message Class
-
-The Message class is an abstract class that defines a set of attributes and a content for a mail message. Attributes of the Message class specify addressing information and define the structure of the content, including the content type. The content is represented as aDataHandler object that wraps around the actual data.
-
-The Message class implements the Part interface. The Part interface defines attributes that are required to define and format data content carried by a Message object, and to interface successfully to a mail system. The Message class adds From, To, Subject,Reply-To, and other attributes necessary for message routing via a message transport system. When contained in a folder, a Message object has a set of flags associated with it.JavaMail provides Message subclasses that support specific messaging implementations.
-
-The content of a message is a collection of bytes, or a reference to a collection of bytes,encapsulated within a Message object. JavaMail has no knowledge of the data type or format of the message content. A Message object interacts with its content through an intermediate layer—the JavaBeans Activation Framework (JAF). This separation allows a Message object to handle any arbitrary content and to transmit it using any appropriate transmission protocol by using calls to the same API methods. The message recipient usually knows the content data type and format and knows how to handle that content.The JavaMail API also supports multipart Message objects, where each Bodypart defines its own set of attributes and content.
-
-- Message Storage and Retrieval
-
-Messages are stored in Folder objects. A Folder object can contain subfolders as well as messages, thus providing a tree-like folder hierarchy. The Folder class declares methods that fetch, append, copy and delete messages. A Folder object can also send events to components registered as event listeners.
-
-The Store class defines a database that holds a folder hierarchy together with its messages.
-The Store class also specifies the access protocol that accesses folders and retrieves
-messages stored in folders. The Store class also provides methods to establish a connection
-to the database, to fetch folders and to close a connection. Service providers implementing
-Message Access protocols (IMAP4, POP3, etc.) start off by subclassing the Store class. A
-user typically starts a session with the mail system by connecting to a particular Store
-implementation.
-
-- Message Composition and Transport
-
-A client creates a new message by instantiating an appropriate Message subclass. It sets
-attributes like the recipient addresses and the subject, and inserts the content into the
-Message object. Finally, it sends the Message by invoking the Transport.send
-method.
-The Transport class models the transport agent that routes a message to its destination
-addresses. This class provides methods that send a message to a list of recipients. Invoking the
-Transport.send method with a Message object identifies the appropriate transport based
-on its destination addresses.
-
-- The Session Class
-The Session class defines global and per-user mail-related properties that define the
-interface between a mail-enabled client and the network. JavaMail system components use the
-Session object to set and get specific properties. The Session class also provides a default
-authenticated session object that desktop applications can share. The Session class is a final
-concrete class. It cannot be subclassed.
-The Session class also acts as a factory for Store and Transport objects that implement
-specific access and transport protocols. By calling the appropriate factory method on a
-Session object, the client can obtain Store and Transport objects that support specific
-protocols.
-
-- The JavaMail Event Model
-The JavaMail event model conforms to the JDK 1.1 event-model specification, as described in
-the JavaBeans Specification. The JavaMail API follows the design patterns defined in the
-JavaBeans Specification for naming events, event methods and event listener registration.
-All events are subclassed from the MailEvent class. Clients listen for specific events by
-registering themselves as listeners for those events. Events notify listeners of state changes as
-a session progresses. During a session, a JavaMail component generates a specific event-type
-to notify objects registered as listeners for that event-type. The JavaMail Store, Folder,
-and Transport classes are event sources. This specification describes each specific event in
-the section that describes the class that generates that event.
-
 ## The Message Class
+
+The Message class defines a set of attributes and a content for a mail message. Message attributes specify message addressing information and define the structure of the content,including the content type. The content is represented by a DataHandler object that wraps around the actual data. The Message class is an abstract class that implements the `Part interface`.
+Subclasses of the Message classes can implement several standard message formats. For example, the JavaMail API provides the `MimeMessage class`, that extends the Message
+class to implement the RFC822 and MIME standards. Implementations can typically construct themselves from byte streams and generate byte streams for transmission.
+
+A Message subclass instantiates an object that holds message content, together with attributes that specify addresses for the sender and recipients, structural information about the message, and the content type of the message body. Messages placed into a folder also have a set of flags that describe the state of the message within the folder.
+
+The Message object has no direct knowledge of the nature or semantics of its content. This separation of structure from content allows the message object to contain any arbitrary content.
+Message objects are either retrieved from a `Folder object` or constructed by instantiating a new Message object of the appropriate subclass. Messages stored within a Folder object are sequentially numbered, starting at one. An assigned message number can change when the folder is expunged, since the expunge operation removes deleted messages from the folder and also renumbers the remaining messages.
+A Message object can contain multiple parts, where each part contains its own set of attributes and content. The content of a multipart message is a `Multipart object` that
+contains BodyPart objects representing each individual part. The `Part interface` defines the structural and semantic similarity between the Message class and the `BodyPart class`.
+
+The Message class provides methods to perform the following tasks:
+
+```java
+// Get, set and create its attributes and content:
+public String getSubject() throws MessagingException;
+public void setSubject(String subject)
+  throws MessagingException;
+public String[] getHeader(String name)
+  throws MessagingException;
+public void setHeader(String name, String value)
+  throws MessagingException;
+public Object getContent()
+  throws MessagingException;
+public void setContent(Object content, String type)
+  throws MessagingException
+
+//Save changes to its containing folder.
+public void saveChanges()
+  throws MessagingException; //This method also ensures that the Message header fields are updated to be consistent with the changed message contents.
+
+// Generate a bytestream for the Message object.
+public void writeTo(OutputStream os)
+  throws IOException, MessagingException;//This byte stream can be used to save the message or send it to a Transport object.
+```
 
 This class models an email message. This is an abstract class. Subclasses provide actual implementations.
 
@@ -175,30 +210,6 @@ A Message subclass instantiates an object that holds message content, together w
 The Message object has no direct knowledge of the nature or semantics of its content. This separation of structure from content allows the message object to contain any arbitrary content.Message objects are either retrieved from a Folder object or constructed by instantiating a new Message object of the appropriate subclass. Messages stored within a Folder object are sequentially numbered, starting at one. An assigned message number can change when the folder is expunged, since the expunge operation removes deleted messages from the folder and also renumbers the remaining messages.
 
 A Message object can contain multiple parts, where each part contains its own set of attributes and content. The content of a multipart message is a Multipart object that contains BodyPart objects representing each individual part. The Part interface defines the structural and semantic similarity between the Message class and the BodyPart class.
-
-The Message class provides methods to perform the following tasks:
-?
-Get, set and create its attributes and content:
-
-```java
-public String getSubject() throws MessagingException;
-public void setSubject(String subject) throws MessagingException;
-public String[] getHeader(String name)throws MessagingException;
-public void setHeader(String name, String value)throws MessagingException;
-public Object getContent()throws MessagingException;
-public void setContent(Object content, String type)throws MessagingException
-```
-
-Save changes to its containing folder.
-public void saveChanges()
-throws MessagingException;
-This method also ensures that the Message header fields are updated to be consistent with
-the changed message contents.
-?
-Generate a bytestream for the Message object.
-public void writeTo(OutputStream os)
-throws IOException, MessagingException;
-This byte stream can be used to save the message or send it to a Transport object.
 
 Modifier and Type 	Method and Description
 abstract void 	addFrom(Address[] addresses)
@@ -1985,11 +1996,13 @@ Set the subject of this message.
             Throws:
                 MessagingException
 
-### The Part Interface
+## The Part Interface
 
 The Part interface is the common base interface for Messages and BodyParts.Part consists of a set of attributes and a "Content".
 
-The Part interface defines a set of standard headers common to most mail systems, specifies the data-type assigned to data comprising a content block, and defines set and get methods for each of these members. It is the basic data component in the JavaMail API and provides a common interface for both the Message and BodyPart classes. See the JavaMail API (Javadoc) documentation for details.
+The Part interface defines a set of standard headers common to most mail systems, specifies the data-type assigned to data comprising a content block, and defines set and get methods for each of these members. It is the basic data component in the JavaMail API and provides a common interface for both the Message and BodyPart classes.
+
+Note – A Message object can not be contained directly in a Multipart object, but must be embedded in a BodyPart first
 
 1. Attributes: The JavaMail API defines a set of standard Part attributes that are considered to be common to most existing Mail systems. These attributes have their own settor and gettor methods. Mail systems may support other Part attributes as well, these are represented as name-value pairs where both the name and value are Strings.
 2. Content: The data type of the "content" is returned by the getContentType() method. The MIME typing system is used to name data types.
@@ -2449,19 +2462,9 @@ Note – A Message object can not be contained directly in a Multipart object, b
             Throws:
                 MessagingException
 
-Message Attributes
-The Message class adds its own set of standard attributes to those it inherits from the Part
-interface. These attributes include the sender and recipient addresses, the subject, flags, and
-sent and received dates. The Message class also supports non-standard attributes in the form
-of headers. See the JavaMail API (Javadoc) Documentation for the list of standard attributes
-defined in the Message class. Not all messaging systems will support arbitrary headers, and
-the availability and meaning of particular header names is specific to the messaging system
-implementation.
+- `Message Attributes`:- The Message class adds its own set of standard attributes to those it inherits from the Part interface. These attributes include the sender and recipient addresses, the subject, flags, and sent and received dates. The Message class also supports non-standard attributes in the form of headers.Not all messaging systems will support arbitrary headers, and the availability and meaning of particular header names is specific to the messaging system implementation.
 
-The ContentType Attribute
-The contentType attribute specifies the data type of the content, following the MIME
-typing specification (RFC 2045). A MIME type is composed of a primary type that declares
-the general type of the content, and a subtype that specifies a specific format for the content.
+- `The ContentType Attribute`:- The contentType attribute specifies the data type of the content, following the MIME typing specification (RFC 2045). A MIME type is composed of a primary type that declares the general type of the content, and a subtype that specifies a specific format for the content.
 A MIME type also includes an optional set of type-specific parameters
 
 JavaMail API components can access content via these mechanisms:
@@ -2493,29 +2496,14 @@ Part provides the writeTo method that writes its byte stream in mail-safe form s
 transmission. This byte stream is typically an aggregation of the Part attributes and the byte
 stream for its content.
 
-The Address Class
-The Address class represents email addresses. The Address class is an abstract class.
-Subclasses provide implementation-specific semantics.
+- `The Address Class`:- The Address class represents email addresses. The Address class is an abstract class. Subclasses provide implementation-specific semantics.
 
-The BodyPart Class
-The BodyPart class is an abstract class that implements the Part interface in order to
-define the attribute and content body definitions that Part declares. It does not declare
-attributes that set From, To, Subject, ReplyTo, or other address header fields, as a
-Message object does.
-A BodyPart object is intended to be inserted into a Multipart container, later accessed
-via a multipart message.
+- `The BodyPart Class`:- The BodyPart class is an abstract class that implements the Part interface in order to define the attribute and content body definitions that Part declares. It does not declare attributes that set From, To, Subject, ReplyTo, or other address header fields, as a Message object does.
+A BodyPart object is intended to be inserted into a Multipart container, later accessed via a multipart message.
 
-The Multipart Class
-The Multipart class implements multipart messages. A multipart message is a Message
-object where the content-type specifier has been set to multipart. The Multipart class is a
-container class that contains objects of type Bodypart. A Bodypart object is an
-instantiation of the Part interface—it contains either a new Multipart container object, or
-a DataHandler object.
-Note that Multipart objects can be nested to any reasonable depth within a multipart
-message, in order to build an appropriate structure for data carried in DataHandler objects.
-Therefore, it is important to check the ContentType header for each BodyPart element
-stored within a Multipart container. The figure below illustrates a typical nested
-Multipart message.
+- `The Multipart Class`:- The Multipart class implements multipart messages. A multipart message is a Message object where the content-type specifier has been set to multipart. The Multipart class is a container class that contains objects of type Bodypart. A Bodypart object is an instantiation of the Part interface—it contains either a new Multipart container object, or a DataHandler object.
+
+Note that Multipart objects can be nested to any reasonable depth within a multipart message, in order to build an appropriate structure for data carried in DataHandler objects.Therefore, it is important to check the ContentType header for each BodyPart element stored within a Multipart container. The figure below illustrates a typical nested Multipart message.
 Typically, the client calls the getContentType method to get the content type of a
 message. If getContentType returns a MIME-type whose primary type is multipart, then
 the client calls getContent to get the Multipart container object.
@@ -2539,9 +2527,7 @@ This diagram illustrates the structure of a multipart message, and shows calls f
 associated Message and Multipart objects, for a typical call sequence returning a
 BodyPart containing text/plain content.
 
-### The Flags Class
-
-The Flags class represents the set of flags on a Message. Flags are composed of predefined system flags, and user defined flags.A System flag is represented by the Flags.Flag inner class. A User defined flag is represented as a String. User flags are case-independent.
+- `The Flags Class`:- The Flags class represents the set of flags on a Message. Flags are composed of predefined system flags, and user defined flags.A System flag is represented by the Flags.Flag inner class. A User defined flag is represented as a String. User flags are case-independent.
 
 A set of standard system flags are predefined. Most folder implementations are expected to support these flags. Some implementations may also support arbitrary user-defined flags. The getPermanentFlags method on a Folder returns a Flags object that holds all the flags that are supported by that folder implementation.
 
@@ -2564,11 +2550,7 @@ Field Detail:
 6. DELETED - Allows undoable message deletion. Setting this flag for a message marks it deleted but does not physically remove the message from its folder. The client calls the expunge method on a folder to remove all deleted messages in that folder.This message is marked deleted. Clients set this flag to mark a message as deleted. The expunge operation on a folder removes all messages in that folder that are marked for deletion.
 7. USER - A special flag that indicates that this folder supports user defined flags.The implementation sets this flag. Clients cannot alter this flag but can use it to determine if a folder supports user defined flags by using folder.getPermanentFlags().contains(Flags.Flag.USER).
 
-Note that a folder is not guaranteed to support either standard system flags or arbitrary user
-flags. The getPermanentFlags method in a folder returns a Flags object that contains
-all the system flags supported by that Folder implementation. The presence of the special
-USER flag indicates that the client can set arbitrary user-definable flags on any message
-belonging to this folder.
+Note that a folder is not guaranteed to support either standard system flags or arbitrary user flags. The getPermanentFlags method in a folder returns a Flags object that contains all the system flags supported by that Folder implementation. The presence of the special USER flag indicates that the client can set arbitrary user-definable flags on any message belonging to this folder.
 
 The below code sample illustrates how to set, examine, and get the flags for a message.
 
@@ -2807,19 +2789,11 @@ Flags.Flag[] sf = flags.getSystemFlags();
             Overrides:
                 clone in class Object
 
-Message Creation And Transmission
-The Message class is abstract, so an appropriate subclass must be instantiated to create a new
-Message object. A client creates a message by instantiating an appropriate Message
-subclass.
-For example, the MimeMessage subclass handles Internet email messages. Typically, the
-client application creates an email message by instantiating a MimeMessage object, and
-passing required attribute values to that object. In an email message, the client defines
-Subject, From, and To attributes. The client then passes message content into the
-MimeMessage object by using a suitably configured DataHandler object. See “Message
-Composition” on page 45 for details.
-After the Message object is constructed, the client calls the Transport.send method to
-route it to its specified recipients. See “Transport Protocols and Mechanisms” on page 51 for a
-discussion of the transport process.
+- Message Creation And Transmission:- The Message class is abstract, so an appropriate subclass must be instantiated to create a new Message object. A client creates a message by instantiating an appropriate Message subclass.
+For example, the MimeMessage subclass handles Internet email messages. Typically, the client application creates an email message by instantiating a MimeMessage object, and
+passing required attribute values to that object. In an email message, the client defines Subject, From, and To attributes. The client then passes message content into the
+MimeMessage object by using a suitably configured DataHandler object.
+After the Message object is constructed, the client calls the Transport.send method to route it to its specified recipients.
 
 ## Message Session
 
@@ -3134,30 +3108,14 @@ Here are the typical contents of a javamail.address.map file:
 
  rfc822=smtp
  news=nntp
- 
 
 ## Message Storage And Retrieval
 
 This section describes JavaMail message storage facilities supported by the Store and Folder classes.Messages are contained in Folders. New messages are usually delivered to folders by a transport protocol or a delivery agent. Clients retrieve messages from folders using an access protocol.
 
-- The Store Class: The Store class defines a database that holds a Folder hierarchy and the messages within.The Store also defines the access protocol used to access folders and retrieve messages from folders. Store is an abstract class. Subclasses implement specific message databases and access protocols.
+- `The Store Class`: The Store class defines a database that holds a Folder hierarchy and the messages within.The Store also defines the access protocol used to access folders and retrieve messages from folders. Store is an abstract class. Subclasses implement specific message databases and access protocols.
 
 Clients gain access to a Message Store by obtaining a Store object that implements the database access protocol. Most message stores require the user to be authenticated before they allow access. The connect method performs that authentication.
-
-## Environment Properties
-
-This section lists some of the environment properties that are used by the JavaMail APIs. The JavaMail javadocs contain additional information on properties supported by JavaMail:
-
-1. mail.store.protocol - Specifies the default Message Access Protocol.The Session.getStore() method returns a Store object that implements this protocol.
-The client can override this property and explicitly specify the protocol with the Session.getStore(String protocol) method.Default Value is The first appropriate protocol in the config files.
-2. mail.transport.protocol - Specifies the default Transport Protocol. The Session.getTransport() method returns a Transport object that implements this protocol. The client can override this property and explicitly specify the protocol by
-using Session.getTransport(String protocol) method.
-3. mail.hostSpecifies the default Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific host property is absent, to locate the target host.
-4. mail.userSpecifies the username to provide when connecting to a Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific username property is absent, to obtain the username.
-5. mail.protocol.hostSpecifies the protocol-specific default Mail server. This overrides the mail.host property.
-6. mail.protocol.userSpecifies the protocol-specific default username for connecting to the Mail server.This overrides the mail.user property.
-7. mail.fromSpecifies the return address of the current user.Used by the InternetAddress.getLocalAddress method to specify the current user’s email address.
-8. mail.debugSpecifies the initial debug mode. Setting this property to true will turn on debug mode, while setting it to false turns debug mode off.
 
         Method Summary
         All MethodsStatic MethodsInstance MethodsConcrete Methods Modifier and Type 	Method and Description
@@ -3598,3 +3556,81 @@ using Session.getTransport(String protocol) method.
                 JavaMail 1.4
             See Also:
                 getTransport(Address)
+
+## Internet Mail
+
+The JavaMail specification does not define any implementation. However, the API does include a set of classes that implement Internet Mail standards. Although not part of the
+specification, these classes can be considered part of the JavaMail package. They show how to adapt an existing messaging architecture to the JavaMail framework.
+These classes implement the Internet Mail Standards defined by the RFCs listed below:
+
+1. RFC822 (Standard for the Format of Internet Text Messages)
+2. RFC2045, RFC2046, RFC2047 (MIME)
+
+RFC822 describes the structure of messages exchanged across the Internet. Messages are viewed as having a header and contents. The header is composed of a set of standard and
+optional header fields. The header is separated from the content by a blank line. The RFC specifies the syntax for all header fields and the semantics of the standard header fields. It does not however, impose any structure on the message contents.
+
+The MIME RFCs 2045, 2046 and 2047 define message content structure by defining structured body parts, a typing mechanism for identifying different media types, and a set of
+encoding schemes to encode data into mail-safe characters.
+
+The Internet Mail package allows clients to create, use and send messages conforming to the standards listed above. It gives service providers a set of base classes and utilities they can use to implement Stores and Transports that use the Internet mail protocols. See “MimeMessage
+Object Hierarchy” on page 89 for a Mime class and interface hierarchy diagram.
+The JavaMail MimePart interface models an entity as defined in RFC2045, Section 2.4. MimePart extends the JavaMail Part interface to add MIME-specific methods and semantics.
+The MimeMessage and MimeBodyPart classes implement the MimePart interface. The following figure shows the class hierarchy of these classes.
+
+- `The MimeMessage Class`:- The MimeMessage class extends Message and implements MimePart. This class implements an email message that conforms to the RFC822 and MIME standards.
+
+The MimeMessage class provides a default constructor that creates an empty MimeMessage object. The client can fill in the message later by invoking the parse method on an RFC822 input stream. Note that the parse method is protected, so that only this class and its subclasses can use this method. Service providers implementing ’light-
+weight’ Message objects that are filled in on demand can generate the appropriate byte stream and invoke the parse method when a component is requested from a message.
+Service providers that can provide a separate byte stream for the message body (distinct from the message header) can override the getContentStream method
+
+The client can also use the default constructor to create new MimeMessage objects for sending. The client sets appropriate attributes and headers, inserts content into the message object, and finally calls the send method for that MimeMessage object.
+
+```java
+MimeMessage m = new MimeMessage(session);
+// Set FROM:
+m.setFrom(new InternetAddress("jmk@Sun.COM"));
+// Set TO:
+InternetAddress a[] = new InternetAddress[1];
+a[0] = new InternetAddress("javamail@Sun.COM");
+m.setRecipients(Message.RecipientType.TO, a);
+// Set content
+m.setContent(data, "text/plain");
+// Send message
+Transport.send(m);
+```
+
+The MimeMessage class also provides a constructor that uses an input stream to instantiate itself. The constructor internally invokes the parse method to fill in the message. The InputStream object is left positioned at the end of the message body.
+
+```java
+InputStream in = getMailSource(); // a stream of mail messages
+MimeMessage m = null;
+for (; ;) {
+try {
+m = new MimeMessage(session,in);
+} catch (MessagingException ex) {
+// reached end of message stream
+break;
+}
+}
+```
+
+MimeMessage implements the writeTo method by writing an RFC822-formatted byte stream of its headers and body. This is accomplished in two steps: First, the MimeMessage
+object writes out its headers; then it delegates the rest to the DataHandler object representing the content
+
+- `The MimeBodyPart Class`:- The MimeBodyPart class extends BodyPart and implements the MimePart interface.This class represents a Part inside a Multipart. MimeBodyPart implements a Body Part as defined by RFC2045.
+The getBodyPart(int index) returns the MimeBodyPart object at the given index.MimeMultipart also allows the client to fetch MimeBodyPart objects based on their
+Content-IDs.The addBodyPart method adds a new MimeBodyPart object to a MimeMultipart as a step towards constructing a new multipart MimeMessage.
+
+## Environment Properties
+
+This section lists some of the environment properties that are used by the JavaMail APIs. The JavaMail javadocs contain additional information on properties supported by JavaMail:
+
+1. mail.store.protocol - Specifies the default Message Access Protocol.The Session.getStore() method returns a Store object that implements this protocol.The client can override this property and explicitly specify the protocol with the Session.getStore(String protocol) method.Default Value is The first appropriate protocol in the config files.
+2. mail.transport.protocol - Specifies the default Transport Protocol. The Session.getTransport() method returns a Transport object that implements this protocol. The client can override this property and explicitly specify the protocol by using Session.getTransport(String protocol) method.
+3. mail.host - Specifies the default Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific host property is absent, to locate the target host.- The local machine.
+4. mail.user - Specifies the username to provide when connecting to a Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific username property is absent, to obtain the username.
+5. mail.protocol.hostSpecifies the protocol-specific default Mail server. This overrides the mail.host property.
+6. mail.protocol.userSpecifies the protocol-specific default username for connecting to the Mail server.This overrides the mail.user property.
+7. mail.fromSpecifies the return address of the current user.Used by the InternetAddress.getLocalAddress method to specify the current user’s email address.
+8. mail.debugSpecifies the initial debug mode. Setting this property to true will turn on debug mode, while setting it to false turns debug mode off.
+es

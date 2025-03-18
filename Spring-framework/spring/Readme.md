@@ -65,8 +65,8 @@ To refer to Spring library modules in this guide we use a shorthand naming conve
 
 Each release of the Spring Framework will publish artifacts to the following places:
 
-    Maven Central, which is the default repository that Maven queries, and does not require any special configuration to use. Many of the common libraries that Spring depends on also are available from Maven Central and a large section of the Spring community uses Maven for dependency management, so this is convenient for them. The names of the jars here are in the form spring-*-<version>.jar and the Maven groupId is org.springframework.
-    In a public Maven repository hosted specifically for Spring. In addition to the final GA releases, this repository also hosts development snapshots and milestones. The jar file names are in the same form as Maven Central, so this is a useful place to get development versions of Spring to use with other libraries deployed in Maven Central. This repository also contains a bundle distribution zip file that contains all Spring jars bundled together for easy download. 
+Maven Central, which is the default repository that Maven queries, and does not require any special configuration to use. Many of the common libraries that Spring depends on also are available from Maven Central and a large section of the Spring community uses Maven for dependency management, so this is convenient for them. The names of the jars here are in the form spring-*-<version>.jar and the Maven groupId is org.springframework.
+In a public Maven repository hosted specifically for Spring. In addition to the final GA releases, this repository also hosts development snapshots and milestones. The jar file names are in the same form as Maven Central, so this is a useful place to get development versions of Spring to use with other libraries deployed in Maven Central. This repository also contains a bundle distribution zip file that contains all Spring jars bundled together for easy download. 
 
 ## Maven "Bill Of Materials" Dependency
 
@@ -74,6 +74,7 @@ It is possible to accidentally mix different versions of Spring JARs when using 
 
 To overcome such problems Maven supports the concept of a "bill of materials" (BOM) dependency. You can import the spring-framework-bom in your dependencyManagement section to ensure that all spring dependencies (both direct and transitive) are at the same version.
 
+```xml
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -85,9 +86,11 @@ To overcome such problems Maven supports the concept of a "bill of materials" (B
         </dependency>
     </dependencies>
 </dependencyManagement>
+```
 
 An added benefit of using the BOM is that you no longer need to specify the <version> attribute when depending on Spring Framework artifacts:
 
+```xml
 <dependencies>
     <dependency>
         <groupId>org.springframework</groupId>
@@ -98,16 +101,19 @@ An added benefit of using the BOM is that you no longer need to specify the <ver
         <artifactId>spring-web</artifactId>
     </dependency>
 <dependencies>
+```
 
 ### Gradle Dependency Management
 
 To use the Spring repository with the Gradle build system, include the appropriate URL in the repositories section:
 
+```groovy
 repositories {
     mavenCentral()
     // and optionally...
     maven { url "http://repo.spring.io/release" }
 }
+```
 
 You can change the repositories URL from /release to /milestone or /snapshot as appropriate. Once a repository has been configured, you can declare dependencies in the usual Gradle way:
 
@@ -122,18 +128,22 @@ If you prefer to use Ivy to manage dependencies then there are similar configura
 
 To configure Ivy to point to the Spring repository add the following resolver to your ivysettings.xml:
 
+```xml
 <resolvers>
     <ibiblio name="io.spring.repo.maven.release"
             m2compatible="true"
             root="http://repo.spring.io/release/"/>
 </resolvers>
+```
 
 You can change the root URL from /release/ to /milestone/ or /snapshot/ as appropriate.
 
 Once configured, you can add dependencies in the usual way. For example (in ivy.xml):
 
+```xml
 <dependency org="org.springframework"
     name="spring-core" rev="4.0.9.RELEASE" conf="compile->runtime"/>
+```
 
 ## Distribution Zip Files
 
@@ -142,7 +152,6 @@ Although using a build system that supports dependency management is the recomme
 Distribution zips are published to the Spring Maven Repository (this is just for our convenience, you don’t need Maven or any other build system in order to download them).
 
 To download a distribution zip open a web browser to http://repo.spring.io/release/org/springframework/spring and select the appropriate subfolder for the version that you want. Distribution files end -dist.zip, for example spring-framework-4.0.9.RELEASE-RELEASE-dist.zip. Distributions are also published for milestones and snapshots.
-
 
 Logging
 
@@ -157,11 +166,12 @@ Unfortunately, the runtime discovery algorithm in commons-logging, while conveni
 
 There are basically two ways to switch off commons-logging:
 
-    Exclude the dependency from the spring-core module (as it is the only module that explicitly depends on commons-logging)
-    Depend on a special commons-logging dependency that replaces the library with an empty jar (more details can be found in the SLF4J FAQ) 
+Exclude the dependency from the spring-core module (as it is the only module that explicitly depends on commons-logging)
+Depend on a special commons-logging dependency that replaces the library with an empty jar (more details can be found in the SLF4J FAQ) 
 
 To exclude commons-logging, add the following to your dependencyManagement section:
 
+```xml
 <dependencies>
     <dependency>
         <groupId>org.springframework</groupId>
@@ -175,6 +185,7 @@ To exclude commons-logging, add the following to your dependencyManagement secti
         </exclusions>
     </dependency>
 </dependencies>
+```
 
 Now this application is probably broken because there is no implementation of the JCL API on the classpath, so to fix it a new one has to be provided. In the next section we show you how to provide an alternative implementation of JCL using SLF4J as an example.
 Using SLF4J
@@ -185,6 +196,7 @@ SLF4J provides bindings to many common logging frameworks, including JCL, and it
 
 A common choice might be to bridge Spring to SLF4J, and then provide explicit binding from SLF4J to Log4J. You need to supply 4 dependencies (and exclude the existing commons-logging): the bridge, the SLF4J API, the binding to Log4J, and the Log4J implementation itself. In Maven you would do that like this
 
+```xml
 <dependencies>
     <dependency>
         <groupId>org.springframework</groupId>
@@ -218,6 +230,7 @@ A common choice might be to bridge Spring to SLF4J, and then provide explicit bi
         <version>1.2.14</version>
     </dependency>
 </dependencies>
+```
 
 That might seem like a lot of dependencies just to get some logging. Well it is, but it is optional, and it should behave better than the vanilla commons-logging with respect to classloader issues, notably if you are in a strict container like an OSGi platform. Allegedly there is also a performance benefit because the bindings are at compile-time not runtime.
 
@@ -228,6 +241,7 @@ Many people use Log4j as a logging framework for configuration and management pu
 
 To make Log4j work with the default JCL dependency ( commons-logging) all you need to do is put Log4j on the classpath, and provide it with a configuration file ( log4j.properties or log4j.xml in the root of the classpath). So for Maven users this is your dependency declaration:
 
+```xml
 <dependencies>
     <dependency>
         <groupId>org.springframework</groupId>
@@ -240,8 +254,10 @@ To make Log4j work with the default JCL dependency ( commons-logging) all you ne
         <version>1.2.14</version>
     </dependency>
 </dependencies>
+```
 
 And here’s a sample log4j.properties for logging to the console:
+
 ```java
 log4j.rootCategory=INFO, stdout
 
@@ -251,6 +267,7 @@ log4j.appender.stdout.layout.ConversionPattern=%d{ABSOLUTE} %5p %t %c{2}:%L - %m
 
 log4j.category.org.springframework.beans.factory=DEBUG
 ```
+
 Runtime Containers with Native JCL
 
 Many people run their Spring applications in a container that itself provides an implementation of JCL. IBM Websphere Application Server (WAS) is the archetype. This often causes problems, and unfortunately there is no silver bullet solution; simply excluding commons-logging from your application is not enough in most situations.
