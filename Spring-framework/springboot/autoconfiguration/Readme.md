@@ -38,7 +38,7 @@ using Spring Boot we can develop apps using configurations:
       ApplicationContext context = new AnnotationconfigApplicationContext(JavaConfig);
 2. Web apps-
     new AnnotationconfigServletWebServerApplicationContext()
-3. Reactivee apps-
+3. Reactive apps-
     new AnnotationconfigReactiveWebServerApplicationContext()
 
 * When SpringApplication.run is executed:

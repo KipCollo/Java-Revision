@@ -1,16 +1,19 @@
 # JavaMail
 
-The JavaMail API provides a set of abstract classes defining objects that comprise a mail system. The API defines classes like Message, Store and Transport. The API can be extended
-and can be subclassed to provide new protocols and to add functionality when necessary.
-In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols
-and conform to specifications RFC822 and RFC2045. They are ready to be used in application development
+The JavaMail API provides a set of abstract classes defining objects that comprise a mail system. The API defines classes like Message, Store and Transport. The API can be extended and can be subclassed to provide new protocols and to add functionality when necessary.
+In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols and conform to specifications RFC822 and RFC2045. They are ready to be used in application development
 
 The JavaMailTM API provides classes that model a mail system.
 
-1. The javax.mail package defines classes that are common to all mail systems.
-2. The javax.mail.internet package defines classes that are specific to mail systems based on internet standards such as MIME, SMTP, POP3, and IMAP.
-
-The JavaMail API includes the javax.mail package and subpackages.
+1. The `javax.mail` package defines classes that are common to all mail systems.General email-handling classes(protocol handling,authentication,sending/receiving).It's key classes are:-
+   1. Session - Manages configuration for connecting to mail server.
+   2. Message - Represents the email message.
+   3. Transport - Handles sending emails.
+   4. Store - Used for retrieving emails.
+2. The `javax.mail.internet` package defines classes that are specific to mail systems based on internet standards such as MIME, SMTP, POP3, and IMAP.Provide advanced internet email features.(MIME,HTML,attachments)
+   1. MimeMessage - A subclass of Message that supports rich content like HTML and attachments.
+   2. InternetAddress - Helps manage email addresses.
+   3. MimeBodyPart and MimeMultipart - Enable you to build emails parts(texts + attachments).
 
 - The JavaMail API is designed to serve several audiences:
    1. Client, server, or middleware developers interested in building mail and messaging applications using the Java programming language.
@@ -20,9 +23,7 @@ PAGER Transport protocol that sends mail messages to alphanumeric pagers.
 
 ## Goals and Design Principles
 
-The JavaMail API is designed to make adding electronic mail capability to simple applications easy, while also supporting the creation of sophisticated user interfaces. It includes appropriate
-convenience classes which encapsulate common mail functions and protocols. It fits with other packages for the Java platform in order to facilitate its use with other Java APIs, and it uses
-familiar programming models.
+The JavaMail API is designed to make adding electronic mail capability to simple applications easy, while also supporting the creation of sophisticated user interfaces. It includes appropriate convenience classes which encapsulate common mail functions and protocols. It fits with other packages for the Java platform in order to facilitate its use with other Java APIs, and it uses familiar programming models.
 The JavaMail API is therefore designed to satisfy the following development and runtime requirements:
 
 - Simple, straightforward class design is easy for a developer to learn and implement.
@@ -82,112 +83,65 @@ The Session class also acts as a factory for Store and Transport objects that im
 - `The JavaMail Event Model`:- The JavaMail event model conforms to the JDK 1.1 event-model specification, as described in the JavaBeans Specification. The JavaMail API follows the design patterns defined in the JavaBeans Specification for naming events, event methods and event listener registration.
 All events are subclassed from the MailEvent class. Clients listen for specific events by registering themselves as listeners for those events. Events notify listeners of state changes as a session progresses. During a session, a JavaMail component generates a specific event-type to notify objects registered as listeners for that event-type. The JavaMail Store, Folder,and Transport classes are event sources. This specification describes each specific event in the section that describes the class that generates that event.
 
-The code to send a plain text message can be as simple as the following:
+## Basic Workflow
 
-    Properties props = new Properties();
-    props.put("mail.smtp.host", "my-mail-server");
-    Session session = Session.getInstance(props, null);
+1. Set Up Mail Server Properties:- Configure settings such as SMTP server address,port and whether to use authentication
+2. Create a session:- This is your connection context to the mail server.It includes your credentials and configuration properties.
+3. Build The Email Message:- Construct your email.You can set the sender,recipient,subject and content(plain text or HTML)
+4. Send the email:- Use Transport class to send message through configured SMTP server.
 
-    try {
-        MimeMessage msg = new MimeMessage(session);
-        msg.setFrom("me@example.com");
-        msg.setRecipients(Message.RecipientType.TO,
-                          "you@example.com");
-        msg.setSubject("JavaMail hello world example");
-        msg.setSentDate(new Date());
-        msg.setText("Hello, world!\n");
-        Transport.send(msg, "me@example.com", "my-password");
-    } catch (MessagingException mex) {
-        System.out.println("send failed, exception: " + mex);
+```java
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
+
+public class SimpleEmailSender {
+    public static void main(String[] args) {
+        // Step 1: Configure the mail server properties
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com"); // Your SMTP server
+        props.put("mail.smtp.port", "587"); // Port for TLS
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true"); // Enable TLS
+
+        // Step 2: Create a Session with authentication
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("your_email@gmail.com", "your_app_password");
+            }
+        });
+        try {
+            // Step 3: Create the email message using MimeMessage
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("your_email@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("recipient@example.com"));
+            message.setSubject("Hello from JavaMail API");
+            message.setText("This is a simple email sent using JavaMail API.");
+
+            // Step 4: Send the message
+            Transport.send(message);
+            System.out.println("Email sent successfully!");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
+}
 
-The JavaMail download bundle contains many more complete examples in the "demo" directory.
+```
 
+## Classes and Interfaces
 
-The JavaMail API supports the following standard properties, which may be set in the Session object, or in the Properties object used to create the Session object. The properties are always set as strings; the Type column describes how the string is interpreted. For example, use
-
-        props.put("mail.debug", "true");
-
-to set the mail.debug property, which is of type boolean.
-
-Name 	Type 	Description
-mail.debug 	boolean 	The initial debug mode. Default is false.
-mail.from 	String 	The return email address of the current user, used by the InternetAddress method getLocalAddress.
-mail.mime.address.strict 	boolean 	The MimeMessage class uses the InternetAddress method parseHeader to parse headers in messages. This property controls the strict flag passed to the parseHeader method. The default is true.
-mail.host 	String 	The default host name of the mail server for both Stores and Transports. Used if the mail.protocol.host property isn't set.
-mail.store.protocol 	String 	Specifies the default message access protocol. The Session method getStore() returns a Store object that implements this protocol. By default the first Store provider in the configuration files is returned.
-mail.transport.protocol 	String 	Specifies the default message transport protocol. The Session method getTransport() returns a Transport object that implements this protocol. By default the first Transport provider in the configuration files is returned.
-mail.user 	String 	The default user name to use when connecting to the mail server. Used if the mail.protocol.user property isn't set.
-mail.protocol.class 	String 	Specifies the fully qualified class name of the provider for the specified protocol. Used in cases where more than one provider for a given protocol exists; this property can be used to specify which provider to use by default. The provider must still be listed in a configuration file.
-mail.protocol.host 	String 	The host name of the mail server for the specified protocol. Overrides the mail.host property.
-mail.protocol.port 	int 	The port number of the mail server for the specified protocol. If not specified the protocol's default port number is used.
-mail.protocol.user 	String 	The user name to use when connecting to mail servers using the specified protocol. Overrides the mail.user property.
-
-The following properties are supported by Sun's implementation of JavaMail, but are not currently a required part of the specification. The names, types, defaults, and semantics of these properties may change in future releases.
-
-Name 	Type 	Description
-mail.debug.auth 	boolean 	Include protocol authentication commands (including usernames and passwords) in the debug output. Default is false.
-mail.transport.protocol.address-type 	String 	Specifies the default message transport protocol for the specified address type. The Session method getTransport(Address) returns a Transport object that implements this protocol when the address is of the specified type (e.g., "rfc822" for standard internet addresses). By default the first Transport configured for that address type is used. This property can be used to override the behavior of the send method of the Transport class so that (for example) the "smtps" protocol is used instead of the "smtp" protocol by setting the property mail.transport.protocol.rfc822 to "smtps".
-
-The JavaMail API also supports several System properties; see the javax.mail.internet package documentation for details.
-
-The JavaMail reference implementation from Sun includes protocol providers in subpackages of com.sun.mail. Note that the APIs to these protocol providers are not part of the standard JavaMail API. Portable programs will not use these APIs.
-
-Nonportable programs may use the APIs of the Sun protocol providers by (for example) casting a returned Folder object to a com.sun.mail.imap.IMAPFolder object. Similarly for Store and Message objects returned from the standard JavaMail APIs.
-
-The Sun protocol providers also support properties that are specific to those providers. The package documentation for the IMAP, POP3, and SMTP packages provide details.
-
-In addition to printing debugging output as controlled by the Session configuration, the current implementation of classes in this package log the same information using Logger as described in the following table:
-
-Logger Name 	Logging Level 	Purpose
-javax.mail 	CONFIG 	Configuration of the Session
-javax.mail 	FINE 	General debugging output
-
-The JavaMail API provides a platform-independent and protocol-independent framework to build mail and messaging applications. The JavaMail API is available as an optional package for use with the Java SE platform and is also included in the Java EE platform.
-
-In the years since its first release, the JavaTM programming language has matured to become a platform. The Java platform has added functionality, including distributed computing with RMI and CORBA, and a component architecture (JavaBeansTM). Java applications have also matured, and many need an addition to the Java platform: a mail and messaging framework.The JavaMailTM API described in this specification satisfies that need.
-
-The JavaMail API provides a set of abstract classes defining objects that comprise a mail system. The API defines classes like Message, Store and Transport. The API can be extended and can be subclassed to provide new protocols and to add functionality when necessary.
-
-In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols and conform to specifications RFC822 and RFC2045. They are ready to be used in application development.
-
-## The Message Class
-
-The Message class defines a set of attributes and a content for a mail message. Message attributes specify message addressing information and define the structure of the content,including the content type. The content is represented by a DataHandler object that wraps around the actual data. The Message class is an abstract class that implements the `Part interface`.
+- `The Message Class`:- The Message class defines a set of attributes and a content for a mail message. Message attributes specify message addressing information and define the structure of the content,including the content type. The content is represented by a DataHandler object that wraps around the actual data. The Message class is an abstract class that implements the `Part interface`.
 Subclasses of the Message classes can implement several standard message formats. For example, the JavaMail API provides the `MimeMessage class`, that extends the Message
 class to implement the RFC822 and MIME standards. Implementations can typically construct themselves from byte streams and generate byte streams for transmission.
 
+It represents email message.It provides methods to set and retrieve email attributes like sender,recipient,subject and content.Since it is an abstract class, you cannot initiate it directly,instead you use MimeMessage to create email.
 A Message subclass instantiates an object that holds message content, together with attributes that specify addresses for the sender and recipients, structural information about the message, and the content type of the message body. Messages placed into a folder also have a set of flags that describe the state of the message within the folder.
 
 The Message object has no direct knowledge of the nature or semantics of its content. This separation of structure from content allows the message object to contain any arbitrary content.
 Message objects are either retrieved from a `Folder object` or constructed by instantiating a new Message object of the appropriate subclass. Messages stored within a Folder object are sequentially numbered, starting at one. An assigned message number can change when the folder is expunged, since the expunge operation removes deleted messages from the folder and also renumbers the remaining messages.
 A Message object can contain multiple parts, where each part contains its own set of attributes and content. The content of a multipart message is a `Multipart object` that
 contains BodyPart objects representing each individual part. The `Part interface` defines the structural and semantic similarity between the Message class and the `BodyPart class`.
-
-The Message class provides methods to perform the following tasks:
-
-```java
-// Get, set and create its attributes and content:
-public String getSubject() throws MessagingException;
-public void setSubject(String subject)
-  throws MessagingException;
-public String[] getHeader(String name)
-  throws MessagingException;
-public void setHeader(String name, String value)
-  throws MessagingException;
-public Object getContent()
-  throws MessagingException;
-public void setContent(Object content, String type)
-  throws MessagingException
-
-//Save changes to its containing folder.
-public void saveChanges()
-  throws MessagingException; //This method also ensures that the Message header fields are updated to be consistent with the changed message contents.
-
-// Generate a bytestream for the Message object.
-public void writeTo(OutputStream os)
-  throws IOException, MessagingException;//This byte stream can be used to save the message or send it to a Transport object.
-```
 
 This class models an email message. This is an abstract class. Subclasses provide actual implementations.
 
@@ -211,142 +165,88 @@ The Message object has no direct knowledge of the nature or semantics of its con
 
 A Message object can contain multiple parts, where each part contains its own set of attributes and content. The content of a multipart message is a Multipart object that contains BodyPart objects representing each individual part. The Part interface defines the structural and semantic similarity between the Message class and the BodyPart class.
 
-Modifier and Type 	Method and Description
-abstract void 	addFrom(Address[] addresses)
-Add these addresses to the existing "From" attribute
-void 	addRecipient(Message.RecipientType type, Address address)
-Add this recipient address to the existing ones of the given type.
-abstract void 	addRecipients(Message.RecipientType type, Address[] addresses)
-Add these recipient addresses to the existing ones of the given type.
-Address[] 	getAllRecipients()
-Get all the recipient addresses for the message.
-abstract Flags 	getFlags()
-Returns a Flags object containing the flags for this message.
-Folder 	getFolder()
-Get the folder from which this message was obtained.
-abstract Address[] 	getFrom()
-Returns the "From" attribute.
-int 	getMessageNumber()
-Get the Message number for this Message.
-abstract Date 	getReceivedDate()
-Get the date this message was received.
-abstract Address[] 	getRecipients(Message.RecipientType type)
-Get all the recipient addresses of the given type.
-Address[] 	getReplyTo()
-Get the addresses to which replies should be directed.
-abstract Date 	getSentDate()
-Get the date this message was sent.
-Session 	getSession()
-Return the Session used when this message was created.
-abstract String 	getSubject()
-Get the subject of this message.
-boolean 	isExpunged()
-Checks whether this message is expunged.
-boolean 	isSet(Flags.Flag flag)
-Check whether the flag specified in the flag argument is set in this message.
-boolean 	match(SearchTerm term)
-Apply the specified Search criterion to this message.
-abstract Message 	reply(boolean replyToAll)
-Get a new Message suitable for a reply to this message.
-abstract void 	saveChanges()
-Save any changes made to this message into the message-store when the containing folder is closed, if the message is contained in a folder.
-protected void 	setExpunged(boolean expunged)
-Sets the expunged flag for this Message.
-void 	setFlag(Flags.Flag flag, boolean set)
-Set the specified flag on this message to the specified value.
-abstract void 	setFlags(Flags flag, boolean set)
-Set the specified flags on this message to the specified value.
-abstract void 	setFrom()
-Set the "From" attribute in this Message.
-abstract void 	setFrom(Address address)
-Set the "From" attribute in this Message.
-protected void 	setMessageNumber(int msgnum)
-Set the Message number for this Message.
-void 	setRecipient(Message.RecipientType type, Address address)
-Set the recipient address.
-abstract void 	setRecipients(Message.RecipientType type, Address[] addresses)
-Set the recipient addresses.
-void 	setReplyTo(Address[] addresses)
-Set the addresses to which replies should be directed.
-abstract void 	setSentDate(Date date)
-Set the sent date of this message.
-abstract void 	setSubject(String subject)
-Set the subject of this message.
+Key methods includes:-
 
-### Class MimeMessage
+abstract void 	addFrom(Address[] addresses) - Add these addresses to the existing "From" attribute
+void 	addRecipient(Message.RecipientType type, Address address) - Add this recipient address to the existing ones of the given type.
+abstract void 	addRecipients(Message.RecipientType type, Address[] addresses) - Add these recipient addresses to the existing ones of the given type.
+Address[] 	getAllRecipients() - Get all the recipient addresses for the message.
+abstract Flags 	getFlags() - Returns a Flags object containing the flags for this message.
+Folder 	getFolder() - Get the folder from which this message was obtained.
+abstract Address[] 	getFrom() - Returns the "From" attribute.
+int 	getMessageNumber() - Get the Message number for this Message.
+abstract Date 	getReceivedDate() - Get the date this message was received.
+abstract Address[] 	getRecipients(Message.RecipientType type) - Get all the recipient addresses of the given type.
+Address[] 	getReplyTo() - Get the addresses to which replies should be directed.
+abstract Date 	getSentDate() - Get the date this message was sent.
+Session 	getSession() - Return the Session used when this message was created.
+abstract String 	getSubject() - Get the subject of this message.
+boolean 	isExpunged() - Checks whether this message is expunged.
+boolean 	isSet(Flags.Flag flag) - Check whether the flag specified in the flag argument is set in this message.
+boolean 	match(SearchTerm term) - Apply the specified Search criterion to this message.
+abstract Message 	reply(boolean replyToAll) - Get a new Message suitable for a reply to this message.
+abstract void 	saveChanges() - Save any changes made to this message into the message-store when the containing folder is closed, if the message is contained in a folder.
+protected void 	setExpunged(boolean expunged) - Sets the expunged flag for this Message.
+void 	setFlag(Flags.Flag flag, boolean set)- Set the specified flag on this message to the specified value.
+abstract void 	setFlags(Flags flag, boolean set)- Set the specified flags on this message to the specified value.
+abstract void 	setFrom()- Set the "From" attribute in this Message.Sets sender of the email.
+abstract void 	setFrom(Address address)- Set the "From" attribute in this Message.
+protected void 	setMessageNumber(int msgnum) - Set the Message number for this Message.
+void 	setRecipient(Message.RecipientType type, Address address) - Set the recipient address.
+abstract void 	setRecipients(Message.RecipientType type, Address[] addresses) - Set the recipient addresses.(To,CC,BCC)
+void 	setReplyTo(Address[] addresses) - Set the addresses to which replies should be directed.
+abstract void 	setSentDate(Date date) - Set the sent date of this message.
+abstract void 	setSubject(String subject) - Set the subject of this message.Sets subject of email.
 
-    java.lang.Object
-        javax.mail.Message
-            javax.mail.internet.MimeMessage 
+`Class MimeMessage`:- This class represents a MIME style email message. It implements the Message abstract class and the MimePart interface.
 
-    All Implemented Interfaces:
-        MimePart, Part
+- The Multipurpose Internet Mail Extensions(MIME) standard allows email to include different type of contents in a  structured way.This includes:-
+  1. Plain text(simple text content)
+  2. HTML Content(formatted emails with colors,images and links).
+  3. Attachments(PDFs,images,documents).
+  4. Multiple Recipients(To,CC,BCC)
 
+If we just send a raw text string using SMTP,it won't support (HTML formatting,Attachments,Multiple parts-text + HTML together)
 
-    public class MimeMessage
-    extends Message
-    implements MimePart
+All Implemented Interfaces:- MimePart, Part
 
-    This class represents a MIME style email message. It implements the Message abstract class and the MimePart interface.
+Clients wanting to create new MIME style messages will instantiate an empty MimeMessage object and then fill it with appropriate attributes and content. Service providers that implement MIME compliant backend stores may want to subclass MimeMessage and override certain methods to provide specific implementations. The simplest case is probably a provider that generates a MIME style input stream and leaves the parsing of the stream to this class.
+MimeMessage uses the InternetHeaders class to parse and store the top level RFC 822 headers of a message.
 
-    Clients wanting to create new MIME style messages will instantiate an empty MimeMessage object and then fill it with appropriate attributes and content.
+The mail.mime.address.strict session property controls the parsing of address headers. By default, strict parsing of address headers is done. If this property is set to "false", strict parsing is not done and many illegal addresses that sometimes occur in real messages are allowed. See the InternetAddress class for details.
 
-    Service providers that implement MIME compliant backend stores may want to subclass MimeMessage and override certain methods to provide specific implementations. The simplest case is probably a provider that generates a MIME style input stream and leaves the parsing of the stream to this class.
+A note on RFC 822 and MIME headers :- RFC 822 header fields must contain only US-ASCII characters. MIME allows non ASCII characters to be present in certain portions of certain headers, by encoding those characters. RFC 2047 specifies the rules for doing this. The MimeUtility class provided in this package can be used to to achieve this. Callers of the setHeader, addHeader, and addHeaderLine methods are responsible for enforcing the MIME requirements for the specified headers. In addition, these header fields must be folded (wrapped) before being sent if they exceed the line length limitation for the transport (1000 bytes for SMTP). Received headers may have been folded. The application is responsible for folding and unfolding headers as appropriate.
 
-    MimeMessage uses the InternetHeaders class to parse and store the top level RFC 822 headers of a message.
+Nested Class Summary
 
-    The mail.mime.address.strict session property controls the parsing of address headers. By default, strict parsing of address headers is done. If this property is set to "false", strict parsing is not done and many illegal addresses that sometimes occur in real messages are allowed. See the InternetAddress class for details.
+1. static class MimeMessage.RecipientType - This inner class extends the javax.mail.Message.RecipientType class to add additional RecipientTypes.
 
-    A note on RFC 822 and MIME headers
+Field Summary
 
-    RFC 822 header fields must contain only US-ASCII characters. MIME allows non ASCII characters to be present in certain portions of certain headers, by encoding those characters. RFC 2047 specifies the rules for doing this. The MimeUtility class provided in this package can be used to to achieve this. Callers of the setHeader, addHeader, and addHeaderLine methods are responsible for enforcing the MIME requirements for the specified headers. In addition, these header fields must be folded (wrapped) before being sent if they exceed the line length limitation for the transport (1000 bytes for SMTP). Received headers may have been folded. The application is responsible for folding and unfolding headers as appropriate.
+1. protected Object 	cachedContent - If our content is a Multipart or Message object, we save it the first time it's created by parsing a stream so that changes to the contained objects will not be lost.
+2. protected byte[] 	content  - Byte array that holds the bytes of this Message's content.
+3. protected InputStream 	contentStream - If the data for this message was supplied by an InputStream that implements the SharedInputStream interface, contentStream is another such stream representing the content of this message.
+4. protected DataHandler 	dh - The DataHandler object representing this Message's content.
+5. protected Flags flags - The Flags for this message.
+6. protected InternetHeaders 	headers  - The InternetHeaders object that stores the header of this message.
+7. protected boolean 	modified  - A flag indicating whether the message has been modified.
+8. protected boolean 	saved  - Does the saveChanges method need to be called on this message? This flag is set to false by the public constructor and set to true by the saveChanges method.
 
-    Author:
-        John Mani, Bill Shannon, Max Spivak, Kanwar Oberoi
-    See Also:
-        MimeUtility, Part, Message, MimePart, InternetAddress
+Fields inherited from class javax.mail.Message - expunged, folder, msgnum, session
+Fields inherited from interface javax.mail.Part - ATTACHMENT, INLINE
+Constructor Summary
 
-        Nested Class Summary
-        Nested Classes Modifier and Type 	Class and Description
-        static class  	MimeMessage.RecipientType
-        This inner class extends the javax.mail.Message.RecipientType class to add additional RecipientTypes.
-        Field Summary
-        Fields Modifier and Type 	Field and Description
-        protected Object 	cachedContent
-        If our content is a Multipart or Message object, we save it the first time it's created by parsing a stream so that changes to the contained objects will not be lost.
-        protected byte[] 	content
-        Byte array that holds the bytes of this Message's content.
-        protected InputStream 	contentStream
-        If the data for this message was supplied by an InputStream that implements the SharedInputStream interface, contentStream is another such stream representing the content of this message.
-        protected DataHandler 	dh
-        The DataHandler object representing this Message's content.
-        protected Flags 	flags
-        The Flags for this message.
-        protected InternetHeaders 	headers
-        The InternetHeaders object that stores the header of this message.
-        protected boolean 	modified
-        A flag indicating whether the message has been modified.
-        protected boolean 	saved
-        Does the saveChanges method need to be called on this message? This flag is set to false by the public constructor and set to true by the saveChanges method.
-            Fields inherited from class javax.mail.Message
-            expunged, folder, msgnum, session
-            Fields inherited from interface javax.mail.Part
-            ATTACHMENT, INLINE
-        Constructor Summary
-        Constructors Modifier 	Constructor and Description
-        protected 	MimeMessage(Folder folder, InputStream is, int msgnum)
-        Constructs a MimeMessage by reading and parsing the data from the specified MIME InputStream.
-        protected 	MimeMessage(Folder folder, int msgnum)
-        Constructs an empty MimeMessage object with the given Folder and message number.
-        protected 	MimeMessage(Folder folder, InternetHeaders headers, byte[] content, int msgnum)
-        Constructs a MimeMessage from the given InternetHeaders object and content.
-          	MimeMessage(MimeMessage source)
-        Constructs a new MimeMessage with content initialized from the source MimeMessage.
-          	MimeMessage(Session session)
-        Default constructor.
-          	MimeMessage(Session session, InputStream is)
-        Constructs a MimeMessage by reading and parsing the data from the specified MIME InputStream.
-        Method Summary
+1. protected 	MimeMessage(Folder folder, InputStream is, int msgnum) - Constructs a MimeMessage by reading and parsing the data from the specified MIME InputStream.
+2. protected 	MimeMessage(Folder folder, int msgnum) - Constructs an empty MimeMessage object with the given Folder and message number.
+3. protected 	MimeMessage(Folder folder, InternetHeaders headers, byte[] content, int msgnum) - Constructs a MimeMessage from the given InternetHeaders object and content.
+4. MimeMessage(MimeMessage source) - Constructs a new MimeMessage with content initialized from the source MimeMessage.
+5. MimeMessage(Session session)
+
+Default constructor.
+MimeMessage(Session session, InputStream is) - Constructs a MimeMessage by reading and parsing the data from the specified MIME InputStream.
+
+Method Summary
+
         All MethodsInstance MethodsConcrete Methods Modifier and Type 	Method and Description
         void 	addFrom(Address[] addresses)
         Add the specified addresses to the existing "From" field.
@@ -1996,9 +1896,8 @@ Set the subject of this message.
             Throws:
                 MessagingException
 
-## The Part Interface
-
-The Part interface is the common base interface for Messages and BodyParts.Part consists of a set of attributes and a "Content".
+`The Part Interface`:- The Part interface is the common base interface for Messages and BodyParts.Part consists of a set of attributes and a "Content".
+It represents an email component(such as text or attachment).Both email messages and email attachments are considered "parts" in email system.Since emails have multiple sections,the `Part` interface provides methods to manage these sections.
 
 The Part interface defines a set of standard headers common to most mail systems, specifies the data-type assigned to data comprising a content block, and defines set and get methods for each of these members. It is the basic data component in the JavaMail API and provides a common interface for both the Message and BodyPart classes.
 
@@ -2015,6 +1914,11 @@ The "content" of a Part is available in various formats:
 Part provides the writeTo() method that streams out its bytestream in mail-safe form suitable for transmission. This bytestream is typically an aggregation of the Part attributes and its content's bytestream.
 
 Message and BodyPart implement the Part interface. Note that in MIME parlance, Part models an Entity (RFC 2045, Section 2.4).
+
+1. Message(implements Part):- Represents the entire email.
+2. BodyPart(implements Part):- Represents parts of an email(text,attachments,images).
+3. MimeMessage(extends Message):- Represents a full email message.
+4. MimeBodyPart(extends BodyPart):- Represents a part of a MIME email(text,images or attachment).
 
 Note – A Message object can not be contained directly in a Multipart object, but must be embedded in a BodyPart first.
 
@@ -3634,3 +3538,51 @@ This section lists some of the environment properties that are used by the JavaM
 7. mail.fromSpecifies the return address of the current user.Used by the InternetAddress.getLocalAddress method to specify the current user’s email address.
 8. mail.debugSpecifies the initial debug mode. Setting this property to true will turn on debug mode, while setting it to false turns debug mode off.
 es
+
+
+The JavaMail API supports the following standard properties, which may be set in the Session object, or in the Properties object used to create the Session object. The properties are always set as strings; the Type column describes how the string is interpreted. For example, use
+
+        props.put("mail.debug", "true");
+
+to set the mail.debug property, which is of type boolean.
+
+Name 	Type 	Description
+mail.debug 	boolean 	The initial debug mode. Default is false.
+mail.from 	String 	The return email address of the current user, used by the InternetAddress method getLocalAddress.
+mail.mime.address.strict 	boolean 	The MimeMessage class uses the InternetAddress method parseHeader to parse headers in messages. This property controls the strict flag passed to the parseHeader method. The default is true.
+mail.host 	String 	The default host name of the mail server for both Stores and Transports. Used if the mail.protocol.host property isn't set.
+mail.store.protocol 	String 	Specifies the default message access protocol. The Session method getStore() returns a Store object that implements this protocol. By default the first Store provider in the configuration files is returned.
+mail.transport.protocol 	String 	Specifies the default message transport protocol. The Session method getTransport() returns a Transport object that implements this protocol. By default the first Transport provider in the configuration files is returned.
+mail.user 	String 	The default user name to use when connecting to the mail server. Used if the mail.protocol.user property isn't set.
+mail.protocol.class 	String 	Specifies the fully qualified class name of the provider for the specified protocol. Used in cases where more than one provider for a given protocol exists; this property can be used to specify which provider to use by default. The provider must still be listed in a configuration file.
+mail.protocol.host 	String 	The host name of the mail server for the specified protocol. Overrides the mail.host property.
+mail.protocol.port 	int 	The port number of the mail server for the specified protocol. If not specified the protocol's default port number is used.
+mail.protocol.user 	String 	The user name to use when connecting to mail servers using the specified protocol. Overrides the mail.user property.
+
+The following properties are supported by Sun's implementation of JavaMail, but are not currently a required part of the specification. The names, types, defaults, and semantics of these properties may change in future releases.
+
+Name 	Type 	Description
+mail.debug.auth 	boolean 	Include protocol authentication commands (including usernames and passwords) in the debug output. Default is false.
+mail.transport.protocol.address-type 	String 	Specifies the default message transport protocol for the specified address type. The Session method getTransport(Address) returns a Transport object that implements this protocol when the address is of the specified type (e.g., "rfc822" for standard internet addresses). By default the first Transport configured for that address type is used. This property can be used to override the behavior of the send method of the Transport class so that (for example) the "smtps" protocol is used instead of the "smtp" protocol by setting the property mail.transport.protocol.rfc822 to "smtps".
+
+The JavaMail API also supports several System properties; see the javax.mail.internet package documentation for details.
+
+The JavaMail reference implementation from Sun includes protocol providers in subpackages of com.sun.mail. Note that the APIs to these protocol providers are not part of the standard JavaMail API. Portable programs will not use these APIs.
+
+Nonportable programs may use the APIs of the Sun protocol providers by (for example) casting a returned Folder object to a com.sun.mail.imap.IMAPFolder object. Similarly for Store and Message objects returned from the standard JavaMail APIs.
+
+The Sun protocol providers also support properties that are specific to those providers. The package documentation for the IMAP, POP3, and SMTP packages provide details.
+
+In addition to printing debugging output as controlled by the Session configuration, the current implementation of classes in this package log the same information using Logger as described in the following table:
+
+Logger Name 	Logging Level 	Purpose
+javax.mail 	CONFIG 	Configuration of the Session
+javax.mail 	FINE 	General debugging output
+
+The JavaMail API provides a platform-independent and protocol-independent framework to build mail and messaging applications. The JavaMail API is available as an optional package for use with the Java SE platform and is also included in the Java EE platform.
+
+In the years since its first release, the JavaTM programming language has matured to become a platform. The Java platform has added functionality, including distributed computing with RMI and CORBA, and a component architecture (JavaBeansTM). Java applications have also matured, and many need an addition to the Java platform: a mail and messaging framework.The JavaMailTM API described in this specification satisfies that need.
+
+The JavaMail API provides a set of abstract classes defining objects that comprise a mail system. The API defines classes like Message, Store and Transport. The API can be extended and can be subclassed to provide new protocols and to add functionality when necessary.
+
+In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols and conform to specifications RFC822 and RFC2045. They are ready to be used in application development.

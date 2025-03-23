@@ -12,7 +12,7 @@ To make Spring web app:
 2. Add dependencies to pom.xml(spring core,MVC,jackson,validator)
 3. Configure required beans in configuration using xml or java-config(DispatcherServlet,Viewresolver,Controller)
 4. Write web.xml
-5. Write conntroller class
+5. Write controller class
 6. configure annotations e,g(@requestBody)
 
 Spring Drawbacks:

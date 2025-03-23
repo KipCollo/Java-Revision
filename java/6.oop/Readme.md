@@ -15,7 +15,7 @@ Object-Oriented Programming is a methodology or paradigm to design a program usi
     4. Inheritance
     5. Abstraction
     6. Polymorphism
-    7. Acces modifiers
+    7. Access modifiers
     8. Interface
     9. Getters and Setters
 
