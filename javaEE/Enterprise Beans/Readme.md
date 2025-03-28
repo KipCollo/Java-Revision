@@ -76,4 +76,3 @@ To improve performance, you might choose a stateless session bean if it has any 
     The bean’s state has no data for a specific client.
 
     In a single method invocation, the bean performs a generic task for all clients. For example, you might use a stateless session bean to send an email that confirms an online order.
-

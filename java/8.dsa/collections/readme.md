@@ -23,27 +23,24 @@ NOTE:- Map doesn't implements the Collection interface.It is considered a part o
 
 ![collection-hierarchy](https://user-images.githubusercontent.com/2780145/34073817-62945de4-e2c8-11e7-820b-84f9dad32af3.png)
 
-## Methods of Collection Interface:
+Methods of Collection Interface:-
 
-<table class="alt">
-<tbody><tr><th>No.</th><th>Method</th><th>Description</th></tr>
-<tr><td>1</td><td>public boolean add(Object element)</td><td> is used to insert an element in this collection.</td></tr>
-<tr><td>2</td><td>public boolean addAll(Collection c)</td><td>is used to insert the specified collection elements in the invoking collection.</td></tr>
-<tr><td>3</td><td>public boolean remove(Object element)</td><td>is used to delete an element from this collection.</td></tr>
-<tr><td>4</td><td>public boolean removeAll(Collection c)</td><td>is used to delete all the elements of specified collection from the invoking collection.</td></tr>
-<tr><td>5</td><td>public boolean retainAll(Collection c)</td><td>is used to delete all the elements of invoking collection except the specified collection.</td></tr>
-<tr><td>6</td><td>public int size()</td><td>return the total number of elements in the collection.</td></tr>
-<tr><td>7</td><td>public void clear()</td><td>removes the total no of element from the collection.</td></tr>
-<tr><td>8</td><td>public boolean contains(Object element)</td><td>is used to search an element.</td></tr>
-<tr><td>9</td><td>public boolean containsAll(Collection c)</td><td>is used to search the specified collection in this collection.</td></tr>
-<tr><td>10</td><td>public Iterator iterator()</td><td>returns an iterator.</td></tr>
-<tr><td>11</td><td>public Object[] toArray()</td><td>converts collection into array.</td></tr>
-<tr><td>12</td><td>public boolean isEmpty()</td><td>checks if collection is empty.</td></tr>
-<tr><td>13</td><td>public boolean equals(Object element)</td><td>matches two collection.</td></tr>
-<tr><td>14</td><td>public int hashCode()</td><td>returns the hashcode number for collection.</td></tr>
-</tbody></table>
+1. public boolean add(Object element)- is used to insert an element in this collection.
+2. public boolean addAll(Collection c)- is used to insert the specified collection elements in the invoking collection.
+3. public boolean remove(Object element)- is used to delete an element from this collection.
+4. public boolean removeAll(Collection c)- is used to delete all the elements of specified collection from the invoking collection.
+5. public boolean retainAll(Collection c)- is used to delete all the elements of invoking collection except the specified collection.
+6. public int size()- return the total number of elements in the collection.
+7. public void clear()- removes the total no of element from the collection.
+8. public boolean contains(Object element)- is used to search an element.
+9. public boolean containsAll(Collection c)-is used to search the specified collection in this collection.
+10. public Iterator iterator()- returns an iterator.
+11. public Object[] toArray()- converts collection into array.
+12. public boolean isEmpty()- checks if collection is empty.
+13. public boolean equals(Object element) - matches two collection.
+14. public int hashCode() - returns the hashcode number for collection.
 
-## Methods of Iterator Interface :
+Methods of Iterator Interface :-
 
 <table class="alt">
 <tbody><tr><th>No.</th><th>Method</th><th>Description</th></tr>
