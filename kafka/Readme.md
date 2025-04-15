@@ -55,55 +55,15 @@ will still be able to connect to the cluster.
 However, the producer interface allows, using parameterized types, any Java object to be sent as a key and value. This makes for very readable code, but it also means that the producer has to know how to convert these objects to byte arrays.key.serializer should be set to a name of a class that implements the org.apache.kafka.common.serialization.Serializer interface. The producer will use this class to serialize the key object to a byte array. The Kafka client package includes ByteArraySerializer (which doesn’t do much),StringSerializer, and IntegerSerializer, so if you use common types, there is no need to implement your own serializers. Setting key.serializer is required even if you intend to send only values.
 3. value.serializer - Name of a class that will be used to serialize the values of the records we will produce to Kafka. The same way you set key.serializer to a name of a class that will serialize the message key object to a byte array, you set value.serializer to a class that will serialize the message value object.
 
-```java
-private Properties kafkaProps = new Properties();
-kafkaProps.put("bootstrap.servers", "broker1:9092,broker2:9092");
-kafkaProps.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");
-kafkaProps.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
-
-producer = new KafkaProducer<String, String>(kafkaProps);
-```
-
 Once we instantiate a producer, it is time to start sending messages. There are three primary methods of sending messages:
 
 - Fire-and-forget - We send a message to the server and don’t really care if it arrives successfully or not. Most of the time, it will arrive successfully, since Kafka is highly available and the producer will retry sending messages automatically. However, some messages will get lost using this method.
 - Synchronous send - We send a message, the send() method returns a Future object, and we use get() to wait on the future and see if the send() was successful or not.
 - Asynchronous send - We call the send() method with a callback function, which gets triggered when it receives a response from the Kafka broker.
 
-A producer object can be used by multiple threads to send messages. You will probably want to start with one producer and one thread. If you need better throughput, you can add more threads that use the same producer. Once this ceases to increase throughput, you can add more producers to the application to achieve even higher throughput.
-
-The simplest way to send a message is as follows:
-
-```java
-ProducerRecord<String, String> record = new ProducerRecord<>("CustomerCountry", "Precision Products","France");
-   try {
-      producer.send(record);
-   } catch (Exception e) {
-      e.printStackTrace();
-}
-```
-
-The producer accepts ProducerRecord objects, so we start by creating one.ProducerRecord has multiple constructors, which we will discuss later. Here we use one that requires the name of the topic we are sending data to, which is always a string, and the key and value we are sending to Kafka, which in this case are also strings. The types of the key and value must match our serializer and producer objects.
-
-We use the producer object send() method to send the ProducerRecord.The message will be placed in a buffer and will be sent to the broker in a separate thread. The
-send() method returns a Java Future object with RecordMetadata, but since we simply ignore the returned value, we have no way of knowing whether the message was sent successfully or not. This method of sending messages can be used when dropping a message silently is acceptable. This is not typically the case in production applications.
-
-While we ignore errors that may occur while sending messages to Kafka brokers or in the brokers themselves, we may still get an exception if the producer encountered errors before sending the message to Kafka. Those can be a SerializationException when it fails to serialize the message, a BufferExhaustedException or TimeoutException if the buffer is full, or an InterruptException if the sending thread was interrupted.
-
-`Sending a Message Synchronously` - The simplest way to send a message synchronously is as follows:
-
-```java
-ProducerRecord<String, String> record = new ProducerRecord<>("CustomerCountry", "Precision Products", "France");
-   try {
-      producer.send(record).get();
-   } catch (Exception e) { e.printStackTrace();
-}
-```
-
-Here, we are using Future.get() to wait for a reply from Kafka. This method will throw an exception if the record is not sent successfully to Kafka. If there were no errors, we will get a RecordMetadata object that we can use to retrieve the offset the message was written to.
-If there were any errors before sending data to Kafka, while sending, if the Kafka brokers returned a nonretriable exceptions or if we exhausted the available retries, we will encounter an exception. In this case, we just print any exception we ran into.
-
-KafkaProducer has two types of errors. Retriable errors are those that can be resolved by sending the message again. For example, a connection error can be resolved because the connection may get reestablished. A “no leader” error can be resolved when a new leader is elected for the partition. KafkaProducer can be configured to retry those errors automatically, so the application code will get retriable exceptions only when the number of retries was exhausted and the error was not resolved. Some errors will not be resolved by retrying. For example, “message size too large.” In those cases, KafkaProducer will not attempt a retry and will return the exception immediately.
+The producer connects to any of the alive nodes and requests metadata about the leaders for the partitions of a topic. This allows the producer to put the message directly to the lead broker for the partition.
+The Kafka producer API exposes the interface for semantic partitioning by allowing the producer to specify a key to partition by and using this to hash to a partition. Thus, the
+producer can completely control which partition it publishes messages to
 
 `Configuring Producers` - The producer has a large number of configuration parameters; most are documented in Apache Kafka documentation and many have reasonable defaults so there is no reason to tinker with every single parameter. However, some of the parameters have a significant impact on memory use, performance, and reliability of the producers.
 
@@ -195,7 +155,99 @@ Specifying Topic Configurations - It is also possible to explicitly set the repl
 
 Topics that are produced with keyed messages can be very difficult to add partitions to from a consumer’s point of view. This is because the mapping of keys to partitions will change when the number of partitions is changed. For this reason, it is advisable to set the number of partitions for a topic that will contain keyed messages once, when the topic is created, and avoid resizing the topic.
 
+## Java Apache Kafka implementations
+
+`package org.apache.kafka.clients.producer` - Provides a Kafka client for producing records to topics and/or partitions in a Kafka cluster.It contains the classes:-
+
+1. KafkaProducer<K,V> - A Kafka client that publishes records to the Kafka cluster.K (Key) and V (Value) represent the data types of the message.Handles message serialization, partitioning, batching, and retries.
+2. Producer<K,V> - The interface for the KafkaProducer
+3. ProducerConfig - Configuration for the Kafka Producer.
+4. RecordMetadata - The metadata for a record that has been acknowledged by the server
+5. RoundRobinPartitioner - The "Round-Robin" partitioner This partitioning strategy can be used when user wants to distribute the writes to all partitions equally.
+6. Callback - A callback interface that the user can implement to allow code to execute when the request is complete.
+7. MockProducer<K,V> - A mock of the producer interface you can use for testing code that uses Kafka.
+8. ProducerRecord<K,V> - A key/value pair to be sent to Kafka.
+9. ProducerInterceptor<K,V> - A plugin interface that allows you to intercept (and possibly mutate) the records received by the producer before they are published to the Kafka cluster.
+10. Partitioner - Partitioner Interface
+11. BufferExhaustedException - This exception is thrown if the producer cannot allocate memory for a record within max.block.ms due to the buffer being too full.
+
+- As the first step, we need to import the following classes:
+
+```java
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
+```
+
+- As the next step in writing the producer, we need to define properties for making a connection with the Kafka broker and pass these properties to the Kafka producer:
+
+```java
+Properties props = new Properties();
+kafkaProps.put("bootstrap.servers", "broker1:9092,broker2:9092");
+kafkaProps.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");
+kafkaProps.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
+props.put("request.required.acks", "1");
+
+ProducerConfig config = new ProducerConfig(props);
+Producer<String, String> producer = new Producer<String, String> (config);
+```
+
+```java
+
+producer = new KafkaProducer<String, String>(kafkaProps);
+```
+
+The simplest way to send a message is as follows:
+
+```java
+ProducerRecord<String, String> record = new ProducerRecord<>("topic", "key","value");
+   try {
+      producer.send(record);
+   } catch (Exception e) {
+      e.printStackTrace();
+}
+```
+
+A producer object can be used by multiple threads to send messages. You will probably want to start with one producer and one thread. If you need better throughput, you can add more threads that use the same producer. Once this ceases to increase throughput, you can add more producers to the application to achieve even higher throughput.
+
+The producer accepts ProducerRecord objects, so we start by creating one.ProducerRecord has multiple constructors, which we will discuss later. Here we use one that requires the name of the topic we are sending data to, which is always a string, and the key and value we are sending to Kafka, which in this case are also strings. The types of the key and value must match our serializer and producer objects.
+
+We use the producer object send() method to send the ProducerRecord.The message will be placed in a buffer and will be sent to the broker in a separate thread. The
+send() method returns a Java Future object with RecordMetadata, but since we simply ignore the returned value, we have no way of knowing whether the message was sent successfully or not. This method of sending messages can be used when dropping a message silently is acceptable. This is not typically the case in production applications.
+
+While we ignore errors that may occur while sending messages to Kafka brokers or in the brokers themselves, we may still get an exception if the producer encountered errors before sending the message to Kafka. Those can be a SerializationException when it fails to serialize the message, a BufferExhaustedException or TimeoutException if the buffer is full, or an InterruptException if the sending thread was interrupted.
+
+`Sending a Message Synchronously` - The simplest way to send a message synchronously is as follows:
+
+```java
+ProducerRecord<String, String> record = new ProducerRecord<>("CustomerCountry", "Precision Products", "France");
+   try {
+      producer.send(record).get();
+   } catch (Exception e) { e.printStackTrace();
+}
+```
+
+Here, we are using Future.get() to wait for a reply from Kafka. This method will throw an exception if the record is not sent successfully to Kafka. If there were no errors, we will get a RecordMetadata object that we can use to retrieve the offset the message was written to.
+If there were any errors before sending data to Kafka, while sending, if the Kafka brokers returned a nonretriable exceptions or if we exhausted the available retries, we will encounter an exception. In this case, we just print any exception we ran into.
+
+KafkaProducer has two types of errors. Retriable errors are those that can be resolved by sending the message again. For example, a connection error can be resolved because the connection may get reestablished. A “no leader” error can be resolved when a new leader is elected for the partition. KafkaProducer can be configured to retry those errors automatically, so the application code will get retriable exceptions only when the number of retries was exhausted and the error was not resolved. Some errors will not be resolved by retrying. For example, “message size too large.” In those cases, KafkaProducer will not attempt a retry and will return the exception immediately.
+
 ## Spring for Apache Kafka
+
+Kafka's producer system in Spring Boot is built on top of Kafka's native Producer API and integrates seamlessly with Spring’s dependency injection and auto-configuration.
+
+- At the lowest level, Kafka provides a Producer<K, V> interface, which defines the contract for all producer implementations. This is a general interface that allows different implementations of producers.This interface ensures that any class implementing it must provide methods for:
+    1. Sending messages (send): Asynchronously sends data to Kafka.
+    2. Flushing (flush): Ensures all messages in memory are delivered.
+    3. Closing (close): Releases resources used by the producer.
+
+- KafkaProducer<K, V> is Kafka's default implementation of the Producer<K, V> interface. It handles:
+    1. Message batching
+    2. Retries on failure
+    3. Acknowledgment from Kafka brokers
+    4. Partitioning logic (how data is distributed across partitions)
+
+- Spring Boot simplifies Kafka producer configuration and interaction through Spring Kafka, which provides high-level abstractions.
 
 The Spring for Apache Kafka (spring-kafka) project applies core Spring concepts to the development of Kafka-based messaging solutions. It provides a "template" as a high-level abstraction for sending messages. It also provides support for Message-driven POJOs with @KafkaListener annotations and a "listener container". These libraries promote the use of dependency injection and declarative. In all of these cases, you will see similarities to the JMS support in the Spring Framework and RabbitMQ support in Spring AMQP.
 

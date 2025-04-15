@@ -1,13 +1,17 @@
 # Java
 
-Java is an OOP language developed by Sun Microsystems.It was originally called Oak, developed by James Gosling.It was alter purchased by Oracle.
+Java is an OOP language developed by Sun Microsystems.It was originally called Oak, developed by James Gosling.It was alter purchased by Oracle.Originally designed for consumer electronics.
 
-Java has four Editions:
+Java Editions includes:
 
-1. Standard Edition - Java core platform.
-2. Enterprise Edition - Used for building large scale and distributive systems.Built on top of java standard edition.
-3. Micro Edition - Designed for mobile devices.
-4. Java Card - Used in smart cards.
+1. Java Standard Edition - Java core platform.It lets you develop and deploy Java applications on desktops and servers. Java offers the rich user interface, performance, versatility, portability, and security that today's applications require.
+2. Enterprise Edition - Used for building large scale and distributive systems.Built on top of java standard edition.It is the standard in community-driven enterprise software. Java EE is developed using the Java Community Process, with contributions from industry experts, commercial and open source organizations, Java User Groups, and countless individuals.
+3. Java ME Micro Edition - Designed for mobile devices.
+4. Java Card - Used in smart cards and sim cards.
+5. Java MP Micro-profile - Used with microservices and allows you to define ,for a server,how your application should ne deployed and run as microservice.
+6. Java Embedded - Oracle Java Embedded: Unlocking the Value of the Internet of Things with Intelligence on Devices
+7. Java DB
+8. Java TV
 
 Here’s a brief history of modern computer programming:
 
@@ -38,16 +42,6 @@ Java improves upon the concepts in C++. Java’s “Write Once, Run Anywhere” 
 ✓ January 2010: Oracle Corporation purchases Sun Microsystems, ­bringing Java technology into the Oracle family of products.
 
 Additionally, Java technology provides interactive capabilities to all Blu-ray devices and is the most popular programming language in the TIOBE Programming Community Index on PYPL: the PopularitY of Programming Language Index, and on other indexes.
-
-## Java Technologies
-
-1. Java SE - Java Platform, Standard Edition (Java SE) lets you develop and deploy Java applications on desktops and servers. Java offers the rich user interface, performance, versatility, portability, and security that today's applications require.
-2. Java Embedded - Oracle Java Embedded: Unlocking the Value of the Internet of Things with Intelligence on Devices
-3. Java EE - Java Platform, Enterprise Edition (Java EE) is the standard in community-driven enterprise software. Java EE is developed using the Java Community Process, with contributions from industry experts, commercial and open source organizations, Java User Groups, and countless individuals.
-4. Java ME
-5. Java DB
-6. Java TV
-7. Java Card
 
 •1. What is the difference between JDK and JRE?
 •2. Why is Java a platform independent language?
@@ -149,3 +143,5 @@ Is an environment required to run Java applications.Includes JVM class libraries
 ## Java Virtual Machine
 
 It is an abstract machine.It is a specification that provides runtime environment in which java bytecode can be executed.It is platform dependent.
+
+Each Java Program only needs to be written and compiled once.A single compiled version of a program can only run on any platform.
