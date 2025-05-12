@@ -436,6 +436,26 @@ If we use docker,set env inside Dockerfile.
 
 Whenever we set env values,during app startup it will be set in jvm.
 
+Spring profiles provide a way to define envie=ronment-specific configurations within spring application.They allow developers to active certain beans or configurations based on the environment the application is running in,such as development,testing,or production.
+
+Usage:
+
+- `Defining profiles`:- Use te @Profile annotation on @Component,@Configuration or @ConfigurationPrperties classes to assocciate them with specific profile.
+
+```java
+@Configuration
+@Profile("dev")
+public class DevConfig{
+    //Configuration for development environment
+}
+```
+
+- `Activating profiles`:- Set the spring.profiles.active property in your application.properties or application.yaml file.
+
+```java
+spring.profiles.active=dev
+```
+
 ### Getting env values from JVM
 
 1. Using System.getProperty("env")

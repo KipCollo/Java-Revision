@@ -2,8 +2,6 @@
 
 OkHttp is a popular open-source HTTP client library for Java and Android. It simplifies making network requests and handling responses efficiently. OkHttp supports HTTP/1.1, HTTP/2, WebSockets, and features like connection pooling, request caching, and retry mechanisms.
 
-An HTTP+HTTP/2 client for Android and Java applications.
-
 ## Key Features of OkHttp
 
 1. Synchronous and Asynchronous requests.
@@ -12,6 +10,12 @@ An HTTP+HTTP/2 client for Android and Java applications.
 4. Automatic GZIP compression of responses.
 5. Caching for improved speed and offline support.
 6. Handling redirects and retries.
+
+OkHttp perseveres when the network is troublesome: it will silently recover from common connection problems. If your service has multiple IP addresses, OkHttp will attempt alternate addresses if the first connect fails. This is necessary for IPv4+IPv6 and services hosted in redundant data centers. 
+
+OkHttp supports modern TLS features (TLS 1.3, ALPN, certificate pinning). It can be configured to fall back for broad connectivity.
+
+Using OkHttp is easy. Its request/response API is designed with fluent builders and immutability. It supports both synchronous blocking calls and async calls with callbacks.
 
 Adding OkHttp to Your Project
 
@@ -207,4 +211,14 @@ WebSocket:
 3. Handle exceptions and edge cases like timeouts, retries, and API errors gracefully.
 4. Use interceptors to centralize logging, headers, or retry logic.
 
-OkHttp is powerful, efficient, and well-suited for modern Java and Android applications!
+OkHttp works on Android 5.0+ (API level 21+) and Java 8+.
+
+OkHttp depends on Okio for high-performance I/O and the Kotlin standard library. Both are small libraries with strong backward-compatibility.
+
+OkHttp uses your platform’s built-in TLS implementation. On Java platforms OkHttp also supports Conscrypt, which integrates BoringSSL with Java. OkHttp will use Conscrypt if it is the first security provider:
+
+```java
+Security.insertProviderAt(Conscrypt.newProvider(), 1);
+```
+
+The OkHttp 3.12.x branch supports Android 2.3+ (API level 9+) and Java 7+. These platforms lack support for TLS 1.2 and should not be used.
