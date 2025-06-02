@@ -8,8 +8,6 @@ public class Queue_Learn {
 
 	public static void main(String[] args) {
 
-	
-
 		/*
 		 * 'LinkedList' class extends 'AbstractSequentialList' class and implements the
 		 * 'List', 'Queue' and 'Deque' interfaces.
