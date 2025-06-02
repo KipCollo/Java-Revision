@@ -1,5 +1,3 @@
-package datastructures.collections.list.arraylist;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,12 +10,10 @@ public class ArrayListImplementation {
 
 	public static void main(String[] args) {
 
-
 	//constructor
- 
 	 List<Integer> numList = new ArrayList<>();//Creates empty list with initial capacity of ten
-     List<Integer> newList1 = new ArrayList<>(50);//Creates empty list with initial capacity specified.
-     List<Integer> newList2 = new ArrayList<>();//Constructs a list containing the elements of the specified collection
+    List<Integer> newList1 = new ArrayList<>(50);//Creates empty list with initial capacity specified.
+    List<Integer> newList2 = new ArrayList<>();//Constructs a list containing the elements of the specified collection
 
 	//Methods
      //Adding elements to ArrayList
@@ -30,8 +26,7 @@ public class ArrayListImplementation {
  		nums = new ArrayList<>(Arrays.asList(4, 7));
 		numList.addAll(4, nums); // numList = [7, 3, 5, 6, 4, 7, 3, 1]
 
-		System.out.println("numList = " + numList);
-		// numList = [7, 3, 5, 6, 4, 7, 3, 1]
+		System.out.println("numList = " + numList); // numList = [7, 3, 5, 6, 4, 7, 3, 1]
 
 
 	 //Removing elements from ArrayList

@@ -1,5 +1,3 @@
-package designpattern.builder;
-
 public class Product {
 
     private String name;

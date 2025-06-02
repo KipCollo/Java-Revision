@@ -1,5 +1,3 @@
-package datastructures.collections.list.arraylist.sorting;
-
 public class Student {
 
     private int id;

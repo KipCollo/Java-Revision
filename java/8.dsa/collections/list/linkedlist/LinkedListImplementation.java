@@ -1,6 +1,3 @@
-package datastructures.collections.list.linkedlist;
-
-
 // public class LinkedListImplementation {
 //     public static void main(String[] args) {
         
@@ -24,8 +21,6 @@ import java.util.ListIterator;
 public class LinkedListImplementation {
 
 	public static void main(String[] args) {
-
-		
 
 		List<Integer> numList = new LinkedList<>();
 

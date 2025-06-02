@@ -1,4 +1,3 @@
-package datastructures.collections.sets.linkedhashset;
 
 import java.util.Arrays;
 import java.util.Collections;

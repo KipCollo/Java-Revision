@@ -61,9 +61,14 @@ On the exam, pay attention to any class marked final. If you see another class e
 
 ## Single vs. Multiple Inheritance
 
-Java supports single inheritance, by which a class may inherit from only one direct parent class. Java also supports multiple levels of inheritance, by which one class may extend another class, which in turn extends another class. You can have any number of levels of inheritance, allowing each descendant to gain access to its ancestor’s members.
+Java supports single inheritance, by which a class may inherit from only one direct parent class. Java also supports multilevel levels of inheritance, by which one class may extend another class, which in turn extends another class. You can have any number of levels of inheritance, allowing each descendant to gain access to its ancestor’s members.
 
 By design, Java doesn’t support multiple inheritance -by which a class may have multiple direct parents- in the language because multiple inheritance can lead to complex, often difficult-­to-­maintain data models. Java does allow one exception to the single inheritance rule,­a class may implement multiple interfaces.
+
+Diamond problem - When two parent classes inherit from a common ancestor and override the same method, the child class faces ambiguity.This leads to confusion and maintenance challenges.Java philosophy design:-
+   1. Simplicity over complexity : Java was designed to be simple, clear, and easy to maintain.
+   2. Avoiding ambiguity : Multiple inheritance introduces ambiguity, which conflicts with Java’s goal of being straightforward
+   3. “Write Once, Run Anywhere”: Complex inheritance hierarchies could hinder portability and predictability.
 
 ## Inheriting Object
 

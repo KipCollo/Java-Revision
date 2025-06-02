@@ -3,13 +3,16 @@
 All operating systems support what is known as multithreaded processing. The idea behind multithreaded processing is to allow an application or group of applications to
 execute multiple tasks at the same time. This allows tasks waiting for other resources to give way to other processing requests.
 
+Concurrency APIs provides numerous ways to manage threads.
+
 ## Threads
 
-A thread is the smallest unit of execution that can be scheduled by the operating system. A process is a group of associated threads that execute in the same shared environment. It follows,then, that a single-­threaded process is one that contains exactly one thread, whereas a multi-threaded process supports more than one thread.
+A `thread` is the smallest unit of execution that can be scheduled by the operating system.
+A `process` is a group of associated threads that execute in the same shared environment. It follows,then, that a single-­threaded process is one that contains exactly one thread, whereas a multi-threaded process supports more than one thread.
 
 By shared environment, we mean that the threads in the same process share the same memory space and can communicate directly with one another.
 
-A task is a single unit of work performed by a thread. A task will commonly be implemented as a lambda expression. A thread can complete multiple independent tasks
+A `task` is a single unit of work performed by a thread. A thread can complete multiple independent tasks
 but only one task at a time.
 
 - Thread Concurrency:- The property of executing multiple threads and processes at the same time is referred to as concurrency.Operating systems use a thread scheduler to determine which threads should be currently executing. For example, a thread scheduler may employ a round-­robin schedule in which each available thread receives an equal number of CPU cycles with which to execute, with threads visited in a circular order.

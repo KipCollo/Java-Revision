@@ -1,6 +1,6 @@
 # Java
 
-Java is an OOP language developed by Sun Microsystems.It was originally called Oak, developed by James Gosling.It was alter purchased by Oracle.Originally designed for consumer electronics.
+Java is an OOP language developed by Sun Microsystems.It was originally called Oak, developed by James Gosling.It was later purchased by Oracle.Originally designed for consumer electronics.
 
 Java Editions includes:
 

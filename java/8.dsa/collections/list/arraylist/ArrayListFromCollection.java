@@ -1,5 +1,3 @@
-package datastructures.collections.list.arraylist;
-
 import java.util.ArrayList;
 import java.util.List;
 

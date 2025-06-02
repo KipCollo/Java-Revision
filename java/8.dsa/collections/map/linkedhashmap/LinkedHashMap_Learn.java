@@ -1,4 +1,3 @@
-package datastructures.collections.map.linkedhashmap;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

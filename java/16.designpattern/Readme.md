@@ -4,13 +4,10 @@ Design Patterns are class and method-level solutions to common problems in objec
 
 ## Interface Patterns
 
-**ADAPTER** Provide the interface that client expects,using service of a class with different interfaces.
-
-**FACADE** Provide an interface that makes a subsystem easy to use.
-
-**COMPOSITE** Allow clients to treat individual objects and compositions of objects uniformly.
-
-**BRIDGE** Decouple a class that relies on abstract operations from implementations of those abstract operations so that class and implementation can vary independently.
+1. `ADAPTER` - Provide the interface that client expects,using service of a class with different interfaces.
+2. `FACADE`- Provide an interface that makes a subsystem easy to use.
+3. `COMPOSITE` - Allow clients to treat individual objects and compositions of objects uniformly.
+4. `BRIDGE` - Decouple a class that relies on abstract operations from implementations of those abstract operations so that class and implementation can vary independently.
 
 ## Responsibiliy Patterns
 

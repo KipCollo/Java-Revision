@@ -1,4 +1,3 @@
-package datastructures.collections.map.hashmap;
 
 import java.util.HashMap;
 import java.util.Map;

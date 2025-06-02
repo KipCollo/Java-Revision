@@ -14,12 +14,12 @@ The 'LinkedList' class extends the 'AbstractSequentialList' class and implements
 
 ## Constructors
 
-- **LinkedList()** : Creates empty list.
-- **ArrayList(Collection c)**:- Constructs a list containing the elements of the specified collection, in the order they are returned by the collection's iterator.
-
+- **LinkedList()** : Creates empty list containing all defaults.
+- **LinkedList(Collection c)**:- Constructs a list containing the elements of the specified collection, in the order they are returned by the collection's iterator.
 
 ## Methods In List
-### Adding elements to LinkedList
+
+`Adding elements to LinkedList`:-
 		
 boolean add(E obj) : Declared in the Collection interface. Adds object to the collection. Returns true if object was added, otherwise returns false.
 		
@@ -29,7 +29,7 @@ boolean addAll(Collection c) : Declared in the Collection interface. Adds all th
 		
 boolean addAll(int index, Collection c) : Declared in the List interface.Adds all the elements of c to the invoking list at the index passed. Any preexisting element at or beyond the index are shifted up. Thus no elements are overwritten. Returns true if elements were added to the invoking list.Otherwise, returns false.
 		
-### Removing elements from LinkedList
+`Removing elements from LinkedList`:-
 		
 boolean remove(Object obj) : Declared in the Collection interface. Removes one instance of obj from the invoking collection. Returns true if the element was removed. Otherwise, returns false.
 		 
@@ -39,31 +39,30 @@ E remove(int index) : Declared in the List interface. Removes the element at the
 		
 boolean retainAll(Collection c) : Declared in the Collection interface.Removes all elements from the invoking collection except those in c. Returns true if elements were removed from the invoking collection. Otherwise,returns false.
 
-### Check if LinkedList contains an object
+`Check if LinkedList contains an object`:-
 	
 boolean contains(Object obj) : Declared in the Collection interface. Returns true if obj is an element of the invoking collection. Otherwise, returns false.
 	
 boolean containsAll(Collection c) : Declared in the Collection interface.Returns true if the invoking collection contains all elements of c.Otherwise, returns false.
 	
 
-### Get the element at an index in LinkedList
+`Get the element at an index in LinkedList`:-
 	
 E get(int index) : Declared in the List interface. Returns the object stored at the specified index within the invoking collection.
 	
-### Get the index of an element in LinkedList
+`Get the index of an element in LinkedList`:-
 		
 int indexOf(Object obj) : Declared in the List interface. Returns the index of the first instance of obj in the invoking list. If obj is not present in the list, -1 is returned.
 	
 int lastIndexOf(Object obj) : Declared in the List interface. Returns the index of the last instance of obj in the invoking list. If obj is not present in the list, -1 is returned.
 
-### Set the element at an index in LinkedList
+`Set the element at an index in LinkedList`
 	
 E set(int index, E obj) : Declared in the List interface. Assigns obj to the location specified by index within the invoking list. Returns the old va
 
-
 ## Methods declared by the 'Queue', 'Deque' interfaces
 
-### Adding elements to LinkedList
+`Adding elements to LinkedList`:-
 
 boolean offer(E obj) : Declared in the Queue interface. Adds object to the queue. Returns true if object was added, otherwise returns false.
 		
@@ -78,8 +77,7 @@ boolean offerLast(E obj) : Declared in the Deque interface. Attempts to add obj 
 
 void push(E obj) : Declared in the Deque interface. Adds obj to the head of the deque. Throws an IllegalStateException if a capacity-restricted deque is out of space.
 
-
-### Removing elements from LinkedList
+`Removing elements from LinkedList`:-
 
 E remove() : Declared in the Queue interface. Removes the element at the hef the queue returning the element in the process. It throws NoSuchElementException if the queue is empty.
 
@@ -92,9 +90,7 @@ boolean removeFirstOccurrence(Object obj) : Declared in the Deque interface. Rem
 
 boolean removeLastOccurrence(Object obj) : Declared in the Deque interface. Removes the last occurrence of obj from the deque. Returns true if successful and false if the deque did not contain obj.
 
-
-
-### Get the head / tail element of LinkedList
+`Get the head / tail element of LinkedList`:-
  
 E peek() : Declared in the Queue interface. Returns the element at the head of the queue. It returns null if the queue is empty.
 	
@@ -105,9 +101,8 @@ E peekLast() : Declared in the Deque interface. Returns the element at the tail 
 E getFirst() : Declared in the Deque interface. Returns the first element in the deque. The object is not removed from the deque. It throws NoSuchElementException if the deque is empty.
  
 E getLast() : Declared in the Deque interface. Returns the last element in the deque. The object is not removed from the deque. It throws NoSuchElementException if the deque is empty.
-		 
 
-### Get & remove the head / tail element of LinkedList
+`Get & remove the head / tail element of LinkedList`:-
 		
 E poll() : Declared in the Queue interface. Returns the element at the head of the queue, removing the element in the process. It returns null if the queue is empty.
 		 
@@ -116,9 +111,8 @@ E pop() : Declared in the Deque interface. Returns the element at the head of th
 E pollFirst() : Declared in the Deque interface. Returns the element at the head of the deque, removing the element in the process. It returns null if the deque is empty.
 		 
 E pollLast() : Declared in the Deque interface. Returns the element at the tail of the deque, removing the element in the process. It returns null if the deque is empty.
-	
 
-### Reverse order iteration over the contents of a LinkedList
+`Reverse order iteration over the contents of a LinkedList`:-
 		
 Iterator<E> descendingIterator(): Declared in the Deque interface. Returns an iterator that moves from the tail to the head (reverse iterator) of the deque.
 	

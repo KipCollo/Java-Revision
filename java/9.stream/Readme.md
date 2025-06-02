@@ -1,8 +1,8 @@
 # Stream and Optionals
 
-Stream API is used to process collections of objects. A stream in Java is a sequence of objects that supports various methods that can be pipelined to produce the desired result.Stream is an interface, containing stream() method.Stream method returns an object of type stream.Any operation can be performed inside stream method.Any changes done inside stream can be reflected on actal list.Once we work with stream we can't reuse.
+`Stream API` is used to process collections of objects. A `stream` in Java is a sequence of objects that supports various methods that can be pipelined to produce the desired result.It was introduced in Java 8.It supports functional-style operations on collections and other data sources, making code concise, readable, and efficient.
 
-The Stream API in Java, introduced in Java 8, provides a powerful way to work with sequences of data. It supports functional-style operations on collections and other data sources, making code concise, readable, and efficient.
+Stream is an interface, containing stream() method.Stream method returns an object of type stream.Any operation can be performed inside stream method.Any changes done inside stream can be reflected on actal list.Once we work with stream we can't reuse.
 
 Streams allows us to process a collection of data in a declarative way.A stream in Java is a sequence of data. A stream pipeline consists of the operations that run
 on a stream to produce a result.
@@ -16,13 +16,12 @@ Use of Stream in Java:
 
 Streams don’t change the original data structure, they only provide the result as per the pipelined methods.Each intermediate operation is lazily executed and returns a stream as a result, hence various intermediate operations can be pipelined. Terminal operations mark the end of the stream and return the result.
 
-Charcteristics:-
+Characteristics:-
 
 1. Pipeline Concept:- A stream pipeline has three stages:
       - Source: Generates the stream (e.g., a list or an array).
       - Intermediate Operations: Transform the stream (e.g., filter, map).
       - Terminal Operations: Produce a result or side effects (e.g., collect, forEach).
-
 2. Lazy Evaluation:- Intermediate operations are not executed until a terminal operation is invoked.
 3. Single-Use:- Streams cannot be reused once operated on. A new stream must be created for additional operations.
 
@@ -57,6 +56,8 @@ Streams can be created from:-
 3. From an arbitrary number of objects
 4. Infinite/finite streams
 
+Creating Stream Sources - In Java, the streams we have been talking about are represented by the `Stream<T> interface`, defined in the java.util.stream package.
+
 ```java
 Collection<Integer> x;//Collections
 x.stream()
@@ -72,6 +73,30 @@ Stream.of(1,2,3,4);
 Stream.generate(()- > Math.random());//infinite stream
 Stream.iterate(1,n -> n +1);
 ```
+
+Creating Finite Streams - There are a few ways to create them.
+
+```java
+Stream<String> empty = Stream.empty();// count = 0
+Stream<Integer> singleElement = Stream.of(1);// count = 1
+Stream<Integer> fromArray = Stream.of(1, 2, 3); // count = 3
+```
+
+Creating a Parallel Stream - It is just as easy to create a parallel stream from a list.
+
+```java
+var list = List.of("a", "b", "c");
+Stream<String> fromListParallel = list.parallelStream();
+```
+
+Creating Infinite Streams
+
+```java
+Stream<Double> randoms = Stream.generate(Math::random);
+Stream<Integer> oddNumbers = Stream.iterate(1, n -­> n + 2);
+```
+
+The iterate() method takes a seed or starting value as the first parameter. This is the first element that will be part of the stream. The other parameter is a lambda expression that is passed the previous value and generates the next value. As with the random numbers example, it will keep on producing odd numbers as long as you need them.
 
 1. Stream.empty() - Finite - Creates Stream with zero elements.
 2. Stream.of(varargs) - Finite - Creates Stream with elements listed.
@@ -94,7 +119,7 @@ There are two types of Operations in Streams:
 1. Intermediate Operations -Are operations in which multiple methods are chained in a row.
 2. Terminate Operations
 
-- **Intermediate**
+- `Intermediate`
 
 - map() - The map method is used to return a stream consisting of the results of applying the given function to the elements of this stream.
 
@@ -166,9 +191,7 @@ The program prints the intermediate results stored in the intermediateResults se
 
 This example showcases how Java Streams can be used to process and manipulate collections of data in a functional and declarative manner, applying transformations and filters in a sequence of operations.
 
-- **Terminal Operations**
-
-Terminal Operations are the type of Operations that return the result. These Operations are not processed further just return a final result value.
+- `Terminal Operations`:- Terminal Operations are the type of Operations that return the result. These Operations are not processed further just return a final result value.
 
 - collect() - The collect method is used to return the result of the intermediate operations performed on the stream.Gathers the stream elements into a collection.
 
@@ -193,11 +216,9 @@ void forEach(Consumer<? super T> action)
 list.stream().forEach(System.out::println);
 ```
 
-- reduce()
+- reduce() - The reduce method is used to reduce the elements of a stream to a single value. The reduce method takes a BinaryOperator as a parameter.
 
 Syntax:
-
-The reduce method is used to reduce the elements of a stream to a single value. The reduce method takes a BinaryOperator as a parameter.
 
 ```Java
 T reduce(T identity, BinaryOperator<T> accumulator)

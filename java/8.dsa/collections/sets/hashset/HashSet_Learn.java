@@ -1,4 +1,3 @@
-package datastructures.collections.sets.hashset;
 
 import java.util.Arrays;
 import java.util.Collections;

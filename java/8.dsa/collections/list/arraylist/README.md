@@ -18,7 +18,7 @@ Java Arraylist is not synchronized. If multiple threads is required try to modif
 
 ## Methods
 
-### Adding elements to ArrayList
+`Adding elements to ArrayList`:-
 
 - boolean add(E obj) : Declared in the Collection interface. Adds object to the collection. Returns true if object was added, otherwise returns false.
 
@@ -29,50 +29,54 @@ Java Arraylist is not synchronized. If multiple threads is required try to modif
 - boolean addAll(int index, Collection c) : Declared in the List interface. Adds all the elements of c to the invoking list at the index passed. Any
 preexisting element at or beyond the index are shifted up. Thus no elements are overwritten. Returns true if elements were added to the invoking list.Otherwise, returns false.
 
-### Removing elements from ArrayList
+`Removing elements from ArrayList`:-
+
+- boolean remove(Object obj) : Declared in the Collection interface. Removes one instance of obj from the invoking collection. Returns true if the element was removed. Otherwise, returns false.
  
- - boolean remove(Object obj) : Declared in the Collection interface. Removes one instance of obj from the invoking collection. Returns true if the element was removed. Otherwise, returns false.
- 
- - boolean removeAll(Collection c) : Declared in the Collection interface. Removes all elements of c from the invoking collection. Returns true if
+- boolean removeAll(Collection c) : Declared in the Collection interface. Removes all elements of c from the invoking collection. Returns true if
  elements were removed from the invoking collection. Otherwise, returns false.
 	
- - E remove(int index) : Declared in the List interface. Removes the element at the specified index from the invoking list, returning the element in the process. The indexes of the subsequent elements are decremented by one.
+- E remove(int index) : Declared in the List interface. Removes the element at the specified index from the invoking list, returning the element in the process. The indexes of the subsequent elements are decremented by one.
 	
 - boolean retainAll(Collection c) : Declared in the Collection interface. Removes all elements from the invoking collection except those in c. Returns true if elements were removed from the invoking collection. Otherwise,returns false.
 	
-### Check if ArrayList contains an object
+`Check if ArrayList contains an object`:-
 
 - boolean contains(Object obj) : Declared in the Collection interface. Returns true if obj is an element of the invoking collection. Otherwise, returns false.
 
 - boolean containsAll(Collection c) : Declared in the Collection interface. Returns true if the invoking collection contains all elements of c.
 Otherwise, returns false.
 
-### Get the element at an index in ArrayList
+`Get the element at an index in ArrayList`:-
 
 - E get(int index) : Declared in the List interface. Returns the object stored at the specified index within the invoking collection.
 
-### Get the index of an element in ArrayList
+`Get the index of an element in ArrayList`:-
+
 - int indexOf(Object obj) : Declared in the List interface. Returns the index of the first instance of obj in the invoking list. If obj is not present in the list, -1 is returned.
 - int lastIndexOf(Object obj) : Declared in the List interface. Returns the index of the last instance of obj in the invoking list. If obj is not present in the list, -1 is returned.
 
-### Set the element at an index in ArrayList
+`Set the element at an index in ArrayList`:-
+
 - E set(int index, E obj) : Declared in the List interface. Assigns obj to the location specified by index within the invoking list. Returns the old value.
 
-### Check if ArrayList is empty or not
+`Check if ArrayList is empty or not`:-
+
 - boolean isEmpty() : Declared in the Collection interface. Returns true if the invoking collection is empty. Otherwise, returns false.
 
-### Get the count of elements present in the ArrayList
+`Get the count of elements present in the ArrayList`:-
+
 - int size() : Declared in the Collection interface. Returns the number of elements held in the invoking collection.
 		
-### Get sub-list from an ArrayList
+`Get sub-list from an ArrayList`:-
 
 - List<E> subList(int startIndex, int endIndex) : Declared in the List interface. Returns a list that includes elements from startIndex to (endIndex- 1) in the invoking list Elements in the returned list are also referenced by the invoking object.
 
-### Clear the ArrayList
+`Clear the ArrayList`:-
 		 
 - void clear() : Declared in the Collection interface. Removes all elementsfrom the invoking collection.
 
-### Iterating over the contents of a ArrayList
+`Iterating over the contents of a ArrayList`:-
 		 
 - Iterator<E> iterator() : Declared in the Collection interface. Returns an iterator for the invoking collection.
 

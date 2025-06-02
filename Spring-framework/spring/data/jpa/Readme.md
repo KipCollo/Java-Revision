@@ -1,4 +1,4 @@
-# Spring Data Jpa
+# Spring Data JPA
 
 Spring Data JPA, part of the larger Spring Data family, makes it easy to easily implement JPA-based (Java Persistence API) repositories. It makes it easier to build Spring-powered applications that use data access technologies.
 

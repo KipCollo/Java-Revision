@@ -1,10 +1,14 @@
-# Lambda Expressions
+# Lambdas and Functional Interfaces
+
+Functional programming is a way of writing code more declaratively.You specify what you want to do rather than dealing with state of objects.it uses lambdas expressions to write code.
+
+A lambda expression is a block of code that gets passed around. You can think of a lambda expression as an unnamed method existing inside an anonymous class.Lambda expressions are often referred to as lambdas for short.
+
+## Lambdas
 
 A lambda expression is a short block of code which takes in parameters and returns a value. Lambda expressions are similar to methods, but they do not need a name and they can be implemented right in the body of a method.The main objective of Lambda expression is to get functional interface benefits.
 
-Lambdas allow you to specify code that will be run later in the program.
-
-Lambda expressions was introduce in 1930 and was big change in mathematics world.It was started to be used in programming kanguages.
+Lambdas allow you to specify code that will be run later in the program.Lambda expressions was introduce in 1930 and was big change in mathematics world.It was started to be used in programming kanguages.
 
 Lambda expression is an anonymous function.
 
@@ -40,7 +44,7 @@ public int getLenth(int side){
 
 ## Characteristics
 
-1. Lambda Expressions an take any no. of parameters.
+1. Lambda Expressions can take any no. of parameters.
 2. If multiple parameters are present then it shuld be separated with comma.
 3. If only one parameter is present then paranthesis are optional.
 4. Type Inference- We do not need to pass data type in parameters,based on context compiler can detect the type automatically.
@@ -52,7 +56,7 @@ Functinal Interfaces are used to call Lambda expressions even if has no name.
 Lambda expression is essentially an object.
 
 ```java
-Printer printer = message -> System.out.println("ambda expression can be defined and stored as objects");
+Printer printer = message -> System.out.println("lambda expression can be defined and stored as objects");
 ```
 
 ## Method References

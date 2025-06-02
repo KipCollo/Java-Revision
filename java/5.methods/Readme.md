@@ -19,8 +19,7 @@ access modifier. Package access is sometimes referred to as package-­private or
 3. protected The protected modifier means the method can be called only from a class in the same package or a subclass.
 4. public The public modifier means the method can be called from anywhere.
 
-- Optional Specifiers:- There are a number of optional specifiers for methods.Unlike with access modifiers, you can have multiple specifiers in the same method (although not all combinations are legal). When this happens, you can specify them in any order. And since these specifiers are optional, you are allowed to not have any of them at all. This means you can
-have zero or more specifiers in a method declaration:-
+- Optional Specifiers:- There are a number of optional specifiers for methods.Unlike with access modifiers, you can have multiple specifiers in the same method (although not all combinations are legal). When this happens, you can specify them in any order. And since these specifiers are optional, you are allowed to not have any of them at all. This means you can have zero or more specifiers in a method declaration:-
 
 1. static - Indicates the method is a member of the shared class object
 2. abstract - Used in an abstract class or interface when the method body is excluded.

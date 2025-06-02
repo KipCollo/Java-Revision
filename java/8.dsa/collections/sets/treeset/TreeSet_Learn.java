@@ -1,4 +1,3 @@
-package datastructures.collections.sets.treeset;
 
 import java.util.Arrays;
 import java.util.Collections;

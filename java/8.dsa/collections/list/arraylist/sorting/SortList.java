@@ -1,5 +1,3 @@
-package datastructures.collections.list.arraylist.sorting;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
