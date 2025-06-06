@@ -1,6 +1,6 @@
 # Persistence
 
-The Java Persistence API provides an object/relational mapping facility to Java developers for managing relational data in Java applications. Java Persistence consists of three areas:
+The `Java Persistence API` provides an object/relational mapping facility to Java developers for managing relational data in Java applications. Java Persistence consists of three areas:
 
 1. The Java Persistence API
 2. The query language

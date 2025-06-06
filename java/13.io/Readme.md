@@ -1,6 +1,6 @@
 # I/O
 
-We using I/O (input/output) and NIO.2 (non-­blocking I/O) APIs to interact with files and I/O streams. The preferred approach for working with files and directories with newer software applications is to use NIO.2 rather than I/O where possible.
+We use I/O (input/output) and NIO.2 (non-­blocking I/O) APIs to interact with files and I/O streams. The preferred approach for working with files and directories with newer software applications is to use NIO.2 rather than I/O where possible.
 
 Java IO is an API that comes with java which is targeted at reading and writing data(input and output).The java.io package contains all classes required for input and output opertations.Most apps need to process some input and produce some output based on input.Eg read data from file or internet,and write to a file or write response back over the internet.
 
@@ -8,17 +8,17 @@ Java performs I/O through streams.A stream is linked to a physical layer by java
 
 ## Conceptualizing the File System
 
-Data is stored on persistent storage devices, such as hard disk drives and memory cards. A file within the storage device holds data. Files are organized into hierarchies using directories. A directory is a location that can contain files as well as other directories.
+Data is stored on persistent storage devices, such as hard disk drives and memory cards. A `file` within the storage device holds data. Files are organized into hierarchies using directories. A `directory` is a location that can contain files as well as other directories.
 
 When working with directories in Java, we often treat them like files. In fact, we use many of the same classes and interfaces to operate on files and directories.For example, a file and directory both can be renamed with the same Java method.
 
-To interact with files, we need to connect to the file system. The file system is in charge of reading and writing data within a computer. Different operating systems use different file systems to manage their data. For example, Windows-­based systems use a different file system than Unix-­based ones.
+To interact with files, we need to connect to the file system. The `file system` is in charge of reading and writing data within a computer. Different operating systems use different file systems to manage their data. For example, Windows-­based systems use a different file system than Unix-­based ones.
 
 The JVM will automatically connect to the local file system, allowing you to perform the same operations across multiple platforms.
 
-The root directory is the topmost directory in the file system, from which all files and directories inherit. In Windows, it is denoted with a drive letter such as C:\, while on Linux, it is denoted with a single forward slash, /.
+The `root directory `is the topmost directory in the file system, from which all files and directories inherit. In Windows, it is denoted with a drive letter such as C:\, while on Linux, it is denoted with a single forward slash, /.
 
-A path is a representation of a file or directory within a file system. Each file system defines its own path separator character that is used between directory entries. The value to the left of a separator is the parent of the value to the right of the separator. For example, the path value /user/home/zoo.txt means that the file zoo.txt is inside the home directory, with the home directory inside the user directory.
+A `path `is a representation of a file or directory within a file system. Each file system defines its own path separator character that is used between directory entries. The value to the left of a separator is the parent of the value to the right of the separator. For example, the path value /user/home/zoo.txt means that the file zoo.txt is inside the home directory, with the home directory inside the user directory.
 
 NOTE:- Different operating systems vary in their format of pathnames. For example, Unix-­based systems use the forward slash, /, for paths, whereas Windows-­based systems use the backslash, \, character. That said, many programming languages and file systems support both types of slashes when writing path statements. Java offers a system property to retrieve the local separator character for the current environment:
 
@@ -492,6 +492,41 @@ void copyStream(Reader in, Writer out) throws IOException {
 }
 ```
 
+## Interacting with Users
+
+Java includes numerous classes for interacting with the user. For example, you might want to write an application that asks a user to log in and then prints a success message.
+
+- Printing Data to the User:- Java includes two PrintStream instances for providing information to the user: System.out and System.err.The syntax for calling and using System.err is the same as System.out but is used to report errors to the user in a separate I/O stream from the regular output information.
+
+```java
+try (var in = new FileInputStream("zoo.txt")) {
+   System.out.println("Found file!");
+} catch (FileNotFoundException e) {
+   System.err.println("File not found!");
+}
+```
+
+They differs depending on what is executing the program.For example, if you are running from a command prompt, they will likely print text in the same format. On the other hand, if you are working in an integrated development environment (IDE), they might print the System.err text in a different color. Finally, if the code is being run on a server, the System.err stream might write to a different log file.
+
+NOTE:- Using Logging APIs:- While System.out and System.err are incredibly useful for debugging stand-­alone or simple applications, they are rarely used in professional software development. Most applications rely on a logging service or API.While many logging APIs are available, they tend to share a number of similar attributes.
+First you create a static logging object in each class. Then you log a message with an appropriate logging level: debug(), info(), warn(), or error(). The debug() and
+info() methods are useful as they allow developers to log things that aren’t errors but may be useful
+
+## Review of Key APIs
+
+1. File - I/O representation of location in file system
+2. Files - Helper methods for working with Path
+3. Path - NIO.2 representation of location in file system
+4. Paths - Contains factory methods to get Path
+5. URI - Uniform resource identifier for files, URLs, etc.
+6. FileSystem - NIO.2 representation of file system
+7. FileSystems - Contains factory methods to get FileSystem
+8. InputStream - Superclass for reading files based on bytes
+9. OuputStream - Superclass for writing files based on bytes
+10. Reader - Superclass for reading files based on characters
+11. Writer - Superclass for writing files based on characters
+
+
 ## Serializing and Deserializing Data
 
 Serialization is the process of converting an in-­memory object to a byte stream. Likewise, deserialization is the process of converting from a byte stream into an object. Serialization often involves writing an object to a stored or transmittable format,while deserialization is the reciprocal process.
@@ -526,37 +561,3 @@ The serialVersionUID helps inform the JVM that the stored data may not match the
 It reverts to its default Java values, such as 0.0 for double, or null for an object.
 
 NOTE:- Marking static fields transient has little effect on serialization. Other than the serialVersionUID, only the instance members of a class are serialized.
-
-## Interacting with Users
-
-Java includes numerous classes for interacting with the user. For example, you might want to write an application that asks a user to log in and then prints a success message.
-
-- Printing Data to the User:- Java includes two PrintStream instances for providing information to the user: System.out and System.err.The syntax for calling and using System.err is the same as System.out but is used to report errors to the user in a separate I/O stream from the regular output information.
-
-```java
-try (var in = new FileInputStream("zoo.txt")) {
-   System.out.println("Found file!");
-} catch (FileNotFoundException e) {
-   System.err.println("File not found!");
-}
-```
-
-They differs depending on what is executing the program.For example, if you are running from a command prompt, they will likely print text in the same format. On the other hand, if you are working in an integrated development environment (IDE), they might print the System.err text in a different color. Finally, if the code is being run on a server, the System.err stream might write to a different log file.
-
-NOTE:- Using Logging APIs:- While System.out and System.err are incredibly useful for debugging stand-­alone or simple applications, they are rarely used in professional software development. Most applications rely on a logging service or API.While many logging APIs are available, they tend to share a number of similar attributes.
-First you create a static logging object in each class. Then you log a message with an appropriate logging level: debug(), info(), warn(), or error(). The debug() and
-info() methods are useful as they allow developers to log things that aren’t errors but may be useful
-
-## Review of Key APIs
-
-1. File - I/O representation of location in file system
-2. Files - Helper methods for working with Path
-3. Path - NIO.2 representation of location in file system
-4. Paths - Contains factory methods to get Path
-5. URI - Uniform resource identifier for files, URLs, etc.
-6. FileSystem - NIO.2 representation of file system
-7. FileSystems - Contains factory methods to get FileSystem
-8. InputStream - Superclass for reading files based on bytes
-9. OuputStream - Superclass for writing files based on bytes
-10. Reader - Superclass for reading files based on characters
-11. Writer - Superclass for writing files based on characters

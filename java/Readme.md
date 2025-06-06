@@ -138,10 +138,10 @@ To compile Java code with the javac command, the file must have the extension .j
 
 ## Java Runtime Environment
 
-Is an environment required to run Java applications.Includes JVM class libraries and other supporting files.It is updated regularly to kep up with security issues.Allows running of Jav apps without needing development tools.
+Is an environment required to run Java applications.Includes JVM class libraries and other supporting files.It is updated regularly to keep up with security issues.Allows running of Jav apps without needing development tools. It is the implementation of JVM.It physically exist.
 
 ## Java Virtual Machine
 
-It is an abstract machine.It is a specification that provides runtime environment in which java bytecode can be executed.It is platform dependent.
+It is an abstract machine.It is a specification that provides runtime environment in which java bytecode can be executed.It is platform dependent.Called virtual machine because it doesn't exist physically.
 
 Each Java Program only needs to be written and compiled once.A single compiled version of a program can only run on any platform.

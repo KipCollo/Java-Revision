@@ -1,5 +1,7 @@
 # Methods
 
+A method or function is a set of Statements that perform a specific task.It can take input perform operations and return output.A method is defined within a class or an interface.
+
 ```java
 public final void nap(int minutes)throws InturruptedException{
    //body
@@ -41,7 +43,7 @@ allowed. Finally, the single underscore character is not allowed.By convention, 
 
 ```java
 public class Sleep {
-void nap() {}
+   void nap() {}
 }
 ```
 
@@ -147,5 +149,82 @@ public void fly(short numFeet) {}
 public boolean fly() { return false; }
 void fly(int numMiles, short numFeet) {}
 public void fly(short numFeet, int numMiles) throws Exception {}
+}
+```
+
+## Types of Methods:-
+
+`Instance Methods`:- These methods belong to an instance of a class.Need to create an object of the class to call instance method.Instance methods can access instance variables and call other instance methods of same class.
+
+```java
+class Car{
+   String color;
+
+   public void displayColor(){
+      System.out.println("Car is color: " + color)
+   }
+}
+
+public void main(){
+   Car car = new Car();
+   car.displayColor();
+}
+```
+
+`Static Methods`:- These methods belong to the class rather than to any instance of the class.They are called on the cass itself,not objects.Can only directly access other static members of the class(other static variables and methods).
+
+```java
+class MathUtility{
+   public static int addNumbers(int a, int b){
+      return a + b;
+   }
+}
+
+public class Main{
+   public static void main(String[] args){
+      int sum = MathUtility.addNumbers(5,7);
+      System.out.println("Sum: " + sum)
+   }
+}
+```
+
+`Abstract Methods`:- These methods are defined in abstract classes and do not have a body.Subclasses of the abstract class must override these methods to provide an implementation.Abstract methods help define a common interface for all subclasses to implement.
+
+```java
+abstract class Animal{
+   public abstract void makeSound();
+}
+
+class Dog extends Animal{
+
+   @Override
+   public void makeSound(){
+      System.out.println("Woof")
+   }
+}
+
+public class Main{
+   public static void main(String[] args){
+      Animal dod = new Dog();
+      dog.makeSound();
+   }
+}
+```
+
+`Final Methods`:- Methods that are declared as final cannot be overriden in subclasses.They are typically used to prevent method overridding and maintain consistency.
+
+```java
+class Animal{
+
+   public final void sleep(){
+      System.out.println("Animal is sleeping")
+   }
+}
+
+class Dog extends Animal{
+
+   public void sleep(){
+      System.out.println("Dog is sleeping") // This will cause an error
+   }
 }
 ```

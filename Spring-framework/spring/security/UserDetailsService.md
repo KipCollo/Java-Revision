@@ -1,4 +1,4 @@
-# UserDetailsSerrvice
+# UserDetailsService
 
 Core interface which loads user-specific data.It is used throughout the framework as a user DAO and is the strategy used by the DaoAuthenticationProvider.
 The interface requires only one read-only method, which simplifies support for new data-access strategies.

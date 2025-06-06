@@ -2,11 +2,26 @@
 
 A web application is a dynamic extension of a web or application server.There are two types of web applications:
 
-* Presentation-oriented: A presentation-oriented web application generates interactive web pages containing various types of markup language (HTML, XHTML, XML, and so on) and dynamic content in response to requests. Development of presentation-oriented web applications Internationalizing and Localizing Web Applications, "JavaServer Faces Technology," "Java Servlet Technology."how to develop presentation-oriented web applications.
-
-* Service-oriented: A service-oriented web application implements the endpoint of a web service. Presentation-oriented applications are often clients of service-oriented web applications. Development of service-oriented web applications , "Building Web Services with JAX-WS," "Building RESTful Web Services with JAX-RS," "Web Services."how to develop service-oriented web applications.
+1. `Presentation-oriented`: A presentation-oriented web application generates interactive web pages containing various types of markup language (HTML, XHTML, XML, and so on) and dynamic content in response to requests. Development of presentation-oriented web applications Internationalizing and Localizing Web Applications, "JavaServer Faces Technology," "Java Servlet Technology."how to develop presentation-oriented web applications.
+2. `Service-oriented`: A service-oriented web application implements the endpoint of a web service. Presentation-oriented applications are often clients of service-oriented web applications. Development of service-oriented web applications , "Building Web Services with JAX-WS," "Building RESTful Web Services with JAX-RS," "Web Services."how to develop service-oriented web applications.
 
 * In early days,Java used to make**applets**.These are Java apps that can be downloaded from web site and run within web browser.However,Microsoft Internet Explorer stopped supporting new versions of Java.As result applets lost their appeal and dev switched to servlets and JSPs.These tech allowed devs to write java web apps that run on server.
+
+In the Java 2 platform, web components provide the dynamic extension capabilities for a web  server. Web components are either Java servlets, JSP pages, or web service endpoints. The client sends an HTTP request to the web server. A web server that implements Java Servlet and JavaServer Pages technology converts the request into an HTTPServletRequest object. This object is delivered to a web component, which can interact with JavaBeans components or a database to generate dynamic content. The web component can then generate an HTTPServletResponse or it can pass the request to another web component. Eventually a web component generates a HTTPServletResponse object. The web server converts this object to an HTTP response and returns it to the client.
+
+               1                            2
+      |---------------->HttpServletRequest--------->|
+Client|                                             | Web Componets------4----->Database
+      |<---------------HttpServletResponse<---------|       |
+                6                                5          |3
+                                                        JavaBeans Component
+
+
+Servlets are Java programming language classes that dynamically process requests and construct responses. JSP pages are text-based documents that execute as servlets but allow a more natural approach to creating static content. Although servlets and JSP pages can be used interchangeably, each has its own strengths. Servlets are best suited for service-oriented applications (web service endpoints are implemented as servlets) and the control functions of a presentation-oriented application, such as dispatching requests and handling nontextual data. JSP pages are more appropriate for generating text-based markup such as HTML, Scalable Vector Graphics (SVG), Wireless Markup Language (WML), and XML.
+
+Since the introduction of Java Servlet and JSP technology, additional Java technologies and frameworks for building interactive web applications have been developed.This oincludes: JavaServer Faces,JavaServer Pages Standard Tag Library.ava Servlet technology is the foundation of all the web application technologies
+
+Web components are supported by the services of a runtime platform called a web container. A web container provides services such as request dispatching, security, concurrency, and life-cycle management. It also gives web components access to APIs such as naming, transactions, and email.Certain aspects of web application behavior can be configured when the application is installed, or deployed, to the web container. The configuration information is maintained in a text file in XML format called a web application deployment descriptor (DD).
 
 ## Components of Java Web App
 
@@ -22,8 +37,6 @@ The client sends an HTTP request to the web server. A web server that implements
 
 Servlets are Java programming language classes that dynamically process requests and construct responses. Java technologies, such as JavaServer Faces and Facelets, are used for building interactive web applications. (Frameworks can also be used for this purpose.) Although servlets and JavaServer Faces and Facelets pages can be used to accomplish similar things, each has its own strengths. Servlets are best suited for service-oriented applications (web service endpoints can be implemented as servlets) and the control functions of a presentation-oriented application, such as dispatching requests and handling nontextual data. JavaServer Faces and Facelets pages are more appropriate for generating text-based markup, such as XHTML, and are generally used for presentation-oriented applications.
 
-Web components are supported by the services of a runtime platform called a web container. A web container provides such services as request dispatching, security, concurrency, and lifecycle management. A web container also gives web components access to such APIs as naming, transactions, and email.
-
 Certain aspects of web application behavior can be configured when the application is installed, or deployed, to the web container. The configuration information can be specified using Java EE annotations or can be maintained in a text file in XML format called a web application deployment descriptor (DD). A web application DD must conform to the schema described in the Java Servlet specification.
 
 ## Web Application Lifecycle
@@ -38,23 +51,6 @@ The process for creating, deploying, and executing a web application can be summ
 4. Optionally, package the application into a deployable unit.
 5. Deploy the application into a web container.
 6. Access a URL that references the web application.
-
-In the Java 2 platform, web components provide the dynamic extension capabilities for a web server. Web components are either Java servlets, JSP pages, or web service endpoints. The client sends an HTTP request to the web server. A web server that implements Java Servlet and JavaServer Pages technology converts the request into an HTTPServletRequest object. This object is delivered to a web component, which can interact with JavaBeans components or a database to generate dynamic content. The web component can then generate an HTTPServletResponse or it can pass the request to another web component. Eventually a web component generates a HTTPServletResponse object. The web server converts this object to an HTTP response and returns it to the client.
-
-               1                            2
-      |---------------->HttpServletRequest--------->|
-Client|                                             | Web Componets------4----->Database
-      |<---------------HttpServletResponse<---------|       |
-                6                                5          |3
-                                                        JavaBeans Component
-
-Servlets are Java programming language classes that dynamically process requests and construct responses. JSP pages are text-based documents that execute as servlets but allow a more natural approach to creating static content. Although servlets and JSP pages can be used interchangeably, each has its own strengths. Servlets are best suited for service-oriented applications (web service endpoints are implemented as servlets) and the control functions of a presentation-oriented application, such as dispatching requests and handling nontextual data. JSP pages are more appropriate for generating text-based markup such as HTML, Scalable Vector Graphics (SVG), Wireless Markup Language (WML), and XML.
-
-Java Servlet technology is the foundation of all the web application technologies.Each technology adds a level of abstraction that makes web application prototyping and development faster and the web applications themselves more maintainable, scalable, and robust.
-
-Web components are supported by the services of a runtime platform called a web container. A web container provides services such as request dispatching, security, concurrency, and life-cycle management. It also gives web components access to APIs such as naming, transactions, and email.
-
-Certain aspects of web application behavior can be configured when the application is installed, or deployed, to the web container. The configuration information is maintained in a text file in XML format called a web application deployment descriptor (DD). A DD must conform to the schema described in the Java Servlet Specification.
 
 ## Web Services
 
@@ -316,3 +312,36 @@ availability. There's also PUT, to place documents directly on the server, and D
 aren't widely supported due to complicated policy issues. The TRACE method is used as a debugging aid—it returns to the client
 the exact contents of its request. Finally, the OPTIONS method can be used to ask the server which methods it supports or what
 options are available for a particular resource on the server.
+
+The deployment descriptor (the web.xml file) includes the following configurations:
+1. A display-name element that specifies the name that tools use to identify the application.
+2. A set of filter elements that identify servlet filters contained in the application.
+3. A set of filter-mapping elements that identify which servlets will have their requests or responses filtered by the filters identified by the filter elements. A filter-mapping element can define more than one servlet mapping and more than one URL pattern for a particular filter.
+4. A set of servlet elements that identify all the servlet instances of the application.
+5. A set of servlet-mapping elements that map the servlets to URL patterns. More than oneURL pattern can be defined for a particular servlet.
+6. A set of error-page mappings that map exception types to an HTML page, so that the HTML page opens when an exception of that type is thrown by the application.
+
+## Java Web Application Architecture
+
+It uses three layers:-
+
+1. The presentation layer/user interface layer - Consists of HTML pages and JSPs.Typically, a web designer will work on the HTML stored in these pages to create look and feel of the user interface.
+2. The business rues layer - Uses servlets to control the flow of the application.These servlets can call other Java classes to store or retrieve data from database,and may forward results to a JSP or another servlet.A JavaBean is used to temporarily store and process data.
+3. The Data access - It works with data that's stored on the server's disk.Consist of classes that read and write data that's stored on sever's disk data,database,text files,binary files,XML files.
+
+`Model 1 Architecture` -With this architecture,a JSP is responsible for handling both request and response of application.The JSP interacts with Java classes and objects that represents the data of the business objects in application and provides method to do business processing.To save the data of business classes,the application maps the data to a database or files.
+
+The JSPs uses regular Java classes to store data of the application and do business processing of the application.
+
+Model 1 works for application with limited processing requirements,but not recommended for most applications.The JSPs become cluttered with scriplets and code becomes difficult to maintain.
+
+`Model 2 architecture (Model-View-Controller (MVC) pattern)`:- A pattern is standard approach used by programmers to solve common programming problems.One of the pattern is Model-View-Controller. Has three layers:- model,view and controller.
+
+Models defines the business layer of the application.Usually implemented by *JavaBeans*. Classes in these layer the data for business objects and provides methods that do business processing.
+
+View defines presentation layer of the application.MVC apps uses HTML documents or JSPs to present view to the browser.
+
+The Controller manages flow of the application,and this work is done by the servlets.
+
+A servlet reads any parameters available from request which comes from view.Then,if necessary,the servlet updates the model and saves it in data store.Finally, based on logic that's coded in servlet,the servlet forwards the model to one of several posible JSPs for presentation.
+Most applications need to map the data in the model to a data store but JavaBeans don't provide methods for storingg their own data.Instead, data classes like UserIo class provides those methods.That separates business logic from I/O operations.

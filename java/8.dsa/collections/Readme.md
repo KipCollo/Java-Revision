@@ -1,5 +1,8 @@
 # Collections Framework
 
+Java's Collection framework provides a way to store and manipulate groups of objects. Java Collections can be used for searching, sorting, inserting, manipulating, and deleting data.
+In Java, a collection is a single unit of objects. ArrayList, Vector, LinkedList, PriorityQueue, HashSet, LinkedHashSet, TreeSet, and LinkedList are all classes of Java Collection framework.
+
 A collection is a group of objects contained in a single object.The Java Collections framework is a set of classes in java.util package for storing collections.
 There are five main interfaces:-
 

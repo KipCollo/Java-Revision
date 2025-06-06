@@ -13,9 +13,7 @@ using decision-­making, looping, and branching, allowing the application to sel
 
 ## Conditional statements
 
-- The if Statement
-
-Often, we want to execute a block only under certain circumstances. The if statement accomplishes this by allowing our application to execute a particular block of code if and only if a boolean expression evaluates to true at runtime.
+- `The if Statement`:- Often, we want to execute a block only under certain circumstances. The if statement accomplishes this by allowing our application to execute a particular block of code if and only if a boolean expression evaluates to true at runtime.
 
 ```java
 if (booleanExpression){
@@ -46,9 +44,7 @@ Based on the indentation, you might be inclined to think the variable morningGre
 Remember that in Java, unlike some other programming languages, tabs are just whitespace and are not evaluated as part of the execution. When you see a control flow
 statement in a question, be sure to trace the open and close braces of the block, ignoring any indentation you may come across.
 
-- The else Statement
-
-Let’s expand our example a little. What if we want to display a different message if it is 11 a.m. or later? Can we do it using only the tools we have? Of course we can!
+- `The else Statement`:- Let’s expand our example a little. What if we want to display a different message if it is 11 a.m. or later? Can we do it using only the tools we have? Of course we can!
 
 ```java
 if(hourOfDay < 11) {
@@ -75,9 +71,7 @@ if(hourOfDay < 11) {
 
 - *Pattern Matching*:-Java 16 officially introduced pattern matching with if statements and the instanceof operator.Pattern matching is a technique of controlling program flow that only executes a section of code that meets certain criteria. It is used in conjunction with if statements for greater program control.
 
-- Switch
-
-It is a multibranch statement that allows a variable to be tested for equality against a list of values.Each values is called a case, and the variable being switched on is checked for each switch case.It can be used with byte, char,short and int primitive data types.Can also be used with enumerated types, String class and few wrapper classes.
+- `Switch`:- It is a multibranch statement that allows a variable to be tested for equality against a list of values.Each values is called a case, and the variable being switched on is checked for each switch case.It can be used with byte, char,short and int primitive data types.Can also be used with enumerated types, String class and few wrapper classes.
 
 Switch Data Types- switch statement has a target variable that is not evaluated until runtime. The type of this target can include select primitive data types (int, byte, short, char)and their associated wrapper classes (Integer, Byte, Short, Character). The following is a list of all data types supported by switch statements:
 

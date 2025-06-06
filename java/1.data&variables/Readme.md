@@ -50,7 +50,7 @@ Variables passed to a constructor or method is called *constructor parameter* or
 public void find(boolean check){}
 ```
 
-- Instance variable(field):- Is a value defined within a specific instance of an object.
+- Instance variable(field):- Is a value defined within a specific instance of an object.Declared inside class but outside a method.
 - class variable:- it is the one that is defined on the class level and shared among all instances of a class.It can be even be publicly accessible to classes outside the class and doesn't require instances to use.
 
 NOTE:-Instance and class variables does not require you to initialize them.as soon as you declare these variables,they are given default value.The compiler doesn't know what value to use and so wants the simplest value it can give the type `null for object,zero for numeric types,false for boolean,char is NUL`.

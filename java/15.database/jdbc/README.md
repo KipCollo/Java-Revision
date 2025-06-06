@@ -1,5 +1,153 @@
 # JDBC (Java Database Connectivity)
 
+The core JDBC API is stored in in the java.sql package.
+Before you can connect to database,you must make a database driver avalable to your application.There are 4 JDBC database drivers you can use:-
+
+1. Type 1 - `A JDBC-ODBC bridge driver` converts JDBC calls innto ODBC calls tha access the DBMS protocol.The ODBC driver must be installed on the client machine.
+2. Type 2 - A `native protocl partly Java driver` converts JDBC calls in the native DBMS protocol.Since this conversion takes place on the client, some binary code must be installed on client machine.
+3. Type 3 - A `net protocol all Java driver` converts JDBC calls into a net protocl that's independent of any native DBMS protocol.Then,middleware software running on a server converts the net protocol to the native DBMS protocol.Since this conversion takes place on server side,no installation is required on client machine.
+4. Type 4 - A `native protocol all Java driver` converts JDBC calls into a native DBMS protocol.Since this conversion takes place on server side,no installation is required on client machine.
+
+Before you can access or modify the data in database,you must connect to the database.To get a connection to the database,you use the**getConnection()** method of the **DriverManager** class to return a Connection object.This method requires three arguements:-
+    1. URL of the database
+    2. username
+    3. Password
+
+Building a JDBC URL:- To access a website, you need to know its URL. To access your email, you need to know your username and password. JDBC is no different. To access a database, you need to know this information about it.
+
+Unlike web URLs, JDBC URLs have a variety of formats. They have three parts in common. The first piece is always the same. It is the protocol jdbc.The second part is the subprotocol, which is the name of the database, such as hsqldb, mysql, or postgres. The third part is the subname, which is a database-­specific format. Colons (:) separate the three parts.
+
+The subname typically contains information about the database such as its location and/or name. The syntax varies. You need to know about the three main parts. You don’t
+need to memorize the subname formats.
+
+Examples:-
+
+```java
+jdbc:postgresql://localhost/zoo
+jdbc:oracle:thin:@123.123.123.123:1521:zoo
+jdbc:mysql://localhost:3306
+jdbc:mysql://localhost:3306/zoo?profileSQL=true
+```
+
+NOTE:- Port is optional when using the default location.
+
+Since getConnection method of DriverManager class throws an SQLException, you need to handle this exception whenever you connect to database.With JDBC 4.0 you can use an enhanced for statement to loop through any exceptions that are nested within SQLException object.
+
+If you are working with older version of Java,though,you need to use the `forName` method of Class to explicitly load the driver before you call getConnection method.
+
+```java
+
+try {
+
+        //loading database driver prior to JDBC 4.0
+        Class.forName("com.mysql.jdbc.Driver")
+
+        String dbURL = "jdbc:mysql://localhost:3306/my_database"; //MySQL
+        String url ="jdbc:postgresql://localhost:5432/dbName";//PostgreSQL
+        String username = "root";
+        String password = "password";
+
+        Connection conn = DriverManager.getConnection(dbURL,username,password);
+}
+catch (SQLException e){
+
+    for(Throwable t: e)
+        t.printStackTrace();
+}
+```
+
+The DriverManager class uses the factory pattern, which means that you call a static method to get a Connection rather than calling a constructor.The factory pattern means that you can get any implementation of the interface when calling the method. The good news is that the method has an easy-­to-­remember name: getConnection().
+
+The nice thing about the factory pattern is that it takes care of the logic of creating a class for you. You don’t need to know the name of the class that implements Connection, and you don’t need to know how it is created. You are probably a bit curious, though.
+
+DriverManager looks through any drivers it can find to see whether they can handle the JDBC URL. If so, it creates a Connection using that Driver. If not, it gives up and throws a SQLException.
+
+
+`Result`:- Once you connect to a database, you're ready to retrieve data.
+
+
+`Update, Insert and Delete Data`:- To modify data in database,you use the **executeUpdate** method of Statement object to execute SQL statements that add,update and delete data.Since this method has been part of Java since 1.0 of JDBC,it should work for all JDBC drivers.
+
+When you work with the executeUpdate method, you just pass an SQL statement to the database.
+
+```java
+//Adding a Record
+String query = "INSERT INTO Product (ProductCode, ProductDescription, ProductPrice) " +
+               "VALUES (' " + product.getCode() + " ', " +
+                        " ' " product.getDescription() + " ', " + 
+                        " ' " product.getPrice() + " ')";
+Statement statement = connection.createStatement();
+int rowCount = statement.executeUpdate(query);
+
+
+// Update a record
+String query = "UPDATE Product SET " +
+        "ProductCode = '" + product.getCode() + "', " + 
+        "ProductDescription = '" + product.getDescription() + " ', " + 
+        "ProductPrice = '" + product.getPrice() + " '" +
+        "WHERE ProductCode = '" + product.getCode() + "'";
+Statement statement = connection.createStatement();
+int rowCount = statement.executeUpdate(query);
+
+
+// Delete a record
+String query = "DELETE FROM Product " +
+                "WHERE ProductCode = ' " + productCode +  "'";
+Statement statement = connection.createStatement();
+int rowCount = statement.executeUpdate(query);
+```
+
+The **executeUpdate** method is older method that works with most JDBC Drivers.Although there are some newer methods that require less SQL code,they may not work properly with all JDBC drivers.The executeUpdate returns an int value that identifies the number of records affected by SQL statement.
+
+
+`Prepared Statements`:- Each time a JAva applicatin sends a new SQL statement to the database server,the server checks the statement for syntax errors,prepares a plan for executing the statement, and executes the statement.If same statement is sent again,though,the database server checks to see whether it has already received one exactly like that.If so,server doesn't have to check its syntax and prepare an execution plan for it so the server just executes it.This improves performance of database operations.
+
+To take advantage of this database feature,Java provides for use of **prepared statements**.This feature lets you send statements to the database server that get executed repeatedly by accepting parameter values sent to it.That improves databse performance because the database server only has to check the syntax plan for each statement.
+
+Result of prepared statememt is the same each time the query is executed,even though the product code changes each time based on parameter value sent to SQL statement.In contrast, if you don't use a prepared statement,the database server treats each statement as new statement,which degrades databse performance.
+
+```java
+//Adding a Record
+String query = "INSERT INTO Product (ProductCode, ProductDescription, ProductPrice) " +
+               "VALUES (?, ?, ?)";
+PreparedStatement statement = connection.prepareStatement();
+ps.setString(1, product.getCode());
+ps.setString(2, product.getDescription());
+ps.setString(3, product.getPrice());
+ps.executeUpdate(query);
+
+
+// Update a record
+String query = "UPDATE Product SET " +
+        "ProductCode = ? " + 
+        "ProductDescription = ? " + 
+        "ProductPrice = ?" +
+        "WHERE ProductCode = ?";
+PreparedStatement statement = connection.prepareStatement();
+ps.setString(1, product.getCode());
+ps.setString(2, product.getDescription());
+ps.setString(3, product.getPrice());
+ps.setString(4, product.getCode());
+ps.executeUpdate(query);
+
+
+
+// Delete a record
+String query = "DELETE FROM Product " +
+                "WHERE ProductCode = ? ";
+PreparedStatement ps = connection.prepareStatement(query);
+ps.setString(1 ,productCode)
+ps.executeUpdate(query);
+
+
+// Return a Result set
+String query = "SELECT ProductCode, ProductDescription, ProductPrice " +
+        "FROM Product WHERE ProductCode = ?";
+PreparedStatement ps = connection.prepareStatement(query);
+ps.setString(1 ,productCode)
+ResultSet product = ps.executeQuery();
+```
+
 ## Java.sql Package
 
 Provides the API for accessing and processing data stored in a data source (usually a relational database) using the JavaTM programming language.
@@ -130,55 +278,6 @@ With JDBC, you use only the interfaces in your code and never the implementation
 
 To use the JDBC API with a particular database management system, you need a JDBC technology-based driver to mediate between JDBC technology and the database.Before connecting to db, you must make **database driver** available for your app.
 
-- CONNECTIONS
-
-The first step in doing anything with a database is connecting to it. First we show you how to build the JDBC URL. Then we show you how to use it to get a Connection to the database.
-
-- Building a JDBC URL:- To access a website, you need to know its URL. To access your email, you need to know your username and password. JDBC is no different. To access a database, you need to know this information about it.
-
-Unlike web URLs, JDBC URLs have a variety of formats. They have three parts in common. The first piece is always the same. It is the protocol jdbc.The second part is the subprotocol, which is the name of the database, such as hsqldb, mysql, or postgres. The third part is the subname, which is a database-­specific format. Colons (:) separate the three parts.
-
-The subname typically contains information about the database such as its location and/or name. The syntax varies. You need to know about the three main parts. You don’t
-need to memorize the subname formats.
-
-Examples:-
-
-```java
-jdbc:postgresql://localhost/zoo
-jdbc:oracle:thin:@123.123.123.123:1521:zoo
-jdbc:mysql://localhost:3306
-jdbc:mysql://localhost:3306/zoo?profileSQL=true
-```
-
-NOTE:- Port is optional when using the default location.
-
-- Connecting to Database
-
-There are two main ways to get a Connection: DriverManager and DataSource.
-The DriverManager class is in the JDK, as it is an API that comes with Java. It uses the factory pattern, which means that you call a static method to get a Connection rather than calling a constructor.The factory pattern means that you can get any implementation of the interface when calling the method. The good news is that the method has an easy-­to-­remember name: getConnection().
-
-To get connection to db, you use the **getConnection()** method of **DriverManager** class to return Connection object.This method requires three arguments: URL for db, usernsme, password.
-
-The getConnection method throws an SQLException, you need to handle the exception whenever you connect to db.
-
-```java
- try{
-    String url ="jdbc:postgresql://localhost:5432/dbName";
-    String username="USERNAME";
-    String password="PASWRD";
-
-    Connection conn = DriverManager.getConnection(url,username, password);
-
- } catch(SQLException e){
-    e.printStackTrace();
- }
-```
-
-The nice thing about the factory pattern is that it takes care of the logic of creating a class for you. You don’t need to know the name of the class that implements Connection, and you don’t need to know how it is created. You are probably a bit curious, though.
-
-DriverManager looks through any drivers it can find to see whether they can handle the JDBC URL. If so, it creates a Connection using that Driver. If not, it gives up and throws a SQLException.
-
-The Class.forName() was required with older drivers (that were designed for older versions of JDBC) before getting a Connection.
 
 ## STATEMENTS
 

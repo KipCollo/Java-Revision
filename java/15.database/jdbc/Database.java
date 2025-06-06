@@ -50,7 +50,7 @@ public class Database {
         Class.forName("org.postgresql.Driver");
 
         //First display existing records
-        try(Connection connection = DriverManager.getConnection(url, user, password);
+        try(Connection connection = DriverManager.getConnection(url, user, password));
     } catch (Exception e) {
     }
   }

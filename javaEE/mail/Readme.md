@@ -1,8 +1,27 @@
 # JavaMail
 
+The JavaMail API is programming interface that makes it easy for java developers to write code that automatically sends an email.It depends on another API known as JavaBeans Activation Framework(JAF) API.
+
+## How Mails work
+
+Mail client software such as Outlook or Eudora allows you to send and retrieve messages.This software communiactes with the mail server software that actually sends and retrieves your email.Mail server software is provided by your Internet Service Provider(ISP) or through your company.
+
+The SMTP protocol is commonly used to send email messages.When you send an email message,the message is first sent from mail client software on your computer to your email server using SMTP protocol.Then, your mail server uses SMTP to send the mail to the recipient's mail server.Finally, the recipient's mail client uses the POP protocol or IMAP protocol to retrieve the mail from recipient's mail server.
+
+There is also MIME protocol,It isn't used to transfer email messages.Instead, it defines how the content of an email message and its attachments are formatted.
+
+- Protocols for sending and retrieving email messages:-
+    1. `SMTP(Simple Mail Transfer Protocol)` used to send a message from one mail server to another.
+    2. `POP(Post office Protocol)` used to retrieve messages from a mail server.This protocol transfers all messages from mail server to mail client.Currently, POP is version 3 and is known as POP3
+    3. `IMAP(Internet Message Access Protocol)` is used by web-based services such as Yahoo,Gmail and Hotmail.It allows a web browser to read messages stored on mail server.
+
+- `MIME(Multipurpose Internet Message Extension)` type specifies the type of content that can be sent as a message or attachment.
+
+## JavaMail API
+
 The JavaMail API provides a set of abstract classes defining objects that comprise a mail system. The API defines classes like Message, Store and Transport. The API can be extended and can be subclassed to provide new protocols and to add functionality when necessary.
 
-In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols and conform to specifications RFC822 and RFC2045. They are ready to be used in application development
+In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols and conform to specifications RFC822 and RFC2045. They are ready to be used in application development.
 
 The JavaMailTM API provides classes that model a mail system.
 
@@ -12,7 +31,7 @@ The JavaMailTM API provides classes that model a mail system.
    3. Transport - Handles sending emails.
    4. Store - Used for retrieving emails.
 
-2. The `javax.mail.internet` package defines classes that are specific to mail systems based on internet standards such as MIME, SMTP, POP3, and IMAP.Provide advanced internet email features.(MIME,HTML,attachments)
+2. The `javax.mail.internet` package defines classes that are specific to mail systems based on internet standards such as MIME, SMTP, POP3, and IMAP.Provide advanced internet email features.(MIME,HTML,attachments) to send an email across the Internet.
    1. MimeMessage - A subclass of Message that supports rich content like HTML and attachments.
    2. InternetAddress - Helps manage email addresses.
    3. MimeBodyPart and MimeMultipart - Enable you to build emails parts(texts + attachments).
@@ -21,6 +40,8 @@ The JavaMailTM API provides classes that model a mail system.
    1. Client, server, or middleware developers interested in building mail and messaging applications using the Java programming language.
    2. Application developers who need to “mail-enable” their applications.
    3. Service Providers who need to implement specific access and transfer protocols. For example; a telecommunications company can use the JavaMail API to implement a PAGER Transport protocol that sends mail messages to alphanumeric pagers.
+
+`java.util` - Contains the Properties class that's used to set the properties for the email session.
 
 ## Goals and Design Principles
 
@@ -2702,230 +2723,6 @@ passing required attribute values to that object. In an email message, the clien
 MimeMessage object by using a suitably configured DataHandler object.
 After the Message object is constructed, the client calls the Transport.send method to route it to its specified recipients.
 
-## Message Session
-
-A mail Session object manages the configuration options and user authentication information used to interact with messaging systems.
-
-The Session class(public final class Session) represents a mail session and is not subclassed. It collects together properties and defaults used by the mail API's. A single default session can be shared by multiple applications on the desktop. Unshared sessions can also be created.
-
-The JavaMail API supports simultaneous multiple sessions. Each session can access multiple message stores and transports. Any desktop application that needs to access the current primary message store can share the default session. Typically the mail-enabled application establishes the default session, which initializes the authentication information necessary to access the user’s Inbox folder. Other desktop applications then use the default session when sending or accessing mail on behalf of the user. When sharing the session object, all applications share authentication information, properties, and the rest of the state of the object.
-
-For example,
-
-To create a Session using a static factory method:
-
-```java
-Session session = Session.getInstance(props, authenticator);
-```
-
-To create the default shared session, or to access the default shared session:
-
-```java
-Session defaultSession =Session.getDefaultInstance(props, authenticator);
-```
-
-The Properties object that initializes the Session contains default values and other
-configuration information. It is expected that clients using the APIs set the values for the listed
-properties, especially mail.host, mail.user, and mail.from, since the defaults are
-unlikely to work in all cases. See “Environment Properties” on page 61 for a list of properties
-used by the JavaMail APIs and their defaults.
-
-Some messaging system implementations can use additional properties. Typically the
-properties object contains user-defined customizations in addition to system-wide defaults.
-Mail-enabled application logic determines the appropriate set of properties. Lacking a specific
-requirement, the application can use the system properties object retrieved from the
-System.getProperties method.
-The Authenticator object controls security aspects for the Session object. The
-messaging system uses it as a callback mechanism to interact with the user when a password
-is required to login to a messaging system. It indirectly controls access to the default session,
-as described below.
-Clients using JavaMail can register PasswordAuthentication objects with the
-Session object for use later in the session or for use by other users of the same session.
-Because PasswordAuthentication objects contain passwords, access to this informationmust be carefully controlled. Applications that create Session objects must restrict access to
-those objects appropriately. In addition, the Session class shares some responsibility for
-controlling access to the default session object.
-The first call to the getDefaultInstance method creates a new Session object and
-associates it with the Authenticator object. Subsequent calls to the
-getDefaultInstance method compare the Authenticator object passed in with the
-Authenticator object saved in the default session. Access to the default session is allowed
-if both objects have been loaded by the same class loader. Typically, this is the case when both
-the default session creator and the program requesting default session access are in the same
-"security domain." Also, if both objects are null, access is allowed. Using null to gain
-access is discouraged, because this allows access to the default session from any security
-domain.
-A mail-enabled client uses the Session object to retrieve a Store or Transport object in
-order to read or send mail. Typically, the client retrieves the default Store or Transport
-object based on properties loaded for that session:
-Store store = session.getStore();
-The client can override the session defaults and access a Store or Transport object that
-implements a particular protocol.
-Store store = session.getStore("imap");
-See “The Provider Registry” on page 26 for details.
-Implementations of Store and Transport objects will be told the session to which they
-have been assigned. They can then make the Session object available to other objects
-contained within this Store or Transport objects using application-dependent logic.
-
-he Provider Registry
-The Provider Registry allows providers to register their protocol implementations to be used
-by JavaMail APIs. It provides a mechanism for discovering available protocol, for registering
-new protocols, and for specifying default implementations.
-Resource Files
-The providers for JavaMail APIs are configured using the following files:
-?
-?
-javamail.providers and javamail.default.providers
-javamail.address.map and javamail.default.address.map
-Each javamail.X resource file is searched in the following order:
-
-1. java.home/lib/javamail.X
-2. META-INF/javamail.X
-3. META-INF/javamail.default.X
-
-The first method allows the user to include their own version of the resource file by placing it
-in the lib directory where the java.home property points. The second method allows an
-application that uses the JavaMail APIs to include their own resource files in their
-application’s or jar file’s META-INF directory. The javamail.default.X default files are
-part of the JavaMail mail.jar file.
-File location depends upon how the ClassLoader.getResource method is implemented.
-Usually, the getResource method searches through CLASSPATH until it finds the requested
-file and then stops. JDK 1.2 and newer allows all resources of a given name to be loaded from
-all elements of the CLASSPATH. However, this only affects method two, above; method one
-is loaded from a specific location (if allowed by the SecurityManager) and method three
-uses a different name to ensure that the default resource file is always loaded successfully.
-The ordering of entries in the resource files matters. If multiple entries exist, the first entries
-take precedence over the latter entries as the initial defaults. For example, the first IMAP
-provider found will be set as the default IMAP implementation until explicitly changed by the
-application.
-The user- or system-supplied resource files augment, they do not override, the default files
-included with the JavaMail APIs. This means that all entries in all files loaded will be
-available.
-javamail.providers and
-javamail.default.providers
-These resource files specify the stores and transports that are available on the system, allowing
-an application to "discover" what store and transport implementations are available. The
-protocol implementations are listed one per line. The file format defines four attributes that
-describe a protocol implementation. Each attribute is an "="-separated name-value pair with
-the name in lowercase. Each name-value pair is semi-colon (";") separated.
-
-protocolName - assigned to protocol. For example, ’smtp’ for Transport.
-typeValid - entries are “store” and “transport”.
-classClass - name that implements this protocol.
-vendorOptional - string identifying the vendor.
-versionOptional - string identifying the version.
-
-javamail.address.map and
-javamail.default.address.map
-These resource files map transport address types to the transport protocol. The
-javax.mail.Address.getType() method returns the address type. The
-javamail.address.map file maps the transport type to the protocol. The file format is a
-series of name-value pairs. Each key name should correspond to an address type that is
-currently installed on the system; there should also be an entry for each
-javax.mail.Address implementation that is present if it is to be used. For example,
-javax.mail.internet.InternetAddress.getType() returns rfc822. Each
-referenced protocol should be installed on the system. For the case of news, below, the client
-should install a Transport provider supporting the nntp protocol.
-Here are the typical contents of a javamail.address.map file.
-rfc822=smt
-
-Provider
-Provider is a class that describes a protocol implementation. The values come from the
-javamail.providers and javamail.default.providers resource files.
-
-Protocol Selection and Defaults
-The constructor for the Session object initializes the appropriate variables from the resource
-files. The order of the protocols in the resource files determines the initial defaults for protocol
-implementations. The methods, getProviders(), {getProvider()and
-setProvider() allow the client to discover the available (installed) protocol
-implementations, and to set the protocols to be used by default.
-At runtime, an application may set the default implementation for a particular protocol. It can
-set the mail.protocol.class property when it creates the Session object. This property
-specifies the class to use for a particular protocol. The getProvider() method consults this
-property first.
-The code can also call setProviders() passing in a Provider that was returned by the
-discovery methods. A Provider object in not normally explicitly created; it is usually retrieved
-using the getProviders() method.
-In either case, the provider specified is one of the ones configured in the resource files. An
-application may also instantiate a Provider object to configure a new implementation.
-
-Example Scenarios
-Scenario 1: The client application invokes the default protocols:
-
-```java
-class Application1 {
-init() {
-// application properties include the JavaMail required properties: mail.store.protocol,mail.transport.protocol, mail.host, mail.user
-Properties props = loadApplicationProps();
-Session session = Session.getInstance(props, null);
-/* get the store implementation of the protocol defined in mail.store.protocol; the implementation returned will be defined by the order of entries in
-javamail.providers & javamail.default.providers */
-try {
-Store store = session.getStore();
-store.connect();
-} catch (MessagingException mex) {}
-...
-}
-}
-```
-
-Scenario 2: The client application presents available implementations to the user and then sets
-the user’s choice as the default implementation:
-
-```java
-class Application2 {
-init() {
-// application properties include the JavaMail properties: mail.store.protocol,mail.transport.protocol, mail.host, mail.user
-Properties props = loadApplicationProps();
-Session session = Session.getInstance(props, null);
-// find out which implementations are available
-Provider[] providers = session.getProviders();
-// ask the user which implementations to use
-// user’s response may include a number of choices,
-// i.e. imap & nntp store providers & smtp transport
-Provider[] userChosenProviders =
-askUserWhichProvidersToUse(providers);
-// set the defaults based on users response
-for (int i = 0; i < userChosenProviders.length; i++)
-session.setProvider(userChosenProviders[i]);
-// get the store implementation of the protocol
-// defined in mail.store.protocol; the implementation
-// returned will be the one configured previously
-try {
-Store store = session.getStore();
-store.connect();
-} catch (MessagingException mex) {}
-...
-}
-}
-```
-
-Scenario 3: Application wants to specify an implementation for a given protocol:
-
-```java
-class Application3 {
-init() {
-// application properties include the JavaMail
-// required properties: mail.store.protocol,
-// mail.transport.protocol, mail.host, mail.user
-Properties props = loadApplicationProps();
-// hard-code an implementation to use
-// "com.acme.SMTPTRANSPORT"
-props.put("mail.smtp.class", "com.acme.SMTPTRANSPORT");
-Session session = Session.getInstance(props, null);
-// get the smtp transport implementation; the
-// implementation returned will be com.acme.SMTPTRANSPORT
-// if it was correctly configured in the resource files.
-// If com.acme.SMTPTRANSPORT can’t be loaded, a
-// MessagingException is thrown.
-try {
-Transport transport = session.getTransport("smtp");
-} catch (MessagingException mex) {
-quit();
-}
-}
-...
-}
-```
-
 ### Managing Security
 
 The Session class allows messaging system implementations to use the Authenticator
@@ -3530,20 +3327,6 @@ object writes out its headers; then it delegates the rest to the DataHandler obj
 The getBodyPart(int index) returns the MimeBodyPart object at the given index.MimeMultipart also allows the client to fetch MimeBodyPart objects based on their
 Content-IDs.The addBodyPart method adds a new MimeBodyPart object to a MimeMultipart as a step towards constructing a new multipart MimeMessage.
 
-## Environment Properties
-
-This section lists some of the environment properties that are used by the JavaMail APIs. The JavaMail javadocs contain additional information on properties supported by JavaMail:
-
-1. mail.store.protocol - Specifies the default Message Access Protocol.The Session.getStore() method returns a Store object that implements this protocol.The client can override this property and explicitly specify the protocol with the Session.getStore(String protocol) method.Default Value is The first appropriate protocol in the config files.
-2. mail.transport.protocol - Specifies the default Transport Protocol. The Session.getTransport() method returns a Transport object that implements this protocol. The client can override this property and explicitly specify the protocol by using Session.getTransport(String protocol) method.
-3. mail.host - Specifies the default Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific host property is absent, to locate the target host.- The local machine.
-4. mail.user - Specifies the username to provide when connecting to a Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific username property is absent, to obtain the username.
-5. mail.protocol.hostSpecifies the protocol-specific default Mail server. This overrides the mail.host property.
-6. mail.protocol.userSpecifies the protocol-specific default username for connecting to the Mail server.This overrides the mail.user property.
-7. mail.fromSpecifies the return address of the current user.Used by the InternetAddress.getLocalAddress method to specify the current user’s email address.
-8. mail.debugSpecifies the initial debug mode. Setting this property to true will turn on debug mode, while setting it to false turns debug mode off.
-es
-
 
 The JavaMail API supports the following standard properties, which may be set in the Session object, or in the Properties object used to create the Session object. The properties are always set as strings; the Type column describes how the string is interpreted. For example, use
 
@@ -3591,3 +3374,303 @@ In the years since its first release, the JavaTM programming language has mature
 The JavaMail API provides a set of abstract classes defining objects that comprise a mail system. The API defines classes like Message, Store and Transport. The API can be extended and can be subclassed to provide new protocols and to add functionality when necessary.
 
 In addition, the API provides concrete subclasses of the abstract classes. These subclasses,including MimeMessage and MimeBodyPart, implement widely used Internet mail protocols and conform to specifications RFC822 and RFC2045. They are ready to be used in application development.
+
+## Mail Session
+
+Before you create a maail session,you need to create a `Properties` object that contains any properties that session needs to send or receive mail.A Properties object stores a list of properties where each property has a name,which is often referred to as a key, and a value.To specify properties for a mail session,you can use the put method of Properties class to define any of standard properties available in JavaMail API.
+
+To create a mail session,you can call the `getDefaultInstance` method of Session class to get a Session object that has all default settings for a mail session.
+After creating session object,you can use setDebug method of Session object to turn on debugging for the session.As a result,the Session object will print debugging information to the console.
+
+`Environment Properties`:- Common environment properties that are used by the JavaMail APIs icludes:-
+
+1. mail.store.protocol - Specifies the default Message Access Protocol.The Session.getStore() method returns a Store object that implements this protocol.The client can override this property and explicitly specify the protocol with the Session.getStore(String protocol) method.Default Value is The first appropriate protocol in the config files.
+2. mail.transport.protocol - Specifies the default Transport Protocol. The Session.getTransport() method returns a Transport object that implements this protocol. The client can override this property and explicitly specify the protocol by using Session.getTransport(String protocol) method.
+3. mail.host - Specifies the default Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific host property is absent, to locate the target host.- The local machine.
+4. mail.user - Specifies the username to provide when connecting to a Mail server. The Store and Transport object’s connect methods use this property, if the protocol-specific username property is absent, to obtain the username.
+5. mail.protocol.host - Specifies the protocol-specific default Mail server. This overrides the mail.host property.
+6. mail.protocol.user - Specifies the protocol-specific default username for connecting to the Mail server.This overrides the mail.user property.
+7. mail.from - Specifies the return address of the current user.Used by the InternetAddress.getLocalAddress method to specify the current user’s email address.
+8. mail.debug - Specifies the initial debug mode. Setting this property to true will turn on debug mode, while setting it to false turns debug mode off.
+9. mail.smtp.quitwait - Prevents an SSLException that sometimes occur when you use GMAIL SMTP server.
+10. mail.smtp.auth - Indicates that the user must be authenticated before session can connect to SMTP server.
+
+```java
+//Local SMTP server
+Properties props = new Properties();
+props.put("mail.trancport.protocol", "smtps");
+props.put("mail.smtp.host", "localhost"); // Your SMTP server
+props.put("mail.smtp.port", 25); // Port for TLS
+props.put("mail.smtp.auth", "true");
+props.put("mail.smtp.starttls.enable", "true"); // Enable TLS
+
+Session session = Session.getDefaultInstance(props);
+session.setDebug(true);
+
+// Mail session for remote SMTP server
+Properties props = new Properties();
+props.put("mail.trancport.protocol", "smtps");
+props.put("mail.smtp.host", "smtp.gmail.com");
+props.put("mail.smtp.port", 465);
+props.put("mail.smtp.auth", "true");
+props.put("mail.smtp.starttls.enable", "true");
+props.put("mail.smtp.quitwait", "false");
+
+Session session = Session.getDefaultInstance(props);
+session.setDebug(true);
+```
+
+A mail Session object manages the configuration options and user authentication information used to interact with messaging systems.
+
+The Session class(public final class Session) represents a mail session and is not subclassed. It collects together properties and defaults used by the mail API's. A single default session can be shared by multiple applications on the desktop. Unshared sessions can also be created.
+
+The JavaMail API supports simultaneous multiple sessions. Each session can access multiple message stores and transports. Any desktop application that needs to access the current primary message store can share the default session. Typically the mail-enabled application establishes the default session, which initializes the authentication information necessary to access the user’s Inbox folder. Other desktop applications then use the default session when sending or accessing mail on behalf of the user. When sharing the session object, all applications share authentication information, properties, and the rest of the state of the object.
+
+For example,
+
+To create a Session using a static factory method:
+
+```java
+Session session = Session.getInstance(props, authenticator);
+```
+
+To create the default shared session, or to access the default shared session:
+
+```java
+Session defaultSession =Session.getDefaultInstance(props, authenticator);
+```
+
+The Properties object that initializes the Session contains default values and other
+configuration information. It is expected that clients using the APIs set the values for the listed
+properties, especially mail.host, mail.user, and mail.from, since the defaults are
+unlikely to work in all cases. See “Environment Properties” on page 61 for a list of properties
+used by the JavaMail APIs and their defaults.
+
+Some messaging system implementations can use additional properties. Typically the
+properties object contains user-defined customizations in addition to system-wide defaults.
+Mail-enabled application logic determines the appropriate set of properties. Lacking a specific
+requirement, the application can use the system properties object retrieved from the
+System.getProperties method.
+The Authenticator object controls security aspects for the Session object. The
+messaging system uses it as a callback mechanism to interact with the user when a password
+is required to login to a messaging system. It indirectly controls access to the default session,
+as described below.
+Clients using JavaMail can register PasswordAuthentication objects with the
+Session object for use later in the session or for use by other users of the same session.
+Because PasswordAuthentication objects contain passwords, access to this informationmust be carefully controlled. Applications that create Session objects must restrict access to
+those objects appropriately. In addition, the Session class shares some responsibility for
+controlling access to the default session object.
+The first call to the getDefaultInstance method creates a new Session object and
+associates it with the Authenticator object. Subsequent calls to the
+getDefaultInstance method compare the Authenticator object passed in with the
+Authenticator object saved in the default session. Access to the default session is allowed
+if both objects have been loaded by the same class loader. Typically, this is the case when both
+the default session creator and the program requesting default session access are in the same
+"security domain." Also, if both objects are null, access is allowed. Using null to gain
+access is discouraged, because this allows access to the default session from any security
+domain.
+A mail-enabled client uses the Session object to retrieve a Store or Transport object in
+order to read or send mail. Typically, the client retrieves the default Store or Transport
+object based on properties loaded for that session:
+Store store = session.getStore();
+The client can override the session defaults and access a Store or Transport object that
+implements a particular protocol.
+Store store = session.getStore("imap");
+See “The Provider Registry” on page 26 for details.
+Implementations of Store and Transport objects will be told the session to which they
+have been assigned. They can then make the Session object available to other objects
+contained within this Store or Transport objects using application-dependent logic.
+
+he Provider Registry
+The Provider Registry allows providers to register their protocol implementations to be used
+by JavaMail APIs. It provides a mechanism for discovering available protocol, for registering
+new protocols, and for specifying default implementations.
+Resource Files
+The providers for JavaMail APIs are configured using the following files:
+?
+?
+javamail.providers and javamail.default.providers
+javamail.address.map and javamail.default.address.map
+Each javamail.X resource file is searched in the following order:
+
+1. java.home/lib/javamail.X
+2. META-INF/javamail.X
+3. META-INF/javamail.default.X
+
+The first method allows the user to include their own version of the resource file by placing it
+in the lib directory where the java.home property points. The second method allows an
+application that uses the JavaMail APIs to include their own resource files in their
+application’s or jar file’s META-INF directory. The javamail.default.X default files are
+part of the JavaMail mail.jar file.
+File location depends upon how the ClassLoader.getResource method is implemented.
+Usually, the getResource method searches through CLASSPATH until it finds the requested
+file and then stops. JDK 1.2 and newer allows all resources of a given name to be loaded from
+all elements of the CLASSPATH. However, this only affects method two, above; method one
+is loaded from a specific location (if allowed by the SecurityManager) and method three
+uses a different name to ensure that the default resource file is always loaded successfully.
+The ordering of entries in the resource files matters. If multiple entries exist, the first entries
+take precedence over the latter entries as the initial defaults. For example, the first IMAP
+provider found will be set as the default IMAP implementation until explicitly changed by the
+application.
+The user- or system-supplied resource files augment, they do not override, the default files
+included with the JavaMail APIs. This means that all entries in all files loaded will be
+available.
+javamail.providers and
+javamail.default.providers
+These resource files specify the stores and transports that are available on the system, allowing
+an application to "discover" what store and transport implementations are available. The
+protocol implementations are listed one per line. The file format defines four attributes that
+describe a protocol implementation. Each attribute is an "="-separated name-value pair with
+the name in lowercase. Each name-value pair is semi-colon (";") separated.
+
+protocolName - assigned to protocol. For example, ’smtp’ for Transport.
+typeValid - entries are “store” and “transport”.
+classClass - name that implements this protocol.
+vendorOptional - string identifying the vendor.
+versionOptional - string identifying the version.
+
+javamail.address.map and
+javamail.default.address.map
+These resource files map transport address types to the transport protocol. The
+javax.mail.Address.getType() method returns the address type. The
+javamail.address.map file maps the transport type to the protocol. The file format is a
+series of name-value pairs. Each key name should correspond to an address type that is
+currently installed on the system; there should also be an entry for each
+javax.mail.Address implementation that is present if it is to be used. For example,
+javax.mail.internet.InternetAddress.getType() returns rfc822. Each
+referenced protocol should be installed on the system. For the case of news, below, the client
+should install a Transport provider supporting the nntp protocol.
+Here are the typical contents of a javamail.address.map file.
+rfc822=smt
+
+Provider
+Provider is a class that describes a protocol implementation. The values come from the
+javamail.providers and javamail.default.providers resource files.
+
+Protocol Selection and Defaults
+The constructor for the Session object initializes the appropriate variables from the resource
+files. The order of the protocols in the resource files determines the initial defaults for protocol
+implementations. The methods, getProviders(), {getProvider()and
+setProvider() allow the client to discover the available (installed) protocol
+implementations, and to set the protocols to be used by default.
+At runtime, an application may set the default implementation for a particular protocol. It can
+set the mail.protocol.class property when it creates the Session object. This property
+specifies the class to use for a particular protocol. The getProvider() method consults this
+property first.
+The code can also call setProviders() passing in a Provider that was returned by the
+discovery methods. A Provider object in not normally explicitly created; it is usually retrieved
+using the getProviders() method.
+In either case, the provider specified is one of the ones configured in the resource files. An
+application may also instantiate a Provider object to configure a new implementation.
+
+Example Scenarios
+Scenario 1: The client application invokes the default protocols:
+
+```java
+class Application1 {
+init() {
+// application properties include the JavaMail required properties: mail.store.protocol,mail.transport.protocol, mail.host, mail.user
+Properties props = loadApplicationProps();
+Session session = Session.getInstance(props, null);
+/* get the store implementation of the protocol defined in mail.store.protocol; the implementation returned will be defined by the order of entries in
+javamail.providers & javamail.default.providers */
+try {
+Store store = session.getStore();
+store.connect();
+} catch (MessagingException mex) {}
+...
+}
+}
+```
+
+Scenario 2: The client application presents available implementations to the user and then sets
+the user’s choice as the default implementation:
+
+```java
+class Application2 {
+init() {
+// application properties include the JavaMail properties: mail.store.protocol,mail.transport.protocol, mail.host, mail.user
+Properties props = loadApplicationProps();
+Session session = Session.getInstance(props, null);
+// find out which implementations are available
+Provider[] providers = session.getProviders();
+// ask the user which implementations to use
+// user’s response may include a number of choices,
+// i.e. imap & nntp store providers & smtp transport
+Provider[] userChosenProviders =
+askUserWhichProvidersToUse(providers);
+// set the defaults based on users response
+for (int i = 0; i < userChosenProviders.length; i++)
+session.setProvider(userChosenProviders[i]);
+// get the store implementation of the protocol
+// defined in mail.store.protocol; the implementation
+// returned will be the one configured previously
+try {
+Store store = session.getStore();
+store.connect();
+} catch (MessagingException mex) {}
+...
+}
+}
+```
+
+Scenario 3: Application wants to specify an implementation for a given protocol:
+
+```java
+class Application3 {
+init() {
+// application properties include the JavaMail
+// required properties: mail.store.protocol,
+// mail.transport.protocol, mail.host, mail.user
+Properties props = loadApplicationProps();
+// hard-code an implementation to use
+// "com.acme.SMTPTRANSPORT"
+props.put("mail.smtp.class", "com.acme.SMTPTRANSPORT");
+Session session = Session.getInstance(props, null);
+// get the smtp transport implementation; the
+// implementation returned will be com.acme.SMTPTRANSPORT
+// if it was correctly configured in the resource files.
+// If com.acme.SMTPTRANSPORT can’t be loaded, a
+// MessagingException is thrown.
+try {
+Transport transport = session.getTransport("smtp");
+} catch (MessagingException mex) {
+quit();
+}
+}
+...
+}
+```
+
+## Message
+
+Once you create the Session object,you can create an object that defines an email message.
+To do that, you pass a Session object to the constructor of the MimeMessage class to create a MimeMessage class to create a MimeMessage object.Then, you can set the subject,body and address for the message.To set the subject use setSubject method,to set message body as plain text,you use setText method.
+
+When you use the setText method to set the body of the message,the MIME type for the message is automatically set to text/plain.For many text messages,that is inadequate.However,since most modern mail clients can display text that's formatted with HTML tags,it's also common to use the setContent method to change the MIME type for a message to text/html.then,the body of the message can include HTML tags that format the text,display images, and provide links to web resources.
+
+```java
+Message message = new MimeMessage(session);
+message.setSubject("OrderConfirmation");
+message.setText("Thanks for your order");
+message.setContent("<h1>Thanks for your order</h1>", "text/html");
+```
+
+## Sending a Message
+
+Onceyou've created and addressed a MimeMessage object, you can send the message.For an SMTP server that doesn't require authentication, you can call the static send method of the Transport class with MimeMessage object as argument.
+However,if the SMTP server requires authentication,you use the staic getTransport method of Transport class to return a Transport object.Then you can use the connect method to specify a username and password that can be used to connect to the server.
+
+Once you've connected to SMTP server,you can use the sendMessage method to send the message.When you use this method you can specify the MimeMessage object as first argument,and you can specify the second argument by calling the getAllRecipients method of MimeMessage object.Finally, you can use the close method to close the connection.
+
+If the message can't be sent,the send or sendMessage method will throw an exception of the SendFailedException type.This exception contains a list of invalid addresses to which message could not be sent, valid addresses to which the message wasn't sent and valid addresses to which the message was sent.If necessary,you can use this exception to perform some processing such as writing these addresses to a log file.
+
+```java
+Transport.send(message);
+
+// Authentication Required
+Transport transport = session.getTransport();
+transport.connect("example@gmail.com","password");
+transport.sendMessage(message, message.getAllRecipients());
+transport.close();
+```
