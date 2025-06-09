@@ -236,8 +236,6 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 }
 ```
 
-
-
 The DispatcherServlet looks for Servlet-name in the xml file
 
 Spring Boot follows a different initialization sequence. Rather than hooking into the lifecycle of the Servlet container, Spring Boot uses Spring configuration to bootstrap itself and the embedded Servlet container. Filter and Servlet declarations are detected in Spring configuration and registered with the Servlet container.

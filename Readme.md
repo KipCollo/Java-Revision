@@ -25,10 +25,13 @@ It incudes all Frameworks,Tools and Technologies for modern development.
 
 ## Web Development
 
-1. Servlets & JSPs:- For building dynamic web pages.
+There are many ways to develop Java web applications.When developing a Java web applications, you typically use parts of the Java Enterprise Edition(Java EE) specification.This specification describe how web servers can interact with all Java web technologies including servlets, JavaServer Pages(JSP),JavaServer Faces(JSF),Java Persistence API(JPA),Enterprise JavaBeans(EJB) and more.
+
+1. Servlets & JSPs:- For building dynamic web pages.Servlets store Java code that does server-side processing, and JSP store HTML that defines User Interfaces.Servlet/JSP API are relatively low-level API,it doesn't do much work for the developer.However,the servlet/JSP gives the developer a high degree of control over HTML,CSS and Javascript that is returned to the browser.In addition it is the foundation of other approaches in building web applicatios.
 2. Thymeleaf:- Modern server-side template engine.
 3. Vaadin:- Framework for building modern web applications.
-4. JSF (JavaServer Faces):- Component-based UI framework.
+4. JSF (JavaServer Faces):- Component-based UI framework.It is newer technology designed to replace both servlets and JSPs.Provides higher-level API that does more work for the programmer.You typically use more Java EE features more than you do with servlet/JSP approach.You can also use Enterprise JavaBeans to define server-side components.
+5. Spring Framework:- It is higher-level API that does more work for programmer than servlet APIs.However,due to it's structure, the Spring Framework still gives the developer a high degree of control over HTML/CSS/Javascript that's returned to the browser.
 
 ## Testing
 
